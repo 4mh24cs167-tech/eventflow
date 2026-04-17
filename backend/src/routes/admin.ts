@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import { supabase } from '../index';
-import { authenticateToken, requireRole, AuthRequest } from '../middlewares/authMiddleware';
-import { computeEnrichedSchedules } from '../utils/statusComputer';
 import { supabase } from '../utils/supabase';
 import { authenticateToken, requireRole, AuthRequest } from '../middlewares/authMiddleware';
+import { computeEnrichedSchedules } from '../utils/statusComputer';
 import multer from 'multer';
 import path from 'path';
 
