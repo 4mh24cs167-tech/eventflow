@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#1a237e",
+                    "on-surface-variant": "#454652",
+                    "surface-container-highest": "#e1e3e4",
+                    "error-container": "#ffdad6",
+                    "primary": "#000666",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "surface-container": "#edeeef",
+                    "surface-bright": "#f8f9fa",
+                    "inverse-primary": "#bdc2ff",
+                    "tertiary": "#380b00",
+                    "surface-dim": "#d9dadb",
+                    "outline-variant": "#c6c5d4",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#002020",
+                    "secondary-container": "#90efef",
+                    "on-error-container": "#93000a",
+                    "background": "#f8f9fa",
+                    "tertiary-container": "#5c1800",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f3f4f5",
+                    "primary-fixed": "#e0e0ff",
+                    "surface-variant": "#e1e3e4",
+                    "on-primary-fixed-variant": "#343d96",
+                    "secondary": "#006a6a",
+                    "on-tertiary-fixed": "#390c00",
+                    "surface-tint": "#4c56af",
+                    "on-tertiary-container": "#e17c5a",
+                    "on-secondary-container": "#006e6e",
+                    "on-primary-container": "#8690ee",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "secondary-fixed": "#93f2f2",
+                    "on-secondary": "#ffffff",
+                    "surface-container-high": "#e7e8e9",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "on-background": "#191c1d",
+                    "surface": "#f8f9fa",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-surface": "#191c1d",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-error": "#ffffff",
+                    "outline": "#767683",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2e3132",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-primary-fixed": "#000767"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white">The Ledger</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 mt-1">Academic Architect</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="text-sm font-medium">Event Registry</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-indigo-700 dark:text-indigo-300 font-bold border-r-4 border-indigo-700 bg-slate-200/50 dark:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-sm">Form Templates</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="perm_media">perm_media</span>
+<span class="text-sm font-medium">Media Library</span>
+</a>
+</nav>
+<div class="mt-auto space-y-1 border-t border-slate-200 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-indigo-600 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-indigo-600 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-sm">Support</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-white/70 backdrop-blur-xl z-40 flex justify-between items-center px-8">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="bg-surface-container-highest border-none rounded-lg pl-10 pr-4 py-2 text-sm w-64 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search event templates..." type="text"/>
+</div>
+<nav class="hidden lg:flex gap-4">
+<span class="text-indigo-700 font-semibold text-sm">Fiscal Year 2024</span>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
+                Create New Event
+            </button>
+<div class="flex gap-2 ml-4">
+<button class="p-2 text-slate-600 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-8">
+<!-- Breadcrumbs & Step Indicator -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<nav class="flex text-xs font-label uppercase tracking-widest text-slate-500 mb-2 gap-2">
+<span>Events</span>
+<span>/</span>
+<span>Annual Symposium 2024</span>
+</nav>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Registration Form Builder</h2>
+<p class="text-on-surface-variant mt-1 text-sm">Step 2 of 4: Define the attendee journey</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low p-1 rounded-full px-4 py-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold text-secondary uppercase tracking-tighter">Registration Open</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-8 items-start">
+<!-- Left Column: The Form Construction -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<!-- Registration Builder Canvas -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-outline-variant/10">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-lg font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="edit_note">edit_note</span>
+                            Canvas: Attendee Details
+                        </h3>
+<span class="text-xs font-medium text-slate-400">Drag fields to reorder</span>
+</div>
+<div class="space-y-4">
+<!-- Field: Name (Locked) -->
+<div class="flex items-center gap-4 p-5 bg-surface-container-low rounded-lg border-l-4 border-primary group cursor-not-allowed opacity-80">
+<span class="material-symbols-outlined text-slate-300" data-icon="drag_indicator">drag_indicator</span>
+<div class="flex-1">
+<label class="text-xs font-bold text-primary uppercase tracking-widest block mb-1">Full Name</label>
+<div class="h-10 bg-surface-container-highest/50 rounded flex items-center px-4 text-sm text-slate-400 italic">Pre-defined system field</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Field: Email (Locked) -->
+<div class="flex items-center gap-4 p-5 bg-surface-container-low rounded-lg border-l-4 border-primary group cursor-not-allowed opacity-80">
+<span class="material-symbols-outlined text-slate-300" data-icon="drag_indicator">drag_indicator</span>
+<div class="flex-1">
+<label class="text-xs font-bold text-primary uppercase tracking-widest block mb-1">Email Address</label>
+<div class="h-10 bg-surface-container-highest/50 rounded flex items-center px-4 text-sm text-slate-400 italic">Pre-defined system field</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Field: Phone (Checklist Item) -->
+<div class="flex items-center gap-4 p-5 bg-white rounded-lg border-l-4 border-secondary group hover:shadow-md transition-all cursor-move">
+<span class="material-symbols-outlined text-slate-400" data-icon="drag_indicator">drag_indicator</span>
+<div class="flex-1">
+<label class="text-xs font-bold text-primary uppercase tracking-widest block mb-1">Phone Number</label>
+<div class="flex items-center gap-4">
+<div class="flex-1 h-10 bg-surface-container-low rounded flex items-center px-4 text-sm text-on-surface-variant">e.g. +1 234 567 890</div>
+<div class="flex items-center gap-2">
+<input checked="" class="rounded-sm border-secondary text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-xs font-medium text-secondary">Required</span>
+</div>
+</div>
+</div>
+<button class="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-error transition-all">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Field: Dept (Checklist Item) -->
+<div class="flex items-center gap-4 p-5 bg-white rounded-lg border-l-4 border-secondary group hover:shadow-md transition-all cursor-move">
+<span class="material-symbols-outlined text-slate-400" data-icon="drag_indicator">drag_indicator</span>
+<div class="flex-1">
+<label class="text-xs font-bold text-primary uppercase tracking-widest block mb-1">Department / Faculty</label>
+<div class="flex items-center gap-4">
+<div class="flex-1 h-10 bg-surface-container-low rounded flex items-center px-4 text-sm text-on-surface-variant">Select from dropdown...</div>
+<div class="flex items-center gap-2">
+<input checked="" class="rounded-sm border-secondary text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-xs font-medium text-secondary">Required</span>
+</div>
+</div>
+</div>
+<button class="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-error transition-all">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Field: Year (Checklist Item) -->
+<div class="flex items-center gap-4 p-5 bg-white rounded-lg border-l-4 border-secondary group hover:shadow-md transition-all cursor-move">
+<span class="material-symbols-outlined text-slate-400" data-icon="drag_indicator">drag_indicator</span>
+<div class="flex-1">
+<label class="text-xs font-bold text-primary uppercase tracking-widest block mb-1">Year of Study</label>
+<div class="flex items-center gap-4">
+<div class="flex-1 h-10 bg-surface-container-low rounded flex items-center px-4 text-sm text-on-surface-variant">Numerical input</div>
+<div class="flex items-center gap-2">
+<input class="rounded-sm border-secondary text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="text-xs font-medium text-secondary">Required</span>
+</div>
+</div>
+</div>
+<button class="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-error transition-all">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</button>
+</div>
+<!-- Add Custom Field Trigger -->
+<button class="w-full py-4 border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary-fixed/30 rounded-lg transition-all flex flex-col items-center justify-center gap-1 group">
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                                Add Custom Question
+                            </div>
+<span class="text-[10px] uppercase tracking-tighter text-slate-400 group-hover:text-primary">Text, Multiple Choice, or File Upload</span>
+</button>
+</div>
+</div>
+<!-- Preview Area -->
+<div class="bg-surface-container-high rounded-xl p-8 overflow-hidden relative">
+<div class="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-10">
+<div class="bg-white px-6 py-3 rounded-full shadow-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility">visibility</span>
+<span class="font-bold text-on-surface">Interactive Preview Mode</span>
+</div>
+</div>
+<div class="opacity-30 blur-[2px]">
+<h4 class="text-2xl font-extrabold text-primary mb-6">Annual Symposium 2024</h4>
+<div class="space-y-4 max-w-md">
+<div class="h-10 bg-white rounded"></div>
+<div class="h-10 bg-white rounded w-2/3"></div>
+<div class="h-10 bg-white rounded"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Settings & Logic -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Link Generation Card -->
+<div class="bg-gradient-to-br from-primary to-primary-container text-white p-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]" data-icon="link">link</span>
+</div>
+<div class="relative z-10">
+<h3 class="text-sm font-label uppercase tracking-widest text-indigo-200 mb-4">Registration Gateway</h3>
+<div class="mb-6">
+<p class="text-xs text-indigo-300 mb-2">Unique Access URL</p>
+<div class="bg-black/20 rounded-lg p-3 font-mono text-xs flex items-center justify-between group">
+<span class="truncate">ledger.edu/reg/symp-2024-ax92</span>
+<button class="hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-white text-primary font-bold py-2 rounded text-sm hover:bg-indigo-50 transition-colors">Test Link</button>
+<button class="px-3 bg-indigo-800 rounded hover:bg-indigo-700 transition-colors">
+<span class="material-symbols-outlined" data-icon="qr_code_2">qr_code_2</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Registration Controls -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<h3 class="text-sm font-bold text-primary uppercase tracking-widest mb-6 border-b border-surface-container pb-4">Status &amp; Permissions</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface">Registration Status</p>
+<p class="text-[11px] text-on-surface-variant">Allow new submissions</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface">Limit Responses</p>
+<p class="text-[11px] text-on-surface-variant">Cap total attendees</p>
+</div>
+<input class="w-20 bg-surface-container-low border-none rounded text-xs font-bold text-right p-2 focus:ring-1 focus:ring-primary" placeholder="500" type="number"/>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface">Allow Edits</p>
+<p class="text-[11px] text-on-surface-variant">Post-submission changes</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Data Export -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border border-outline-variant/10">
+<h3 class="text-sm font-bold text-primary uppercase tracking-widest mb-4">Export Pipeline</h3>
+<p class="text-xs text-on-surface-variant mb-4 leading-relaxed">Fetch the latest registration data in a structured format for administrative review.</p>
+<button class="w-full bg-surface-container-highest text-on-surface font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-outline-variant transition-all">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                        Download Data (CSV)
+                    </button>
+<div class="mt-4 flex items-center justify-center gap-2">
+<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+<p class="text-[10px] text-slate-400">Last export: 14 mins ago</p>
+<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+</div>
+</div>
+<!-- Guidance Note -->
+<div class="p-6 bg-tertiary-fixed/30 rounded-xl border border-on-tertiary-container/10">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="lightbulb">lightbulb</span>
+<div>
+<h4 class="text-sm font-bold text-on-tertiary-fixed-variant">HOD Pro-Tip</h4>
+<p class="text-xs text-on-tertiary-fixed-variant/80 mt-1 leading-normal">
+                                Requiring "Department" helps automate the post-event certificate distribution by school faculty.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Actions -->
+<div class="fixed bottom-0 right-0 w-[calc(100%-16rem)] bg-white/90 backdrop-blur-md px-8 py-4 border-t border-surface-container flex justify-between items-center z-40">
+<button class="text-sm font-bold text-on-surface-variant flex items-center gap-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                Back to Details
+            </button>
+<div class="flex gap-4">
+<button class="px-6 py-2 rounded-lg text-sm font-semibold text-primary border-2 border-primary hover:bg-primary/5 transition-all">
+                    Save as Draft
+                </button>
+<button class="px-8 py-2 rounded-lg text-sm font-semibold bg-gradient-to-br from-primary to-primary-container text-white shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all">
+                    Next: Ticketing &amp; Logistics
+                </button>
+</div>
+</div>
+</main>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

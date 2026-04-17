@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Ledger | AI Event Review Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "secondary-fixed": "#93f2f2",
+                        "surface-tint": "#4c56af",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#343d96",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-fixed": "#000767",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "on-surface-variant": "#454652",
+                        "on-error": "#ffffff",
+                        "background": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "secondary-container": "#90efef",
+                        "on-tertiary-fixed": "#390c00",
+                        "tertiary-container": "#5c1800",
+                        "surface-bright": "#f8f9fa",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#edeeef",
+                        "secondary": "#006a6a",
+                        "on-background": "#191c1d",
+                        "primary": "#000666",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "surface": "#f8f9fa",
+                        "on-primary-container": "#8690ee",
+                        "inverse-primary": "#bdc2ff",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#c6c5d4",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-secondary-container": "#006e6e",
+                        "outline": "#767683",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-secondary-fixed": "#002020",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-container": "#1a237e",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .perspective-bar-track { height: 4px; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-8 px-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-xl font-bold tracking-tighter text-indigo-900 dark:text-indigo-200">The Ledger</h1>
+<p class="text-xs font-semibold font-inter text-slate-500 mt-1 uppercase tracking-widest">Academic Architect</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Review Queue is active for this context -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">dashboard</span>
+<span class="text-sm font-medium font-inter">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">category</span>
+<span class="text-sm font-medium font-inter">Categories</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-indigo-900 dark:text-indigo-400 font-bold border-r-4 border-indigo-900 dark:border-indigo-400 bg-slate-200 dark:bg-slate-800 group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">rate_review</span>
+<span class="text-sm font-medium font-inter">Review Queue</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">school</span>
+<span class="text-sm font-medium font-inter">My Department</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">public</span>
+<span class="text-sm font-medium font-inter">Global Events</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:opacity-80 group-active:scale-[0.98]">history</span>
+<span class="text-sm font-medium font-inter">Activity Logs</span>
+</a>
+</nav>
+<div class="mt-auto px-4 pt-8">
+<button class="w-full bg-indigo-900 dark:bg-indigo-800 text-white rounded py-3 px-4 text-sm font-bold shadow-sm flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Event Proposal
+            </button>
+<div class="mt-8 flex items-center gap-3 pt-6 border-t border-indigo-900/10">
+<img alt="HOD Profile Picture" class="w-10 h-10 rounded-full bg-slate-200 object-cover" data-alt="professional portrait of a senior academic department head in a clean modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdN3kPEyf37hBv1oz6ReodRM8T4br_ve3tj2sfVWsZSvPLDqQWb-1ljPx8B4WI-Lj5XwqIsBUqvnp-2DczeWiS5T-uu2trF7ysvlkK3hUmxJMIKDwhTDZHiFvyuRUZy6_O0e-mM2-__OhGI3YV57l4tzeiUUNjhqlkCIsCpUAIamJcC28NkDJClwPxKKaLIOA53mjaz422EJ--YNP1N1BBgI-d5XkVnYEc_pmuu1oXws7DBHhvGKK1gZA6NwpRBviQL0dTA4k-sW8"/>
+<div>
+<p class="text-sm font-bold text-indigo-900 dark:text-indigo-200 leading-none">Dr. Alistair Vance</p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-semibold">Head of Department</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl flex justify-between items-center px-8 z-40 transition-transform active:scale-[0.99]">
+<div class="flex gap-8 items-center h-full">
+<a class="text-slate-500 dark:text-slate-400 text-xs font-semibold font-inter hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors" href="#">Fiscal Year 2024</a>
+<a class="text-slate-500 dark:text-slate-400 text-xs font-semibold font-inter hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors" href="#">Department Stats</a>
+<a class="text-indigo-900 dark:text-indigo-400 border-b-2 border-indigo-900 dark:border-indigo-400 pb-2 text-xs font-semibold font-inter" href="#">AI Insights</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-900 cursor-pointer">search</span>
+</div>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-900 cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-900 cursor-pointer">settings</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-900 cursor-pointer">help_outline</span>
+<img alt="HOD User Avatar" class="w-8 h-8 rounded-full border border-indigo-900/10" data-alt="close up headshot of a distinguished male university professor with graying hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnrTaAk5PP49-KCSyOFZLhJF-rQ-kaPdEqnBCZS9M4N1_irRo0Z4NijVAhQz2HDK4ZQz_IKBXmdDz-maW9yajisJqoR0hdzm1kgd3kNswCWAx3AWYRjfoiFa6v20OQieXXwuhPfUi8qCNkOdFhbz9Op97vDqjQbEyfezjbR4ABYm3YvXWB0_FwyzfZSMhk8ChwznNFZs1DKwESlPgazN1bjLFxDD2BqyC2WIv93Pw5CSTnGcFsyGYqBSp2F7HLsqA4ewRFajZZXcc"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-10 min-h-screen">
+<!-- Header Section: High-End Asymmetric Layout -->
+<section class="flex flex-col md:flex-row justify-between items-start gap-12 mb-12">
+<div class="max-w-2xl">
+<span class="inline-block px-3 py-1 bg-primary-container text-white text-[10px] font-bold tracking-widest uppercase mb-4">Event Performance Audit</span>
+<h1 class="text-4xl md:text-5xl font-bold font-headline tracking-tight text-primary mb-4">Quantum Computing Symposium</h1>
+<p class="text-on-surface-variant text-lg leading-relaxed font-body">
+                    A comprehensive AI-driven evaluation of the technical seminar hosted by the Physics and CS departments. Insights derived from student attendance data, speaker feedback, and post-event assessments.
+                </p>
+</div>
+<div class="bg-surface-container-lowest p-8 rounded shadow-[0_20px_40px_rgba(25,28,29,0.06)] flex flex-col items-center">
+<div class="text-5xl font-bold text-primary font-headline mb-2">4.8</div>
+<div class="flex text-secondary-container mb-4">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<span class="text-[10px] uppercase font-bold tracking-widest text-outline">Overall AI Rating</span>
+</div>
+</section>
+<!-- Bento Grid Insights -->
+<div class="grid grid-cols-12 gap-6 mb-12">
+<!-- Performance Summary -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low p-8 rounded-xl">
+<h3 class="text-lg font-bold font-headline text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">analytics</span>
+                    Performance Summary
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<p class="text-sm font-medium leading-relaxed text-on-surface">
+                        The symposium exceeded typical engagement benchmarks for specialized technical events. AI synthesis indicates a strong correlation between high-profile guest speakers and student retention during the 4-hour block. Technical feasibility scores were exceptionally high, though logistics for remote attendees showed slight latency in interaction.
+                    </p>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Academic Rigor</span>
+<span class="text-xs font-bold text-secondary">92%</span>
+</div>
+<div class="w-full bg-surface-container-highest perspective-bar-track">
+<div class="h-full bg-secondary w-[92%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Student Engagement</span>
+<span class="text-xs font-bold text-secondary">88%</span>
+</div>
+<div class="w-full bg-surface-container-highest perspective-bar-track">
+<div class="h-full bg-secondary w-[88%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Logistical Efficiency</span>
+<span class="text-xs font-bold text-secondary">74%</span>
+</div>
+<div class="w-full bg-surface-container-highest perspective-bar-track">
+<div class="h-full bg-secondary w-[74%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Strengths -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest p-8 rounded-xl shadow-[0_20px_40px_rgba(25,28,29,0.06)]">
+<h3 class="text-lg font-bold font-headline text-primary mb-6">Key Strengths</h3>
+<div class="flex flex-wrap gap-3">
+<span class="px-4 py-2 bg-secondary-container/30 text-on-secondary-container text-xs font-semibold rounded-full border border-secondary-container/50">Cross-Disciplinary Flow</span>
+<span class="px-4 py-2 bg-secondary-container/30 text-on-secondary-container text-xs font-semibold rounded-full border border-secondary-container/50">Speaker Credibility</span>
+<span class="px-4 py-2 bg-secondary-container/30 text-on-secondary-container text-xs font-semibold rounded-full border border-secondary-container/50">Lab Demo Success</span>
+<span class="px-4 py-2 bg-secondary-container/30 text-on-secondary-container text-xs font-semibold rounded-full border border-secondary-container/50">Q&amp;A Participation</span>
+<span class="px-4 py-2 bg-secondary-container/30 text-on-secondary-container text-xs font-semibold rounded-full border border-secondary-container/50">Technical Depth</span>
+</div>
+<div class="mt-8 pt-8 border-t border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-secondary/10 rounded">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface">+14% Growth</p>
+<p class="text-[10px] text-outline uppercase tracking-widest font-semibold">In technical interest since FY23</p>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Participation Insights (Chart Section) -->
+<div class="col-span-12 lg:col-span-6 bg-surface-container-highest/30 p-8 rounded-xl">
+<h3 class="text-lg font-bold font-headline text-primary mb-8">Participation Insights</h3>
+<div class="flex items-end justify-between h-48 gap-4 px-4">
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-primary/20 h-[60%] rounded-t-lg relative group">
+<div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] font-bold text-outline">Undergrads</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-primary/20 h-[85%] rounded-t-lg relative group">
+<div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] font-bold text-outline">Graduates</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-primary/20 h-[45%] rounded-t-lg relative group">
+<div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] font-bold text-outline">Faculty</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-4">
+<div class="w-full bg-primary/20 h-[30%] rounded-t-lg relative group">
+<div class="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="text-[10px] font-bold text-outline">External</span>
+</div>
+</div>
+</div>
+<!-- AI Suggestions & Improvements -->
+<div class="col-span-12 lg:col-span-6 bg-white p-8 rounded-xl shadow-[0_20px_40px_rgba(25,28,29,0.06)] relative overflow-hidden">
+<!-- AI Accent Line -->
+<div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-secondary"></div>
+<h3 class="text-lg font-bold font-headline text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary">psychology</span>
+                    AI Recommendations
+                </h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
+<p class="text-sm font-medium text-on-surface-variant">Introduce pre-recorded technical primers to normalize foundational knowledge across disparate departments.</p>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary text-sm mt-1">check_circle</span>
+<p class="text-sm font-medium text-on-surface-variant">Extend networking intervals by 15 minutes to facilitate doctoral-level peer review discussions.</p>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-tertiary text-sm mt-1">error_outline</span>
+<p class="text-sm font-medium text-on-surface-variant">Upgrade hybrid session streaming infrastructure to reduce the 4s audio lag identified during Q&amp;A.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Feedback & Action Footer -->
+<section class="max-w-4xl mx-auto mt-20 p-10 bg-surface-container-low rounded-2xl border-t-4 border-primary">
+<h2 class="text-2xl font-bold font-headline text-primary mb-6">HOD Remarks</h2>
+<div class="space-y-6">
+<div>
+<label class="hidden" for="remarks">HOD Remarks</label>
+<textarea class="w-full bg-surface-container-highest border-none focus:ring-0 text-on-surface font-body p-6 rounded-lg placeholder:text-outline text-sm" id="remarks" placeholder="Dr. Vance, please enter your final assessment or executive instructions for the Principal..." rows="4"></textarea>
+<div class="mt-1 w-full h-[2px] bg-primary scale-x-0 transition-transform duration-300 origin-left focus-within:scale-x-100"></div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-4">
+<div class="flex items-center gap-4">
+<span class="text-xs font-bold text-tertiary uppercase tracking-widest flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                            Priority: High
+                        </span>
+<span class="text-xs font-bold text-outline uppercase tracking-widest">Modified: 2h ago</span>
+</div>
+<div class="flex gap-4">
+<button class="px-8 py-3 bg-transparent text-secondary font-bold text-sm hover:bg-surface-container-high rounded transition-colors uppercase tracking-widest">
+                            Save Draft
+                        </button>
+<button class="px-10 py-4 bg-gradient-to-br from-primary to-primary-container text-white font-bold text-sm rounded shadow-lg hover:opacity-90 active:scale-[0.99] transition-all flex items-center gap-3 uppercase tracking-widest">
+                            Forward to Principal
+                            <span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

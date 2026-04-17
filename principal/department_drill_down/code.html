@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-tertiary-fixed": "#390c00",
+                    "tertiary-fixed": "#ffdbd0",
+                    "surface-container-high": "#e7e8e9",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "outline-variant": "#c6c5d4",
+                    "inverse-surface": "#2e3132",
+                    "surface-dim": "#d9dadb",
+                    "primary": "#000666",
+                    "inverse-primary": "#bdc2ff",
+                    "tertiary-container": "#5c1800",
+                    "surface-tint": "#4c56af",
+                    "on-secondary-container": "#006e6e",
+                    "on-primary-container": "#8690ee",
+                    "secondary-fixed": "#93f2f2",
+                    "on-tertiary-container": "#e17c5a",
+                    "surface-container": "#edeeef",
+                    "background": "#f8f9fa",
+                    "surface-bright": "#f8f9fa",
+                    "inverse-on-surface": "#f0f1f2",
+                    "outline": "#767683",
+                    "tertiary": "#380b00",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "on-background": "#191c1d",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-surface": "#191c1d",
+                    "error-container": "#ffdad6",
+                    "surface": "#f8f9fa",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#002020",
+                    "surface-variant": "#e1e3e4",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#e0e0ff",
+                    "on-primary-fixed-variant": "#343d96",
+                    "primary-container": "#1a237e",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-container": "#90efef",
+                    "secondary": "#006a6a",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-surface-variant": "#454652",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#000767"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .perspective-bar-bg { height: 4px; border-radius: 2px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body antialiased">
+<!-- TopNavBar -->
+<header class="fixed top-0 z-50 flex justify-between items-center w-full px-8 py-4 bg-white dark:bg-slate-900 border-b-0 tonal-transition">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-950 dark:text-indigo-100 font-headline">Academic Ledger</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Directory</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Calendar</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 w-64" placeholder="Global search..." type="text"/>
+</div>
+<button class="text-indigo-900 dark:text-indigo-300 hover:opacity-80 transition-all"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-indigo-900 dark:text-indigo-300 hover:opacity-80 transition-all"><span class="material-symbols-outlined">settings</span></button>
+<div class="w-8 h-8 rounded-full overflow-hidden ml-2 ring-2 ring-primary/10">
+<img alt="Principal Profile Avatar" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a senior academic principal in formal attire against a neutral studio background with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUAiPMvt2mh-bFQvBJrFjJ49A_8AffiP-Bcvjxflkf6ZRU4wS9zy-5O12aQLA7zhV_iOrm6_vmph3elfTBjnlRcwW4zOc089_3OjDEX9Kw5SvDHrQP4aMwV2ddg8eaq0T6xYVKE-JIO25pWu26qhviAxRvxnYNzuET_WDygDhN5bx5z4J9qH7ssJQA0fe5HyaNMOpk9V1X2KPZ9zSV1BitcoMfW7tqZ-kITLeA3-GUPmCH29SjrPjpo7wNK4E4QKjwq5OF-l0BCPA"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="flex flex-col h-screen fixed left-0 top-0 pt-20 bg-slate-50 dark:bg-slate-950 w-64 border-r-0 z-40 hidden md:flex">
+<div class="px-6 py-6 mb-4 flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-indigo-900 text-sm">Oxford Academy</h3>
+<p class="text-xs text-slate-500">Principal's Office</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:text-indigo-900 px-6 py-3 transition-all hover:bg-slate-100 font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 text-teal-700 dark:text-teal-400 font-bold bg-white dark:bg-slate-900 rounded-l-none rounded-r-full shadow-sm px-6 py-3 translate-x-1 duration-300 font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">account_balance</span> Departments
+            </a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 hover:text-indigo-900 px-6 py-3 transition-all hover:bg-slate-100 font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">analytics</span> Reports
+            </a>
+</nav>
+<div class="px-6 py-8">
+<button class="w-full bg-primary text-white py-3 rounded-lg font-headline font-bold text-sm hover:opacity-90 transition-all">
+                Quick Insight
+            </button>
+</div>
+<div class="mt-auto border-t border-outline-variant/15 py-4">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 px-6 py-3 font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined">help_outline</span> Help Center
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 px-8 pb-12">
+<div class="max-w-6xl mx-auto">
+<!-- Breadcrumbs -->
+<div class="mb-6 flex items-center text-xs text-slate-500 font-label tracking-wide uppercase">
+<span>Departments</span>
+<span class="material-symbols-outlined text-[14px] mx-2">chevron_right</span>
+<span class="text-primary font-bold">Computer Science</span>
+</div>
+<!-- Department Header: Bento Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<div class="lg:col-span-2 p-8 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-center">
+<div class="flex items-start justify-between mb-4">
+<div>
+<h1 class="text-4xl font-headline font-extrabold text-primary tracking-tight mb-2">Computer Science</h1>
+<div class="flex items-center gap-3 text-on-surface-variant">
+<img class="w-10 h-10 rounded-full border-2 border-surface-container-high" data-alt="Modern professional headshot of a middle-aged academic with glasses and a soft smile in a bright office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmPyEZzVeA-ZLaY5yw7I6pyIQtc5Xrx6WJ6lvjrltZKJ9MQwouFfQ99Cm4hCDSx2-g7YbyKdSMO3nDI420li0iDeyJ0yNrLUKWsttaEvJ8dsEGwm4PY5A5z7h-Sw7lVTGjmAItKoI1y6buv5VAANJS9Fk_-GCpzXOmZ0seCDwwIYU4sh_GMb6lqGIL3jMyqxkJnDrRJvdrcV5uqu4ZbyyrLaClfdg5GDKrcWKGvaGPzXSjJu02wi_9Hg2Zp-u40506ggjEqZBJbE4"/>
+<div>
+<p class="text-sm font-semibold text-on-surface">Dr. Alistair Thorne</p>
+<p class="text-xs uppercase tracking-wider font-label text-outline">Head of Department</p>
+</div>
+</div>
+</div>
+<div class="bg-secondary/10 text-secondary px-4 py-2 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold font-label uppercase tracking-widest">Active Division</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-6 bg-surface-container-low rounded-xl flex flex-col justify-center">
+<p class="text-xs font-label uppercase tracking-widest text-outline mb-1">Total Events</p>
+<p class="text-4xl font-headline font-extrabold text-primary">124</p>
+</div>
+<div class="p-6 bg-primary-container text-white rounded-xl flex flex-col justify-center overflow-hidden relative">
+<div class="z-10">
+<p class="text-xs font-label uppercase tracking-widest text-on-primary-container mb-1">Efficiency</p>
+<p class="text-4xl font-headline font-extrabold">87%</p>
+</div>
+<div class="absolute bottom-0 left-0 w-full perspective-bar-bg bg-white/20 h-1.5">
+<div class="bg-secondary h-full" style="width: 87%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Content: Event List & Search -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-8">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+<div>
+<h2 class="text-xl font-headline font-bold text-on-surface">Departmental Log</h2>
+<p class="text-sm text-outline">Live stream of events and administrative tasks.</p>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="relative flex-1 sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">filter_list</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg text-sm focus:ring-0 focus:border-primary" placeholder="Filter by event name..." type="text"/>
+<div class="absolute bottom-0 left-0 w-0 h-[2px] bg-primary transition-all duration-300 focus-within:w-full"></div>
+</div>
+<button class="bg-surface-container-highest p-2 rounded-lg text-on-surface hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-separate border-spacing-y-4">
+<thead>
+<tr class="text-left text-xs font-label uppercase tracking-[0.2em] text-outline">
+<th class="pb-2 pl-4">Event Description</th>
+<th class="pb-2">Lead Researcher</th>
+<th class="pb-2">Projected Date</th>
+<th class="pb-2">Status</th>
+<th class="pb-2 pr-4 text-right">Resource Depth</th>
+</tr>
+</thead>
+<tbody>
+<!-- Event Row 1 -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-6 pl-4 rounded-l-xl">
+<div>
+<p class="font-headline font-bold text-primary">Quantum Computing Symposium</p>
+<p class="text-xs text-on-surface-variant">Annual academic conference for postgraduates</p>
+</div>
+</td>
+<td>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-[10px] font-bold text-indigo-700">EM</div>
+<span class="text-sm">Emily Myers</span>
+</div>
+</td>
+<td class="text-sm text-on-surface-variant">Oct 14, 2023</td>
+<td>
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold font-label uppercase tracking-widest">Completed</span>
+</div>
+</td>
+<td class="pr-4 rounded-r-xl text-right">
+<div class="inline-block w-24">
+<div class="w-full bg-surface-container-highest perspective-bar-bg overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Event Row 2 -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-6 pl-4 rounded-l-xl">
+<div>
+<p class="font-headline font-bold text-primary">Cybersecurity Lab Upgrade</p>
+<p class="text-xs text-on-surface-variant">Infrastructure overhaul for Block C-14</p>
+</div>
+</td>
+<td>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-[10px] font-bold text-teal-700">JB</div>
+<span class="text-sm">James Bennett</span>
+</div>
+</td>
+<td class="text-sm text-on-surface-variant">Nov 02, 2023</td>
+<td>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span class="text-xs font-bold font-label uppercase tracking-widest">Pending</span>
+</div>
+</td>
+<td class="pr-4 rounded-r-xl text-right">
+<div class="inline-block w-24">
+<div class="w-full bg-surface-container-highest perspective-bar-bg overflow-hidden">
+<div class="bg-secondary h-full" style="width: 35%"></div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Event Row 3 -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-6 pl-4 rounded-l-xl">
+<div>
+<p class="font-headline font-bold text-primary">AI Ethics Guest Lecture</p>
+<p class="text-xs text-on-surface-variant">Global expert talk with Dr. Helena Vane</p>
+</div>
+</td>
+<td>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-[10px] font-bold text-primary">SR</div>
+<span class="text-sm">Sarah Reed</span>
+</div>
+</td>
+<td class="text-sm text-on-surface-variant">Nov 18, 2023</td>
+<td>
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-xs font-bold font-label uppercase tracking-widest">Completed</span>
+</div>
+</td>
+<td class="pr-4 rounded-r-xl text-right">
+<div class="inline-block w-24">
+<div class="w-full bg-surface-container-highest perspective-bar-bg overflow-hidden">
+<div class="bg-secondary h-full" style="width: 100%"></div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Event Row 4 -->
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-6 pl-4 rounded-l-xl">
+<div>
+<p class="font-headline font-bold text-primary">Database Migration (Legacy)</p>
+<p class="text-xs text-on-surface-variant">Cloud transition for student records</p>
+</div>
+</td>
+<td>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed flex items-center justify-center text-[10px] font-bold text-tertiary">DK</div>
+<span class="text-sm">David Kross</span>
+</div>
+</td>
+<td class="text-sm text-on-surface-variant">Dec 01, 2023</td>
+<td>
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+<span class="text-xs font-bold font-label uppercase tracking-widest">Pending</span>
+</div>
+</td>
+<td class="pr-4 rounded-r-xl text-right">
+<div class="inline-block w-24">
+<div class="w-full bg-surface-container-highest perspective-bar-bg overflow-hidden">
+<div class="bg-secondary h-full" style="width: 15%"></div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Load More -->
+<div class="mt-8 pt-8 border-t border-outline-variant/15 flex justify-center">
+<button class="text-xs font-label font-bold uppercase tracking-widest text-primary hover:opacity-70 transition-all flex items-center gap-2">
+                        View Comprehensive Archive <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center py-3 px-4 z-50">
+<a class="flex flex-col items-center gap-1 text-slate-500 font-medium" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] uppercase tracking-tighter">Dash</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-teal-700 font-bold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-[10px] uppercase tracking-tighter">Depts</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 font-medium" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] uppercase tracking-tighter">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-500 font-medium" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] uppercase tracking-tighter">Admin</span>
+</a>
+</nav>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

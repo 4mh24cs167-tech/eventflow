@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Creation Wizard - The Ledger</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#1a237e",
+                        "on-surface-variant": "#454652",
+                        "surface-container-highest": "#e1e3e4",
+                        "error-container": "#ffdad6",
+                        "primary": "#000666",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "inverse-primary": "#bdc2ff",
+                        "tertiary": "#380b00",
+                        "surface-dim": "#d9dadb",
+                        "outline-variant": "#c6c5d4",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-container": "#90efef",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#5c1800",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-fixed-variant": "#343d96",
+                        "secondary": "#006a6a",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-secondary-container": "#006e6e",
+                        "on-primary-container": "#8690ee",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "secondary-fixed": "#93f2f2",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-background": "#191c1d",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-surface": "#191c1d",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-error": "#ffffff",
+                        "outline": "#767683",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed": "#000767"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-border {
+            border-right: 4px solid #000666;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- SideNavBar Component -->
+<aside class="bg-slate-50 dark:bg-slate-900 h-screen w-64 fixed left-0 top-0 flex flex-col py-6 px-4 z-40">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold tracking-tight text-indigo-950 dark:text-white font-headline">The Ledger</h1>
+<p class="text-[10px] font-label uppercase tracking-widest text-slate-500 mt-1">Academic Architect</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="dashboard">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-indigo-700 dark:text-indigo-300 font-bold border-r-4 border-indigo-700 bg-slate-100 dark:bg-slate-800 transition-colors duration-200 rounded-l-lg group" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="event_note">event_note</span>
+<span class="text-sm font-medium">Event Registry</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="assignment">assignment</span>
+<span class="text-sm font-medium">Form Templates</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="perm_media">perm_media</span>
+<span class="text-sm font-medium">Media Library</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-200/50 pt-6 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-500 hover:text-indigo-600 transition-colors duration-200 rounded-lg group" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<div class="flex items-center gap-3 px-3 py-4 mt-4">
+<img alt="Academic Admin Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-100" data-alt="portrait of a professional male educator in a library setting with warm, soft focus lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-SySSoXKb8rknlvpQBS_7S1r1UgSQsYO9TrsmQVnf8xc9gyuak0kggOGF9Pc9DHZkuR_V4jgMvT4SlYZWCL2fDWdWnIfmWpmmQI6ZM2nI5YKDdJ6v6qlyb9jyb4JTuY6vy3zxpOnUjBjJSfeoxQKZyQVuLV4SwH1yox9eI9ail6WMbGuOdS3DYgcoiMCw50Mt9wHPL1FiNw3R4skrOGtsZfllBYFvTh1-Ax1335qKJn_WV-gHE86qeXOkJwuPMtUOcfkUzNhZ8kk"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-indigo-950 truncate">Dr. Aris Thorne</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">HOD Architecture</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 bg-white/70 backdrop-blur-xl flex justify-between items-center h-16 px-8 border-b border-transparent">
+<div class="flex items-center gap-6">
+<h2 class="text-indigo-900 font-headline font-bold text-lg">Event Management System</h2>
+<div class="h-4 w-[1px] bg-outline-variant opacity-30"></div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-label font-semibold text-indigo-700">Fiscal Year 2024</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-slate-600 hover:text-indigo-600 cursor-pointer" data-icon="notifications">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-tertiary rounded-full border-2 border-white"></span>
+</div>
+<span class="material-symbols-outlined text-slate-600 hover:text-indigo-600 cursor-pointer" data-icon="account_circle">account_circle</span>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-5 py-2 text-sm font-semibold rounded shadow-sm hover:opacity-90 active:scale-[0.99] transition-all">
+                    Create New Event
+                </button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-12 max-w-6xl mx-auto w-full">
+<!-- Progress Indicator -->
+<div class="mb-12">
+<div class="flex justify-between items-center relative mb-4">
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-highest -z-10"></div>
+<div class="absolute top-1/2 left-0 w-[15%] h-[2px] bg-secondary -z-10"></div>
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold text-sm shadow-lg shadow-secondary/20">1</div>
+<span class="text-[10px] font-label font-extrabold uppercase tracking-widest text-secondary">Basic Info</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-outline flex items-center justify-center font-bold text-sm">2</div>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-outline">Registration Form</span>
+</div>
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest text-outline flex items-center justify-center font-bold text-sm">3</div>
+<span class="text-[10px] font-label font-bold uppercase tracking-widest text-outline">Feedback Setup</span>
+</div>
+</div>
+</div>
+<!-- Form Shell: Asymmetric Bento Style -->
+<div class="grid grid-cols-12 gap-8 items-start">
+<!-- Header/Sidebar Content -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="space-y-2">
+<h3 class="text-4xl font-headline font-extrabold tracking-tight text-primary leading-tight">Define the Blueprint.</h3>
+<p class="text-on-surface-variant text-base leading-relaxed">Establish the core identity of your academic event. These details will form the foundation of the registration process and reporting.</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl space-y-4">
+<h4 class="text-[10px] font-label font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">Architecture Guide</h4>
+<ul class="space-y-4">
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+<p class="text-xs text-on-surface leading-normal italic">Choose a Category carefully; it determines the reporting metrics for the Dean's dashboard.</p>
+</li>
+<li class="flex gap-4">
+<span class="material-symbols-outlined text-tertiary" data-icon="verified">verified</span>
+<p class="text-xs text-on-surface leading-normal">Academic events require HOD approval if target count exceeds 200.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Main Form Section -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest p-10 rounded-xl">
+<form class="space-y-8">
+<!-- Row 1: Category & Sub -->
+<div class="grid grid-cols-2 gap-6">
+<div class="space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Category</label>
+<div class="relative">
+<select class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-medium py-3 px-4 appearance-none transition-all">
+<option>Academic</option>
+<option>Technical</option>
+<option>Cultural</option>
+<option>Administrative</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-slate-400" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Subcategory</label>
+<div class="relative">
+<select class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-medium py-3 px-4 appearance-none transition-all">
+<option>Symposium</option>
+<option>Workshop</option>
+<option>Guest Lecture</option>
+<option>Faculty Meeting</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-slate-400" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Row 2: Title -->
+<div class="space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Event Title</label>
+<input class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-lg font-headline font-bold py-4 px-4 transition-all placeholder:text-slate-300" placeholder="e.g. Modernist Paradigms in Urban Planning" type="text"/>
+</div>
+<!-- Row 3: Date & Venue -->
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-5 space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Scheduled Date</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-medium py-3 px-4 transition-all" type="date"/>
+<span class="material-symbols-outlined absolute right-3 top-3 pointer-events-none text-slate-400" data-icon="calendar_today">calendar_today</span>
+</div>
+</div>
+<div class="col-span-7 space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Venue / Location</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-medium py-3 px-4 pl-10 transition-all" placeholder="Main Auditorium - East Wing" type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-3 pointer-events-none text-slate-400" data-icon="location_on">location_on</span>
+</div>
+</div>
+</div>
+<!-- Row 4: Guests & Count -->
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-8 space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Distinguished Guests (Comma separated)</label>
+<textarea class="w-full bg-surface-container-highest border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-medium py-3 px-4 transition-all resize-none" placeholder="Dr. Elena Rossi, Professor James Vance..." rows="2"></textarea>
+</div>
+<div class="col-span-4 space-y-1.5">
+<label class="text-[11px] font-label font-bold uppercase tracking-widest text-outline">Target Count</label>
+<div class="flex items-center bg-surface-container-highest px-4 rounded-t">
+<span class="material-symbols-outlined text-slate-400 mr-2" data-icon="groups">groups</span>
+<input class="w-full bg-transparent border-0 border-b-2 border-transparent focus:border-primary focus:ring-0 text-sm font-bold py-3 px-0 transition-all" placeholder="500" type="number"/>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden mt-2">
+<div class="h-full bg-secondary w-2/3"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant font-medium">65% Capacity of Hall A</p>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-10 flex justify-between items-center">
+<button class="text-sm font-bold text-outline hover:text-primary transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+                                Cancel Draft
+                            </button>
+<div class="flex items-center gap-6">
+<button class="text-sm font-bold text-secondary hover:underline tracking-tight" type="button">Save Progress</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-3 font-bold rounded shadow-xl flex items-center gap-3 hover:scale-[1.02] transition-all group" type="submit">
+                                    Continue to Registration
+                                    <span class="material-symbols-outlined transition-transform group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+<!-- Footer Meta-info (The "Perspective Bar") -->
+<div class="mt-16 flex items-center justify-between border-t border-surface-container-highest pt-8">
+<div class="flex gap-12">
+<div class="space-y-1">
+<p class="text-[10px] font-label font-extrabold uppercase tracking-widest text-outline">Estimated Reach</p>
+<div class="flex items-center gap-3">
+<span class="text-2xl font-headline font-bold text-primary">1,200+</span>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-3/4"></div>
+</div>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] font-label font-extrabold uppercase tracking-widest text-outline">Budget Utilization</p>
+<div class="flex items-center gap-3">
+<span class="text-2xl font-headline font-bold text-primary">45%</span>
+<div class="w-24 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[45%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-label font-extrabold uppercase tracking-widest text-outline">System Integrity</p>
+<div class="flex items-center gap-2 justify-end">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="text-xs font-medium text-on-surface-variant">Validated for Fiscal Year 2024 Compliance</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

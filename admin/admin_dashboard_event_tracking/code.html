@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Ledger | Academic Event Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#1a237e",
+                        "on-surface-variant": "#454652",
+                        "surface-container-highest": "#e1e3e4",
+                        "error-container": "#ffdad6",
+                        "primary": "#000666",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "inverse-primary": "#bdc2ff",
+                        "tertiary": "#380b00",
+                        "surface-dim": "#d9dadb",
+                        "outline-variant": "#c6c5d4",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002020",
+                        "secondary-container": "#90efef",
+                        "on-error-container": "#93000a",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#5c1800",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-fixed-variant": "#343d96",
+                        "secondary": "#006a6a",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-secondary-container": "#006e6e",
+                        "on-primary-container": "#8690ee",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "secondary-fixed": "#93f2f2",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary-fixed-dim": "#76d6d5",
+                        "on-background": "#191c1d",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-surface": "#191c1d",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-error": "#ffffff",
+                        "outline": "#767683",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3132",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-fixed": "#000767"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .headline { font-family: 'Manrope', sans-serif; letter-spacing: -0.02em; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar Anchor -->
+<aside class="bg-slate-50 h-screen w-64 fixed left-0 top-0 flex flex-col h-full py-6 px-4 z-50">
+<div class="mb-10 px-4">
+<h1 class="text-xl font-bold tracking-tight text-indigo-950">The Ledger</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-label mt-1">Academic Architect</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-indigo-700 font-bold border-r-4 border-indigo-700 bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="text-sm">Event Registry</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-sm">Form Templates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">perm_media</span>
+<span class="text-sm">Media Library</span>
+</a>
+</nav>
+<div class="pt-6 mt-6 border-t border-slate-200/50 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-indigo-600 hover:bg-slate-200/50 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm">Support</span>
+</a>
+<div class="flex items-center gap-3 px-4 mt-6">
+<img alt="Academic Admin Profile" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a professional male academic administrator in a clean minimalist office setting, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1ag-H-A5VwvVL2AsoM2dxrmW3MEnCv4Uet6Pc0feigOHkhIVFacAmMl25KyPMF40SRRNrU7Y8iylUYFEaQH8Pj89SpojdlLVV16E7pnv96RYyWrNU051jSyu0ZzaG8AAyvLEYbzRUSjW_WLqk_0F4wULOttXFAySqW9gxQi3Mu4mmn-anewoatchXs2xZ645XK5DcfH0JE07jj4V_imXtHBEOAYxEZ5MVkZaGbyO5P5V-WICGv2-wxUobK5MPjCTsQtXU51KpcEo"/>
+<div>
+<p class="text-xs font-bold text-on-surface">Dr. Aris Thorne</p>
+<p class="text-[10px] text-slate-500">Principal Architect</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/70 backdrop-blur-xl flex justify-between items-center h-16 px-8">
+<div class="flex items-center gap-6">
+<div class="relative">
+<select class="appearance-none bg-surface-container-highest border-none text-sm font-semibold py-2 pl-4 pr-10 rounded-lg focus:ring-0 cursor-pointer">
+<option>Fiscal Year 2024</option>
+<option>Fiscal Year 2023</option>
+<option>Fiscal Year 2025</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-sm">expand_more</span>
+</div>
+<span class="text-slate-300">|</span>
+<span class="text-indigo-700 font-semibold text-sm">Dashboard Overview</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-lg text-sm font-semibold shadow-lg shadow-primary/10 hover:opacity-90 transition-opacity">
+                Create New Event
+            </button>
+<div class="flex items-center gap-2 ml-4">
+<button class="p-2 text-slate-600 hover:text-indigo-600 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:text-indigo-600 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Hero Metrics: Bento Grid Layout -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col justify-between h-48 border-b-2 border-transparent hover:border-primary transition-all">
+<div class="flex justify-between items-start">
+<div class="bg-primary-fixed p-3 rounded-xl">
+<span class="material-symbols-outlined text-primary">event_available</span>
+</div>
+<span class="text-secondary text-xs font-bold uppercase tracking-widest">+12% vs last FY</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-on-surface headline">142</p>
+<p class="text-sm font-medium text-slate-500 mt-1 uppercase tracking-widest">Total Events</p>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl flex flex-col justify-between h-48 border-b-2 border-transparent hover:border-primary transition-all">
+<div class="flex justify-between items-start">
+<div class="bg-tertiary-fixed p-3 rounded-xl">
+<span class="material-symbols-outlined text-tertiary">pending_actions</span>
+</div>
+<span class="text-tertiary text-xs font-bold uppercase tracking-widest">Urgent: 4</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-on-surface headline">28</p>
+<p class="text-sm font-medium text-slate-500 mt-1 uppercase tracking-widest">Pending Approvals</p>
+</div>
+</div>
+<!-- Metric Card 3 -->
+<div class="glass-card p-8 rounded-xl flex flex-col justify-between h-48 shadow-sm">
+<div class="flex justify-between items-start">
+<div class="bg-secondary-container p-3 rounded-xl">
+<span class="material-symbols-outlined text-secondary">verified</span>
+</div>
+<span class="text-secondary text-xs font-bold uppercase tracking-widest">Target: 90%</span>
+</div>
+<div>
+<p class="text-4xl font-extrabold text-on-surface headline">94</p>
+<p class="text-sm font-medium text-slate-500 mt-1 uppercase tracking-widest">Completed Events</p>
+</div>
+</div>
+</section>
+<!-- Dynamic Content: Status Tracking -->
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="px-8 py-6 flex justify-between items-end border-b border-surface-container">
+<div>
+<h2 class="text-2xl font-extrabold text-on-surface">Status Tracking</h2>
+<p class="text-sm text-slate-500 mt-1">Real-time overview of ongoing academic activities</p>
+</div>
+<div class="flex gap-2">
+<button class="text-xs font-bold uppercase tracking-widest px-4 py-2 text-slate-500 hover:text-indigo-600 transition-colors">Export Ledger</button>
+<button class="text-xs font-bold uppercase tracking-widest px-4 py-2 bg-surface-container-highest text-primary rounded">Filter View</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Event Title</th>
+<th class="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Category</th>
+<th class="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Date</th>
+<th class="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400">Status</th>
+<th class="px-8 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-400 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1 -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="px-8 py-5">
+<p class="text-sm font-bold text-indigo-950">International Symposium 2024</p>
+<p class="text-xs text-slate-500">ID: EV-8821</p>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium bg-surface-container-high px-3 py-1 rounded-full text-slate-700">Academic Conference</span>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface">Oct 24, 2024</p>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold text-secondary uppercase">Approved</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="px-8 py-5">
+<p class="text-sm font-bold text-indigo-950">HOD Strategic Quarterly Review</p>
+<p class="text-xs text-slate-500">ID: EV-8825</p>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium bg-surface-container-high px-3 py-1 rounded-full text-slate-700">Internal Review</span>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface">Nov 02, 2024</p>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-xs font-bold text-tertiary uppercase">Pending Approval</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="px-8 py-5">
+<p class="text-sm font-bold text-indigo-950">Annual Sports Gala Foundations</p>
+<p class="text-xs text-slate-500">ID: EV-8830</p>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium bg-surface-container-high px-3 py-1 rounded-full text-slate-700">Student Affairs</span>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface">Dec 15, 2024</p>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span>
+<span class="text-xs font-bold text-slate-500 uppercase">Draft</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="px-8 py-5">
+<p class="text-sm font-bold text-indigo-950">Ethics in AI Webinar Series</p>
+<p class="text-xs text-slate-500">ID: EV-8799</p>
+</td>
+<td class="px-8 py-5">
+<span class="text-xs font-medium bg-surface-container-high px-3 py-1 rounded-full text-slate-700">External Lecture</span>
+</td>
+<td class="px-8 py-5">
+<p class="text-sm text-on-surface">Sep 28, 2024</p>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold text-secondary uppercase">Completed</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-4 bg-surface-container-low flex justify-between items-center text-xs text-slate-500 font-medium">
+<span>Showing 4 of 142 events</span>
+<div class="flex gap-4">
+<button class="hover:text-primary transition-colors">Previous</button>
+<button class="text-primary font-bold">1</button>
+<button class="hover:text-primary transition-colors">2</button>
+<button class="hover:text-primary transition-colors">3</button>
+<button class="hover:text-primary transition-colors">Next</button>
+</div>
+</div>
+</section>
+<!-- Secondary Insights Section -->
+<section class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 space-y-6">
+<h3 class="text-lg font-extrabold text-on-surface">Capacity Insights</h3>
+<div class="bg-surface-container-lowest p-8 rounded-xl">
+<div class="space-y-8">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-bold text-indigo-950">Auditorium Usage</span>
+<span class="text-xs text-secondary font-bold">84% Capacity</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[84%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-bold text-indigo-950">Budget Allocation</span>
+<span class="text-xs text-primary font-bold">62% Utilized</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[62%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-bold text-indigo-950">Volunteer Enrollment</span>
+<span class="text-xs text-tertiary font-bold">45% Registered</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[45%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Urgent Alerts / Feed -->
+<div>
+<h3 class="text-lg font-extrabold text-on-surface mb-6">Recent Activity</h3>
+<div class="space-y-4">
+<div class="p-4 bg-surface-container-low rounded-xl border-l-4 border-tertiary">
+<p class="text-xs font-bold text-tertiary uppercase mb-1">Alert • Budget Overrun</p>
+<p class="text-sm text-on-surface font-medium leading-relaxed">Tech Symposium budget exceeded by 12%. Immediate review required.</p>
+<p class="text-[10px] text-slate-400 mt-2">2 hours ago</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-xs font-bold text-secondary uppercase mb-1">Update • Approval</p>
+<p class="text-sm text-on-surface font-medium leading-relaxed">Principal approved the Guest Lecturer series for Q4.</p>
+<p class="text-[10px] text-slate-400 mt-2">5 hours ago</p>
+</div>
+<div class="p-4 bg-surface-container-low rounded-xl">
+<p class="text-xs font-bold text-indigo-600 uppercase mb-1">New • Draft</p>
+<p class="text-sm text-on-surface font-medium leading-relaxed">Draft created: "Inter-Departmental Chess Championship".</p>
+<p class="text-[10px] text-slate-400 mt-2">Yesterday</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

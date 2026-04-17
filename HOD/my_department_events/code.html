@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Department Events | Academic Architect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f4f5",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-surface-variant": "#454652",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-tertiary": "#ffffff",
+                    "surface-dim": "#d9dadb",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f8f9fa",
+                    "on-primary-container": "#8690ee",
+                    "surface-container-high": "#e7e8e9",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#5c1800",
+                    "primary": "#000666",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#1a237e",
+                    "on-tertiary-container": "#e17c5a",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "primary-fixed": "#e0e0ff",
+                    "tertiary": "#380b00",
+                    "on-surface": "#191c1d",
+                    "on-tertiary-fixed": "#390c00",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#90efef",
+                    "surface-tint": "#4c56af",
+                    "on-background": "#191c1d",
+                    "on-secondary-fixed": "#002020",
+                    "secondary": "#006a6a",
+                    "secondary-fixed": "#93f2f2",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-primary-fixed-variant": "#343d96",
+                    "inverse-on-surface": "#f0f1f2",
+                    "outline": "#767683",
+                    "surface": "#f8f9fa",
+                    "outline-variant": "#c6c5d4",
+                    "on-primary-fixed": "#000767",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#edeeef",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#bdc2ff",
+                    "surface-variant": "#e1e3e4",
+                    "on-secondary-container": "#006e6e",
+                    "inverse-surface": "#2e3132",
+                    "background": "#f8f9fa",
+                    "secondary-fixed-dim": "#76d6d5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .tonal-transition {
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-slate-50 dark:bg-slate-950 tonal-transition flex justify-between items-center w-full px-8 py-3 max-w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-extrabold text-indigo-900 dark:text-indigo-200 tracking-tighter font-headline">Academic Architect</span>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 font-medium font-manrope tracking-tight hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Dashboard</a>
+<a class="text-indigo-700 dark:text-indigo-300 border-b-2 border-indigo-700 dark:border-indigo-300 pb-1 font-manrope tracking-tight font-bold" href="#">Events</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium font-manrope tracking-tight hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Reports</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium font-manrope tracking-tight hover:text-indigo-600 dark:hover:text-indigo-200 transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest border-none rounded-lg text-sm w-64 focus:ring-0 focus:border-b-2 focus:border-primary transition-all" placeholder="Search events..." type="text"/>
+</div>
+<button class="p-2 text-slate-500 hover:text-indigo-600 transition-colors"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="p-2 text-slate-500 hover:text-indigo-600 transition-colors"><span class="material-symbols-outlined" data-icon="help_outline">help_outline</span></button>
+<div class="h-8 w-8 rounded-full overflow-hidden bg-primary-container">
+<img alt="HOD Profile" class="w-full h-full object-cover" data-alt="professional headshot of a middle-aged university dean with a confident smile, clean office background with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_mfTqvHkTntDt5akV4pKUeo6svmS2EisqlZx7dwsAOMOp7ACCIj5ayDrxJjhSCPD8XG78x4cuK7ZtqHTCeVu6sllEN8ln3IlfTUpPkuCrQFHRjEXxnVnt7qm9j0tM9_BLLKsdgObirs5M9P61rJD07YSZpyi7_k8aRCUXY1kq6Y76YhqnpiQoWIyG6XETcHpbyZLCxor69-3dfd-8iZxDEVF2bWXZSJCSHyCJhw-P-2h9Q8YABwYnBg2pzu59Q5MWIHQC5BouASQ"/>
+</div>
+</div>
+</header>
+<div class="flex pt-16 h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-slate-100 dark:bg-slate-900 p-4 gap-2 shrink-0">
+<div class="px-2 py-4 mb-4">
+<div class="flex items-center gap-3 mb-1">
+<div class="w-10 h-10 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h2 class="font-manrope text-lg font-bold text-indigo-950 dark:text-indigo-100 leading-none">Science Dept</h2>
+<span class="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Dean of Faculty</span>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1 grow">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all active:scale-[0.97]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-sm font-medium">Overview</span>
+</a>
+<a class="flex items-center gap-3 text-indigo-800 dark:text-indigo-200 font-bold bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm active:scale-[0.97]" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="font-inter text-sm font-medium">Event Tracker</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all active:scale-[0.97]" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-inter text-sm font-medium">Faculty Registry</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all active:scale-[0.97]" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-inter text-sm font-medium">Budgetary Insights</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all active:scale-[0.97]" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-inter text-sm font-medium">Institutional Archive</span>
+</a>
+</nav>
+<button class="mt-4 mb-8 py-3 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold text-sm shadow-lg shadow-indigo-900/20 active:scale-95 transition-transform">
+                New Request
+            </button>
+<div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-1">
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 dark:text-slate-400 p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+<span class="font-inter text-sm font-medium">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-surface-container-low p-8">
+<div class="max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h1 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-1">My Department Events</h1>
+<p class="text-secondary font-medium tracking-wide uppercase text-xs">Computer Science &amp; Engineering</p>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex items-center bg-surface-container-lowest rounded-lg p-1 shadow-sm">
+<button class="px-4 py-1.5 text-xs font-bold text-primary bg-surface-container-highest rounded-md">Academic Year 2023-24</button>
+<button class="px-4 py-1.5 text-xs font-medium text-outline hover:text-primary transition-colors">2022-23</button>
+</div>
+<div class="h-10 w-px bg-outline-variant opacity-30"></div>
+<div class="flex gap-2">
+<select class="bg-surface-container-lowest border-none text-sm font-medium rounded-lg px-4 focus:ring-2 focus:ring-primary/20">
+<option>All Statuses</option>
+<option>Active</option>
+<option>Completed</option>
+<option>Pending Approval</option>
+</select>
+<button class="flex items-center gap-2 bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-sm font-semibold hover:bg-surface-dim transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                                Advanced
+                            </button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Featured Event (Large Card) -->
+<div class="xl:col-span-2 group relative overflow-hidden bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-xl hover:shadow-indigo-900/5">
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent z-10 opacity-60 group-hover:opacity-80 transition-opacity"></div>
+<img alt="International Tech Symposium" class="absolute inset-0 w-full h-full object-cover transform scale-100 group-hover:scale-105 transition-transform duration-700" data-alt="large futuristic conference hall with blue neon lighting and a massive digital screen showing binary code and data visualizations" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8rjFevzmS-c7sgd6dbW3ZrDugJLXCVZT3-eBuiZ_KpmgYZKR1X-lSE5SbQquSFejwv5e7Eos1LlmFUBYeIVGqAROc1hFqqhGhJwk03ZYdCEAtyxsrrP0I7kjIuOgAjE-jSYD-f6yvdW8BbETOOpcTrGZLK2FMIYQ236tGXkYl2xNRwqUJJFthJS-8c5SrE7Hl9wZOlKrAxitKAAENIioq_CATUSI1aiOKTsgCJXzj87884HipRPVGz6rXuTwde2pcqwy6zGXuvNA"/>
+<div class="relative z-20 p-8 h-full flex flex-col justify-end min-h-[400px]">
+<div class="flex items-center gap-3 mb-4">
+<span class="px-3 py-1 bg-secondary text-white text-[10px] font-bold rounded uppercase tracking-widest">Active Now</span>
+<span class="text-white/80 text-sm font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+                                    Oct 12 - 14, 2024
+                                </span>
+</div>
+<h2 class="text-4xl font-headline font-extrabold text-white mb-4 leading-tight">International Symposium on Quantum Computing &amp; Ethics</h2>
+<p class="text-indigo-100/90 text-sm max-w-xl mb-8 font-medium">Our flagship annual event bringing together 40+ global experts to discuss the future of secure quantum networks and the moral implications of advanced AI integration.</p>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 px-6 py-3 bg-white text-primary rounded-lg font-bold text-sm hover:bg-indigo-50 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="groups">groups</span>
+                                    View Participants
+                                </button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-lg font-bold text-sm hover:bg-white/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="photo_library">photo_library</span>
+                                    Live Media
+                                </button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-lg font-bold text-sm hover:bg-white/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="analytics">analytics</span>
+                                    Real-time Stats
+                                </button>
+</div>
+</div>
+</div>
+<!-- Side Insight Panel -->
+<div class="flex flex-col gap-6">
+<div class="bg-primary text-white p-6 rounded-xl relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-manrope text-lg font-bold mb-1 opacity-80">Department Budget</h3>
+<div class="text-3xl font-extrabold mb-4 font-headline">Q4 Allocation</div>
+<div class="text-4xl font-extrabold mb-6">$42,500.00</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-xs font-bold mb-1.5 opacity-70">
+<span>UTILIZED</span>
+<span>72%</span>
+</div>
+<div class="w-full h-1 bg-primary-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary-fixed w-[72%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute -right-8 -bottom-8 opacity-10">
+<span class="material-symbols-outlined text-9xl" data-icon="monetization_on" style="font-size: 160px;">monetization_on</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl flex-1 shadow-sm">
+<h3 class="font-manrope font-bold text-primary mb-4 flex items-center justify-between">
+                                Upcoming Deadlines
+                                <span class="material-symbols-outlined text-outline" data-icon="more_horiz">more_horiz</span>
+</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="h-10 w-10 shrink-0 bg-tertiary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="assignment_late">assignment_late</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Budget Proposal</p>
+<p class="text-xs text-outline">Winter Workshop Series</p>
+<p class="text-[10px] mt-1 font-bold text-tertiary uppercase">Due in 2 days</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="h-10 w-10 shrink-0 bg-secondary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant" data-icon="description">description</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Annual Faculty Audit</p>
+<p class="text-xs text-outline">Submission of records</p>
+<p class="text-[10px] mt-1 font-bold text-secondary uppercase">Due in 1 week</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="h-10 w-10 shrink-0 bg-primary-fixed rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-fixed-variant" data-icon="task">task</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Event Feedback Form</p>
+<p class="text-xs text-outline">Quantum Computing Ethics</p>
+<p class="text-[10px] mt-1 font-bold text-primary uppercase">Due today</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Event List View -->
+<div class="xl:col-span-3">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-6 flex items-center justify-between border-b border-outline-variant/10">
+<h3 class="font-headline font-bold text-xl text-primary">Departmental Event Registry</h3>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined" data-icon="grid_view">grid_view</span></button>
+<button class="p-2 bg-surface-container-high text-primary rounded transition-colors"><span class="material-symbols-outlined" data-icon="reorder">reorder</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-outline text-[10px] font-bold uppercase tracking-[0.15em]">
+<th class="px-8 py-4">Event Details</th>
+<th class="px-6 py-4">Timeline</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Full Access Operations</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface tonal-transition group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Cyber Security" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="close-up of electronic components with green circuit board pathways and tiny glowing microchips" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeH8bM-z2eHp4ZhpiAmZ_TjYkMgy6CuOcyC_TLX0Btffr4PkEAONnAeC-Xre798_LW6hm4wYlVBLfnO2ZQoJ2Kj1kfqAzwE6UCsEdXf6tokMVdxe5-hR9Lv6cZQmS8U6Wy_VMszcxUVynTQwQP3z7Qy_sn0cVfX_vyCeko5qqXj5qK-hBjUMHaHiR3lHOEJpq5h-5XXw1I93hMU_jfL1r0f2qCyJ8ElaSKkIUzzU7rz4T4adnPRCIEiz_nC3eybLNpS2G_-13c0PY"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Cyber Defense Hackathon</p>
+<p class="text-xs text-outline">Undergraduate Level • 120 Students</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="text-xs font-semibold text-on-surface">Sep 24 - 26, 2024</p>
+<p class="text-[10px] text-outline uppercase font-medium">Completed</p>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20">ARCHIVED</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Participants">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Report">
+<span class="material-symbols-outlined" data-icon="summarize">summarize</span>
+</button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Media">
+<span class="material-symbols-outlined" data-icon="gallery_thumbnail">gallery_thumbnail</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface tonal-transition group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="AI Ethics" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="blurred bright office space with diverse people standing and gesturing while looking at a glass wall covered in colorful post-it notes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARL7YmeDuIdswQ1KlunRsxWkQV-UlaSoeEc7x8qmZ_WBzsV5VnLPkx4Q0zDrDVHzwDO8xxTNw4pc99h9OaVixRBM5GIB8i2fFgG6Zm9dy9d3_irNJH0W76L_uh2sO9SomOKuxtYBDmxR5hX9kcAVlwfOIqUcwnCqkR7QKBPsmAffEHn4FJlQlm-NbZFN0_PVIHT7imJFymATlyNajtT6oHGVAaVHEV2EhUJj2Jh6wfbo6LbrqcTynla_pqB3lrCEy6-VhpP2AH6zs"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">AI Ethics Workshop Series</p>
+<p class="text-xs text-outline">Post-Grad Seminar • 45 Attendees</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="text-xs font-semibold text-on-surface">Oct 05, 2024</p>
+<p class="text-[10px] text-outline uppercase font-medium">Single Day</p>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-container text-on-secondary-container border border-secondary/20">SUCCESS</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Participants">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+</button>
+<button class="px-3 py-1 bg-primary text-white text-[10px] font-bold rounded flex items-center gap-1.5 hover:bg-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined text-xs" data-icon="download">download</span>
+                                                        Final Report
+                                                    </button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Media">
+<span class="material-symbols-outlined" data-icon="gallery_thumbnail">gallery_thumbnail</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface tonal-transition group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img alt="Staff Meeting" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="modern industrial boardroom with large windows, wooden table, and sleek black chairs, bright morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1y_iAxh5rhEZ_YHNb_223JTq5HulPY0xyQoHKOcHaR-oP3EJek804umqYKJ76AeHdHgYE3Y-kz2L3tjA-mbyzGcetGpWLe-Pr8cFc2Q-TzScfKlwbuswa0WPcdxzl2ytiXgC_6SUUDtt5AVYykjChkUp7aTx50OnbGX-8FrCrfiGGrgrTr6gkcH5j36bY7dnn6z6whcxouI60wRGZajN3rUnBBOVRugdBImlRsJPKG9ETq5HtQJw-XLj0OhM-TrxdPDY7PaJaZOI"/>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Annual Faculty Development</p>
+<p class="text-xs text-outline">Department Mandatory • All Staff</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-6">
+<p class="text-xs font-semibold text-on-surface">Nov 15 - 20, 2024</p>
+<p class="text-[10px] text-outline uppercase font-medium">Upcoming</p>
+</td>
+<td class="px-6 py-6">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-surface-container-highest text-on-surface-variant border border-outline-variant/30">PENDING</span>
+</td>
+<td class="px-6 py-6">
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 border border-outline-variant text-on-surface text-[10px] font-bold rounded flex items-center gap-1.5 hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined text-xs" data-icon="person_add">person_add</span>
+                                                        Invites
+                                                    </button>
+<button class="p-2 text-outline hover:text-primary hover:bg-primary-fixed transition-all rounded-lg" title="Draft Report">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+</button>
+<button class="p-2 text-outline cursor-not-allowed opacity-30" disabled="" title="No Media Yet">
+<span class="material-symbols-outlined" data-icon="no_photography">no_photography</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-6 bg-surface-container-low/50 flex items-center justify-between">
+<span class="text-xs text-outline font-medium">Showing 3 of 24 events registered in 2023-24</span>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span></button>
+<button class="w-8 h-8 rounded bg-primary text-white text-xs font-bold">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-xs font-bold">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-container-high text-xs font-bold">3</button>
+<button class="p-1.5 rounded hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-white rounded-full shadow-2xl shadow-primary/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

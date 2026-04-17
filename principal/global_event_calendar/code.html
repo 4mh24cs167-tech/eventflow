@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scholar Blueprint - Global Event Calendar</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#4c56af",
+                    "secondary": "#006a6a",
+                    "primary-fixed": "#e0e0ff",
+                    "on-secondary-fixed": "#002020",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#380b00",
+                    "surface-container-low": "#f3f4f5",
+                    "outline": "#767683",
+                    "inverse-primary": "#bdc2ff",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#93f2f2",
+                    "surface": "#f8f9fa",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#5c1800",
+                    "surface-bright": "#f8f9fa",
+                    "on-background": "#191c1d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "primary": "#000666",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#343d96",
+                    "on-primary-container": "#8690ee",
+                    "outline-variant": "#c6c5d4",
+                    "on-surface": "#191c1d",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-tertiary-container": "#e17c5a",
+                    "background": "#f8f9fa",
+                    "inverse-surface": "#2e3132",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "secondary-container": "#90efef",
+                    "on-tertiary-fixed": "#390c00",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#454652",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "primary-container": "#1a237e",
+                    "on-secondary-container": "#006e6e",
+                    "surface-variant": "#e1e3e4",
+                    "on-primary-fixed": "#000767",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "surface-dim": "#d9dadb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-40 bg-slate-50 dark:bg-slate-950 flex flex-col h-full py-8 border-r border-slate-100 dark:border-slate-800">
+<div class="px-8 mb-10">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded bg-primary flex items-center justify-center text-white font-bold text-xl">L</div>
+<div>
+<h2 class="text-lg font-black text-indigo-900 dark:text-indigo-100 leading-none">The Ledger</h2>
+<p class="text-[10px] uppercase tracking-widest font-manrope font-bold text-slate-500">Academic Management</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-6 hover:bg-slate-100/50 dark:hover:bg-slate-900/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-xs uppercase tracking-widest font-manrope font-bold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-teal-700 dark:text-teal-400 font-bold border-r-4 border-teal-600 dark:border-teal-400 bg-slate-100 dark:bg-slate-900 py-3 px-6 scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span class="text-xs uppercase tracking-widest font-manrope font-bold">Global Events</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-6 hover:bg-slate-100/50 dark:hover:bg-slate-900/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-xs uppercase tracking-widest font-manrope font-bold">Departmental</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-6 hover:bg-slate-100/50 dark:hover:bg-slate-900/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="text-xs uppercase tracking-widest font-manrope font-bold">Faculty Ledger</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 dark:text-slate-400 py-3 px-6 hover:bg-slate-100/50 dark:hover:bg-slate-900/50 hover:translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-xs uppercase tracking-widest font-manrope font-bold">Archives</span>
+</a>
+</nav>
+<div class="mt-auto px-6 space-y-4">
+<div class="p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
+<p class="text-[10px] font-bold text-teal-700 dark:text-teal-400 mb-1">SYSTEM STATUS</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-teal-800 dark:text-teal-300">System Status: Active</span>
+</div>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 text-slate-500 py-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="help">help</span>
+<span class="text-xs font-bold uppercase tracking-widest font-manrope">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 py-2 hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="logout">logout</span>
+<span class="text-xs font-bold uppercase tracking-widest font-manrope">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen bg-surface">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-8 py-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-bold tracking-tighter text-indigo-950 dark:text-white">Scholar Blueprint</h1>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 transition-colors" href="#">Calendar</a>
+<a class="text-indigo-700 dark:text-indigo-400 font-bold border-b-2 border-indigo-700 dark:border-indigo-400 pb-1" href="#">Insights</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 transition-colors" href="#">Requests</a>
+<a class="text-slate-500 dark:text-slate-400 font-medium hover:text-indigo-600 transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-highest border-none rounded-lg text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search events..." type="text"/>
+</div>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 active:opacity-80 active:scale-95 transition-all shadow-lg shadow-primary/10">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    New Event
+                </button>
+<img alt="Principal's Profile Image" class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="professional headshot of a middle-aged academic administrator in a suit, soft library background, warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIc0W-bGP7UfdQKl6pVKlsrzcqW-vvOFWPOfUKoDylLJpj-U_d8e4uw8Iq6tOEWZQqmj0U_94zPDS0LWf6tRkdr6-eKuoVekYWbc_JshOmQwHRW1-RMObiF7yTTDYEUSzZJROIpTdJGKjsAyLt4DDmgDnicmmg2vXvISYXWjk9FkZtcecAvVk8Vnu5YgdyQILdbv0KxLXkrjNV7lYGzWQ0CQQmWfam9fYMywqqF4nfPCvIZkdlcFRhUG2-MdcGsBIbbmMSQkHo_Cs"/>
+</div>
+</header>
+<!-- Content Page -->
+<div class="p-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-3xl font-extrabold text-indigo-950 tracking-tight mb-2">Global Event Calendar</h2>
+<p class="text-on-surface-variant font-body">Institutional overview for Academic Year 2024-25</p>
+</div>
+<div class="flex gap-4 items-center">
+<div class="bg-surface-container-low p-1 rounded-lg flex items-center gap-1">
+<button class="px-4 py-1.5 rounded bg-white shadow-sm text-xs font-bold text-primary">Month</button>
+<button class="px-4 py-1.5 rounded hover:bg-white/50 text-xs font-bold text-slate-500 transition-all">Week</button>
+<button class="px-4 py-1.5 rounded hover:bg-white/50 text-xs font-bold text-slate-500 transition-all">Day</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/30"></div>
+<button class="flex items-center gap-2 bg-surface-container-highest px-4 py-2 rounded-lg text-sm font-semibold text-on-surface active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+                        Advanced Filters
+                    </button>
+</div>
+</div>
+<!-- Bento Layout Main Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Sidebar: Filters & Quick Links -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<!-- Filters Section -->
+<section class="bg-surface-container-lowest p-6 rounded-xl space-y-6">
+<h3 class="text-xs uppercase tracking-widest font-manrope font-extrabold text-indigo-900 border-b border-outline-variant/20 pb-4">View Configuration</h3>
+<!-- Department Multi-select -->
+<div class="space-y-3">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Institution Segments</label>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Computer Science</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Mechanical Eng.</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Pure Sciences</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded text-primary focus:ring-primary border-outline-variant" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-primary transition-colors">Humanities</span>
+</label>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<label class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter block mb-3">Academic Cycle</label>
+<select class="w-full bg-surface-container-high border-none rounded-lg text-sm font-bold py-2.5 px-3 text-indigo-900 focus:ring-2 focus:ring-primary/20">
+<option>FY 2024-25</option>
+<option>FY 2023-24</option>
+<option>Summer Term 2024</option>
+</select>
+</div>
+</section>
+<!-- Category Legend -->
+<section class="bg-surface-container-lowest p-6 rounded-xl">
+<h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-4">Event Legend</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs font-bold text-on-surface-variant">Academic</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-xs font-bold text-on-surface-variant">Technical</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="text-xs font-bold text-on-surface-variant">Cultural</span>
+</div>
+</div>
+</section>
+<!-- Perspective Bar Module -->
+<section class="bg-surface-container-lowest p-6 rounded-xl">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-xs font-bold text-indigo-950 uppercase tracking-tighter">Term Capacity</h3>
+<span class="text-[10px] font-black text-secondary">72%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[72%]"></div>
+</div>
+<p class="text-[10px] mt-3 text-slate-500 font-medium">34 of 48 total slots utilized for Q3.</p>
+</section>
+</div>
+<!-- Center: Main Calendar Interface -->
+<div class="col-span-12 lg:col-span-6">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<!-- Calendar Controls -->
+<div class="flex items-center justify-between p-6 bg-surface-container-low/50">
+<div class="flex items-center gap-4">
+<h4 class="text-xl font-bold text-indigo-950">October 2024</h4>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-white rounded transition-all active:scale-90">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1 hover:bg-white rounded transition-all active:scale-90">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<button class="text-xs font-bold text-secondary uppercase tracking-widest px-3 py-1.5 border border-secondary/20 rounded hover:bg-secondary/5 transition-all">Go to Today</button>
+</div>
+<!-- Calendar Grid -->
+<div class="calendar-grid border-t border-outline-variant/10">
+<!-- Weekdays -->
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Sun</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Mon</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Tue</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Wed</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Thu</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-r border-b border-outline-variant/10 bg-surface/30">Fri</div>
+<div class="p-4 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-outline-variant/10 bg-surface/30">Sat</div>
+<!-- Calendar Days (Simulated) -->
+<!-- Row 1 -->
+<div class="min-h-[120px] p-2 border-r border-b border-outline-variant/5 text-slate-300">29</div>
+<div class="min-h-[120px] p-2 border-r border-b border-outline-variant/5 text-slate-300">30</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">1</span>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5 bg-surface-container-low/20">
+<span class="text-sm font-bold text-on-surface">2</span>
+<div class="mt-2 space-y-1">
+<div class="text-[9px] px-2 py-0.5 bg-primary text-white rounded-sm font-bold truncate">Board Meeting</div>
+</div>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">3</span>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">4</span>
+</div>
+<div class="min-h-[120px] p-3 border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">5</span>
+</div>
+<!-- Row 2 -->
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">6</span>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">7</span>
+<div class="mt-2 space-y-1">
+<div class="text-[9px] px-2 py-0.5 bg-secondary text-white rounded-sm font-bold truncate">Tech Expo '24</div>
+<div class="text-[9px] px-2 py-0.5 bg-primary/20 text-primary rounded-sm font-bold truncate">CS Dept. Review</div>
+</div>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5 ring-2 ring-primary ring-inset z-10 bg-primary/5">
+<span class="text-sm font-bold text-primary">8</span>
+<div class="mt-2 flex justify-center">
+<span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+</div>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">9</span>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">10</span>
+<div class="mt-2 space-y-1">
+<div class="text-[9px] px-2 py-0.5 bg-tertiary text-white rounded-sm font-bold truncate">Annual Play</div>
+</div>
+</div>
+<div class="min-h-[120px] p-3 border-r border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">11</span>
+</div>
+<div class="min-h-[120px] p-3 border-b border-outline-variant/5">
+<span class="text-sm font-bold text-on-surface">12</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar: Upcoming Events -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<h3 class="text-xl font-bold text-indigo-950 tracking-tight">Timeline View</h3>
+<!-- Event Cards -->
+<div class="space-y-4">
+<!-- Upcoming Event Item -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-secondary shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-black text-secondary-fixed-dim bg-secondary/10 px-2 py-0.5 rounded uppercase">Technical</span>
+<div class="flex items-center gap-1 text-[10px] font-bold text-teal-600">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Confirmed
+                                </div>
+</div>
+<h4 class="font-bold text-indigo-950 text-sm group-hover:text-primary transition-colors">National Robotics Symposium</h4>
+<p class="text-xs text-on-surface-variant mt-1 mb-4">Main Auditorium • 09:00 AM</p>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<img alt="Team" class="w-6 h-6 rounded-full border-2 border-white" data-alt="face of a smiling woman professional" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBieRSrZZTFcpG-oJYa12374cpE_Swq2JS4GLQpAnxISpylSMY6vYHhyTW1WduHg-r-iWUBM9b8buF3bz_KQ9H0QtVoHfq7pFd5CNLyGk84Z-iAvQYfgpE_g1XwmARFnEuwuIcVDBlJk55GkSf0Koti8M3h977luJ-FvJU2m5eYtIxSfb49BGuYq9LaVo365bBM7HLZ18I8-1UWaJW2jiPLkYegal1TVVKgbGkO6z6CrS6VdzRCjjd9ho9lmWWuVs8H2GH-PW3a46E"/>
+<img alt="Team" class="w-6 h-6 rounded-full border-2 border-white" data-alt="face of a young man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKnVqfYfjBn6K_uSpdeomeuvwUhvyf4IIvXqPskKlx3KboxucUz7afXyjLinlN_8aeZZkyK-WhTToUElKUrmuu4re6m5vnxsy8l4BWjdv1ux_4S9KZhv0mlIhmHV79x2PArOEwNGomc5BmBeV58GXHIYFYgmJiOAV6cQpo-fLPLs6QxlaCU987RJwuv3N7bI5baYVaIMIa3qAH65kJujSMmrt2C8b0n3WOBQ3KSQj8qesIi8nf153lsDQYVNwY-YLwPowUTW-ll28"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[8px] font-bold text-slate-500">+12</div>
+</div>
+<button class="text-[10px] font-bold uppercase text-slate-400 group-hover:text-primary">Details</button>
+</div>
+</div>
+<!-- Pending Event Item -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-primary shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-black text-on-primary-fixed-variant bg-primary/10 px-2 py-0.5 rounded uppercase">Academic</span>
+<div class="flex items-center gap-1 text-[10px] font-bold text-slate-400">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+                                    Pending
+                                </div>
+</div>
+<h4 class="font-bold text-indigo-950 text-sm group-hover:text-primary transition-colors">Mid-Term Assessment Review</h4>
+<p class="text-xs text-on-surface-variant mt-1 mb-4">Senate Hall • 02:00 PM</p>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<img alt="Team" class="w-6 h-6 rounded-full border-2 border-white" data-alt="close up of a professional man looking at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-ny6nYh0MNvRjUoGHy1ps3CHIDSu4WThTerQfZsAocOY82X-pl6J5t646J-jD4vs2DSlItEG077ieDjapA3Dh1uzy9bkCkAgMJQTXP7m0QK3K89nKLk2weP0R17G0s5AJcqd3HKb6Mn2a0643ar4iss5rPnSF9fVos-D4IKZiMNc4OkjdfzU6cTdOKa8VGNn2o47Zpq36EDa2Z1Wl1rTXo2K8gc3ddeOqxpuDpMOSohG5fCtIBu-nHIcRUC_o2waN1nvjtqtZiA0"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[8px] font-bold text-slate-500">+4</div>
+</div>
+<button class="text-[10px] font-bold uppercase text-slate-400 group-hover:text-primary">Details</button>
+</div>
+</div>
+<!-- Cultural Event Item -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-l-4 border-tertiary shadow-sm hover:shadow-md transition-all group cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[10px] font-black text-on-tertiary-fixed-variant bg-tertiary/10 px-2 py-0.5 rounded uppercase">Cultural</span>
+<div class="flex items-center gap-1 text-[10px] font-bold text-teal-600">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                    Confirmed
+                                </div>
+</div>
+<h4 class="font-bold text-indigo-950 text-sm group-hover:text-primary transition-colors">Heritage Week Gala</h4>
+<p class="text-xs text-on-surface-variant mt-1 mb-4">Central Lawn • 06:00 PM</p>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<img alt="Team" class="w-6 h-6 rounded-full border-2 border-white" data-alt="professional woman executive looking forward" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ1EtdTQvirsxllfFyfDJluCu8TPCtViDkZF61c4kT7WRRwZGk2TSsGTeZOnTOm-O_FZGYCLNzubevTXukcTav6SgRUrvGja1f2jw8P1cdaYILToC4QS39i9H6tySn2Fx8E4SwTuIrEXb8AlMDJ280rmjwnJugzd8vm-qDf85RfdfRsbETa9nTGEPXEusFjg8-fNZuhcTbtWEJF-JltIos9l73XDexQMTJENXRbQDb7iNHyn19CK_gEIPyHq4wRDrRMFQMJSGzqQ8"/>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-surface-container-highest flex items-center justify-center text-[8px] font-bold text-slate-500">+28</div>
+</div>
+<button class="text-[10px] font-bold uppercase text-slate-400 group-hover:text-primary">Details</button>
+</div>
+</div>
+</div>
+<!-- Calendar Summary Stat -->
+<div class="bg-indigo-950 p-6 rounded-xl text-white">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">October Overview</p>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-black">24</span>
+<span class="text-sm font-bold mb-1 opacity-80">Total Events</span>
+</div>
+<div class="mt-4 pt-4 border-t border-white/10 space-y-2">
+<div class="flex justify-between text-xs">
+<span class="opacity-70">Completed</span>
+<span class="font-bold">14</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="opacity-70">Ongoing</span>
+<span class="font-bold">2</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

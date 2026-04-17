@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Verification | The Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#93f2f2",
+                    "surface-tint": "#4c56af",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#343d96",
+                    "on-tertiary-container": "#e17c5a",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#e1e3e4",
+                    "on-primary-fixed": "#000767",
+                    "inverse-surface": "#2e3132",
+                    "on-surface": "#191c1d",
+                    "on-surface-variant": "#454652",
+                    "on-error": "#ffffff",
+                    "background": "#f8f9fa",
+                    "surface-dim": "#d9dadb",
+                    "secondary-container": "#90efef",
+                    "on-tertiary-fixed": "#390c00",
+                    "tertiary-container": "#5c1800",
+                    "surface-bright": "#f8f9fa",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "primary-fixed": "#e0e0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "inverse-on-surface": "#f0f1f2",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#edeeef",
+                    "secondary": "#006a6a",
+                    "on-background": "#191c1d",
+                    "primary": "#000666",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "surface": "#f8f9fa",
+                    "on-primary-container": "#8690ee",
+                    "inverse-primary": "#bdc2ff",
+                    "tertiary": "#380b00",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c6c5d4",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-secondary-container": "#006e6e",
+                    "outline": "#767683",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "on-secondary-fixed": "#002020",
+                    "on-primary": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "primary-container": "#1a237e",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .perspective-track {
+            height: 4px;
+            background-color: #e1e3e4;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .perspective-fill {
+            height: 100%;
+            background-color: #006a6a;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-fixed-dim selection:text-primary">
+<!-- SideNavBar (Authority Source: JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 flex flex-col py-8 px-4 z-50">
+<div class="mb-10 px-2">
+<h1 class="text-xl font-bold tracking-tighter text-indigo-900 dark:text-indigo-200">The Ledger</h1>
+<p class="text-[10px] font-semibold font-inter text-slate-500 mt-1">Academic Architect</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center px-3 py-2 text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="category">category</span>
+                Categories
+            </a>
+<!-- Active State: Review Queue (Matches Task Intent) -->
+<a class="flex items-center px-3 py-2 text-sm transition-all text-indigo-900 dark:text-indigo-400 font-bold border-r-4 border-indigo-900 dark:border-indigo-400 bg-slate-200 dark:bg-slate-800 opacity-80 scale-[0.98]" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="rate_review">rate_review</span>
+                Review Queue
+            </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="school">school</span>
+                My Department
+            </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="public">public</span>
+                Global Events
+            </a>
+<a class="flex items-center px-3 py-2 text-sm font-medium transition-colors text-slate-500 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="history">history</span>
+                Activity Logs
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-800">
+<button class="w-full bg-indigo-900 dark:bg-indigo-700 text-white py-2.5 rounded-lg text-sm font-bold tracking-tight transition-transform active:scale-95">
+                New Event Proposal
+            </button>
+<div class="mt-6 flex items-center gap-3 px-2">
+<img alt="HOD Profile Picture" class="w-8 h-8 rounded-full bg-indigo-100" data-alt="professional headshot of a male academic department head in a suit with a library background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBneqLXK5fa0VdnhW3EobpaoegCjGGgkMc4u8mDscfshOmWXohQu8b7vvAEEF1t-F8V8dzeo8RsTycCc8n7r_-dQj1VEx9BDySFGCsdxhPxgt2kJeOP92I3WXxnCzT62XlbsKjV3yGXfWdbgRVWh9fQM2aPdVXJca0S3yWepSK8Amdq69CfrrsM7BawCD9_DJXOUu9Y0VnGfDpi6ZbNEQDns27DxUJayD5_LQiy2zdK3Sx19BAIUIktPn_wTv4d3-8gCjIgv2kAz4"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate text-indigo-900 dark:text-indigo-200">Dr. Alistair Vance</p>
+<p class="text-[10px] text-slate-500">Head of Department</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Authority Source: JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-indigo-900/10 dark:border-indigo-400/10 flex justify-between items-center h-16 px-8 ml-64">
+<div class="flex items-center gap-6">
+<span class="text-lg font-bold font-manrope text-indigo-900 dark:text-indigo-400 tracking-tight">Reviewing: Cybersecurity Lab Upgrade</span>
+<nav class="hidden lg:flex gap-6">
+<a class="text-xs font-semibold font-inter text-slate-500 hover:text-indigo-700" href="#">Fiscal Year 2024</a>
+<a class="text-xs font-semibold font-inter text-slate-500 hover:text-indigo-700" href="#">Department Stats</a>
+<a class="text-xs font-semibold font-inter text-indigo-900 dark:text-indigo-400 border-b-2 border-indigo-900 dark:border-indigo-400 pb-2" href="#">AI Insights</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-700 cursor-pointer" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-tertiary rounded-full border-2 border-white"></span>
+</div>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-700 cursor-pointer" data-icon="settings">settings</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-indigo-700 cursor-pointer" data-icon="help_outline">help_outline</span>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+<img alt="HOD User Avatar" class="w-8 h-8 rounded-full border border-indigo-100" data-alt="close-up avatar of a professor wearing glasses with a soft blurred academic office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQfrYrIA4-_3Rqlf0lF_8A6CivFo1PKqMzphpWAsoZY3jvZYkr442TFBEUoRoiACbpvEZWLYQTpQr__xVJfHpMIRF4lO2VdTn04eac4dB7c1qokdvDrBRadj513yaBuwUGMbySPA6TdIGci-CVP64QY_5t6sctfrpt2Woi5-4AseRB2XmSmRzQmmKCnVKSY-idvcNbybXlhKwl-7tTTsLNBnIWc4DD-znxTDAI4lFC-kt2rXqPQg-N-eEv_Rw_dQ8cmm6gielcJ6w"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-[calc(100vh-4rem)]">
+<!-- Header / Breadcrumbs -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<p class="text-xs font-bold text-secondary uppercase tracking-widest mb-1">Pending Verification</p>
+<h2 class="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Cybersecurity Lab Upgrade</h2>
+<div class="flex items-center gap-4 mt-2">
+<span class="flex items-center text-xs font-medium text-on-surface-variant">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="calendar_today">calendar_today</span> Oct 24, 2024
+                    </span>
+<span class="flex items-center text-xs font-medium text-on-surface-variant">
+<span class="material-symbols-outlined text-sm mr-1" data-icon="person">person</span> Admin: Sarah Jenkins
+                    </span>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[10px] font-bold rounded-full uppercase tracking-tighter">High Priority</span>
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded-full uppercase tracking-tighter">Budget Approved</span>
+</div>
+</div>
+<!-- Split Screen View / Bento Grid -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Side: Checklists & Media -->
+<div class="col-span-12 lg:col-span-7 space-y-8">
+<!-- Report Verification Card -->
+<section class="bg-surface-container-lowest p-8 rounded-lg">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold font-headline">Verification Checklist</h3>
+<span class="text-xs font-semibold text-secondary">2 of 3 Verified</span>
+</div>
+<div class="space-y-4">
+<!-- Item 1: Report -->
+<div class="group flex items-start p-4 bg-surface rounded-lg transition-all border-l-4 border-secondary">
+<div class="mt-1 mr-4">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="text-sm font-bold text-primary">Technical Report (PDF)</h4>
+<button class="text-xs font-bold text-secondary hover:underline flex items-center">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="visibility">visibility</span> Preview
+                                    </button>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Detailed breakdown of server rack cooling systems and encryption modules.</p>
+</div>
+</div>
+<!-- Item 2: Media -->
+<div class="group flex items-start p-4 bg-surface rounded-lg transition-all border-l-4 border-secondary">
+<div class="mt-1 mr-4">
+<span class="material-symbols-outlined text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="text-sm font-bold text-primary">Media Assets (Images/Videos)</h4>
+<span class="text-[10px] font-bold bg-secondary/10 text-secondary px-2 py-0.5 rounded">12 Files</span>
+</div>
+<div class="grid grid-cols-4 gap-2 mt-3">
+<div class="aspect-square bg-surface-container-high rounded overflow-hidden">
+<img alt="Lab Setup 1" class="w-full h-full object-cover" data-alt="hi-tech server room with glowing blue led lights and neatly organized cable management in a modern cybersecurity lab" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY1Uvgyf_WprgPNiDecHRORp9CNxTtipi_EiHnqkSSM9KF6TJg1PaWPQA8Km77-TfvnK3gwbVNDgYFct3A_wM_hOiQQbqnUj3Y4tFqu9KVk5NrLfwM7t7MRkUlUB4O1q35Xo4IZ4tQqYRlta5KdeiX28mshnI8o3r6xE1_LuQnqjD0vMvoswrP0qIyGowjSXdwPhX9Dtk5E4MpKjfbbNXU8Ed3A-Mr1dt4DFRg-1_KKoFo_iy4Sf5l6Hy9THkLG50UCBXSCmcPKn8"/>
+</div>
+<div class="aspect-square bg-surface-container-high rounded overflow-hidden">
+<img alt="Lab Setup 2" class="w-full h-full object-cover" data-alt="close up of a network technician installing high speed fiber optic cables in a server rack" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfx9C-0KHnJjxWLnbWZ7W84rG41kK-BUprF5fjr6j1wo5Q52uxQbTXbg6O4FNh9XkbNnEYbHUtKrTbF8ceANp_TeG5QFS6M6I8o7u6L7X0-JGnjUr5d2t3nU5IW0dNJhH-R6gNajHHx2cvV9xYXcRa0dqguHJIPooqUjXfLDN3GZDkDNURTaRqmgJp98CArLA7LQTESL_uyDXTCUAG9DbHPZx22JJVL7h63sUmX3mBD0kJP6EmoNFqzgs_AEOkjuZkVm3L7nVDmew"/>
+</div>
+<div class="aspect-square bg-surface-container-high rounded overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="play_circle">play_circle</span>
+</div>
+<div class="aspect-square bg-surface-container-high rounded flex items-center justify-center text-[10px] font-bold text-on-surface-variant">
+                                        +9 More
+                                    </div>
+</div>
+</div>
+</div>
+<!-- Item 3: Participant Data (Pending) -->
+<div class="group flex items-start p-4 bg-surface-container-low rounded-lg transition-all border-l-4 border-outline">
+<div class="mt-1 mr-4">
+<span class="material-symbols-outlined text-outline" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="text-sm font-bold text-on-surface-variant">Participant Data</h4>
+<button class="text-xs font-bold text-primary-container bg-primary-fixed-dim/30 px-3 py-1 rounded hover:bg-primary-fixed-dim/50">
+                                        Open Ledger
+                                    </button>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Attendance records for the 3-day workshop series for 4th-year students.</p>
+<div class="mt-3">
+<div class="perspective-track">
+<div class="perspective-fill w-[85%]"></div>
+</div>
+<p class="text-[10px] font-bold text-secondary mt-1">85% Data Consistency Verified by AI</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Event Data Bento Grid Section -->
+<div class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-lg">
+<span class="material-symbols-outlined text-primary mb-3" data-icon="receipt_long">receipt_long</span>
+<h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Total Expenditure</h4>
+<p class="text-2xl font-extrabold font-headline text-primary">$42,500.00</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Within 5% of estimated budget</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="groups">groups</span>
+<h4 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Total Reach</h4>
+<p class="text-2xl font-extrabold font-headline text-secondary">240 Students</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Higher than avg department event</p>
+</div>
+</div>
+</div>
+<!-- Right Side: Actions & Comments -->
+<div class="col-span-12 lg:col-span-5">
+<div class="sticky top-24 space-y-6">
+<!-- Action Panel -->
+<div class="bg-primary-container text-on-primary rounded-lg p-8 relative overflow-hidden">
+<!-- Glass Decorative Element -->
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+<h3 class="text-xl font-bold font-headline mb-6 relative z-10 text-on-primary">Decision Matrix</h3>
+<div class="space-y-4 relative z-10">
+<div>
+<label class="block text-xs font-bold text-on-primary/60 uppercase tracking-widest mb-3">Department Head Comments</label>
+<textarea class="w-full bg-white/10 border-0 focus:ring-2 focus:ring-secondary-fixed rounded-lg p-4 text-sm text-white placeholder:text-white/30 resize-none font-body" placeholder="Provide feedback or notes for the Principal..." rows="6"></textarea>
+</div>
+<div class="pt-4 space-y-3">
+<button class="w-full bg-secondary-fixed text-on-secondary-fixed font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                    Verify &amp; Send to Principal
+                                </button>
+<button class="w-full bg-transparent border border-white/20 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="undo">undo</span>
+                                    Reject &amp; Send Back to Admin
+                                </button>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-white/10 flex items-start gap-4">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="info">info</span>
+<p class="text-xs text-on-primary/70 leading-relaxed italic">
+                                Note: Verification will lock the budget items and generate a digital signature for the institutional ledger.
+                            </p>
+</div>
+</div>
+<!-- AI Summary Card (Academic Architect Style) -->
+<div class="bg-surface-container-high/50 backdrop-blur-sm p-6 rounded-lg border-l-4 border-primary">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="auto_awesome">auto_awesome</span>
+<h4 class="text-xs font-bold uppercase tracking-widest text-primary">AI Compliance Check</h4>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+                            Event aligns with <strong class="text-primary">Policy #824 (Infrastructure Modernization)</strong>. All vendor invoices match the recorded blockchain entries. No duplicates detected in participant data.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB suppressed as per Shell Visibility rules (This is a task-focused screen) -->
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

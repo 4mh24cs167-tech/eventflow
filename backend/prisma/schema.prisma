@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String      @id @default(uuid())
+  name         String
+  email        String      @unique
+  password     String
+  role         Role
+  departmentId String?     // Nullable for Admin/Principal
+  department   Department? @relation(fields: [departmentId], references: [id])
+  events       Event[]     @relation("AdminEvents")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+enum Role {
+  PRINCIPAL
+  HOD
+  ADMIN
+}
+
+model Department {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  hodId       String?    @unique // A user with HOD role
+  principalId String?    // A user with PRINCIPAL role who oversees it
+  users       User[]
+  categories  Category[]
+  events      Event[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id           String        @id @default(uuid())
+  name         String
+  departmentId String
+  department   Department    @relation(fields: [departmentId], references: [id])
+  subcats      Subcategory[]
+  events       Event[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Subcategory {
+  id         String   @id @default(uuid())
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  events     Event[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Event {
+  id             String       @id @default(uuid())
+  title          String
+  date           DateTime
+  venue          String
+  guests         String?
+  targetCount    Int          @default(0)
+  status         EventStatus  @default(DRAFT)
+  
+  categoryId     String
+  category       Category     @relation(fields: [categoryId], references: [id])
+  
+  subcategoryId  String
+  subcategory    Subcategory  @relation(fields: [subcategoryId], references: [id])
+  
+  departmentId   String
+  department     Department   @relation(fields: [departmentId], references: [id])
+  
+  adminId        String
+  admin          User         @relation("AdminEvents", fields: [adminId], references: [id])
+
+  forms          FormConfig[]
+  participants   Participant[]
+  feedbacks      Feedback[]
+  media          Media[]
+  aiEvaluation   AIEvaluation?
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum EventStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+model FormConfig {
+  id         String   @id @default(uuid())
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  type       FormType 
+  fields     String   // JSON string storing custom questions schema
+  isActive   Boolean  @default(false)
+  linkHash   String   @unique // Unique link for registration/feedback
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum FormType {
+  REGISTRATION
+  FEEDBACK
+}
+
+model Participant {
+  id         String   @id @default(uuid())
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  name       String
+  email      String
+  phone      String?
+  department String?
+  year       String?
+  customData String?  // JSON string storing answers to custom questions
+  createdAt  DateTime @default(now())
+  
+  @@unique([eventId, email]) // One registration per email per event
+}
+
+model Feedback {
+  id         String   @id @default(uuid())
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  email      String   // Email of participant who gave feedback
+  rating     Int      // 1 to 5 stars
+  quality    String?
+  suggestions String?
+  customData String?  // JSON string for custom feedback answers
+  createdAt  DateTime @default(now())
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  type       MediaType
+  url        String   // Local path or Supabase storage URL
+  createdAt  DateTime @default(now())
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  REPORT_PDF
+}
+
+model AIEvaluation {
+  id            String   @id @default(uuid())
+  eventId       String   @unique
+  event         Event    @relation(fields: [eventId], references: [id])
+  overallRating Float
+  summary       String
+  strengths     String
+  improvements  String
+  insights      String
+  createdAt     DateTime @default(now())
+}

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#767683",
+                    "tertiary-fixed": "#ffdbd0",
+                    "primary": "#000666",
+                    "on-tertiary-container": "#e17c5a",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#006e6e",
+                    "primary-fixed": "#e0e0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#1a237e",
+                    "inverse-primary": "#bdc2ff",
+                    "background": "#f8f9fa",
+                    "tertiary": "#380b00",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-primary-fixed-variant": "#343d96",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "on-error": "#ffffff",
+                    "on-surface": "#191c1d",
+                    "on-secondary": "#ffffff",
+                    "secondary": "#006a6a",
+                    "on-primary-fixed": "#000767",
+                    "surface-container-highest": "#e1e3e4",
+                    "secondary-container": "#90efef",
+                    "tertiary-container": "#5c1800",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "on-surface-variant": "#454652",
+                    "on-background": "#191c1d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-primary-container": "#8690ee",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2e3132",
+                    "surface-bright": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "secondary-fixed": "#93f2f2",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#4c56af",
+                    "surface-container-high": "#e7e8e9",
+                    "surface": "#f8f9fa",
+                    "on-secondary-fixed": "#002020",
+                    "surface-variant": "#e1e3e4",
+                    "surface-dim": "#d9dadb",
+                    "outline-variant": "#c6c5d4"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #191c1d; }
+        .headline-font { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tonal-transition { background: linear-gradient(to right, #f3f4f5, #f8f9fa); }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl border-b border-indigo-500/10 shadow-sm flex justify-between items-center px-8 py-3 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-indigo-900 headline-font">Scholar Blueprint</span>
+<div class="hidden md:flex gap-6">
+<a class="text-slate-500 hover:text-indigo-700 transition-colors headline-font tracking-tight" href="#">Dashboard</a>
+<a class="text-indigo-900 border-b-2 border-indigo-900 pb-1 font-semibold headline-font tracking-tight" href="#">Events</a>
+<a class="text-slate-500 hover:text-indigo-700 transition-colors headline-font tracking-tight" href="#">Faculty</a>
+<a class="text-slate-500 hover:text-indigo-700 transition-colors headline-font tracking-tight" href="#">Reports</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="bg-surface-container-highest border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 w-64" placeholder="Search events..." type="text"/>
+</div>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<img alt="Principal Profile Avatar" class="w-9 h-9 rounded-full border border-indigo-100" data-alt="professional portrait of a middle-aged male academic principal in a formal suit with a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJeENU2vmprgTzuuTw9FO_lKQz_FpVtHkkurRJZexyz64NcHiwfcgWk0e8yuwIwpdxtLqw6RBqEEcESsHqxl35jCtN5tESioisZyz_OSIhy7BPpAUXAw0Xa05bjfyt6Ra8yaZZIiFSVcbmxQYso0f7m-4-W1-CKTQcu-H7ey02ajLdncWcX_ohXuPOTIjTbNUzW8UQiM3cJmJ9kM7zgHJPArcqJRnBX9mzXGK2wxYwSmca_4HHur1nh-Hwt0SKDjeeXeROWTZcR48"/>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-slate-50 flex flex-col pt-20 pb-8 hidden lg:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-indigo-900 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">school</span>
+</div>
+<div>
+<h2 class="text-lg font-extrabold text-indigo-900 headline-font leading-tight">Academic Architect</h2>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Administrative Suite</p>
+</div>
+</div>
+<button class="w-full bg-indigo-900 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg shadow-indigo-900/20 hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Create New Event</span>
+</button>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-medium">Academic Calendar</span>
+</a>
+<a class="flex items-center gap-3 bg-white text-indigo-900 shadow-sm rounded-lg ml-2 mr-4 py-3 px-4" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_available</span>
+<span class="font-medium">Event Manager</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-medium">Resource Allocation</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="px-2 mt-auto border-t border-slate-200/50 pt-4">
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-medium">Support</span>
+</a>
+<a class="flex items-center gap-3 text-slate-600 py-3 px-4 ml-2 mr-4 hover:translate-x-1 transition-transform hover:text-indigo-900" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 pt-24 pb-12 px-8">
+<!-- Header Section: Event Info -->
+<header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">Technical / Seminar</span>
+<span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                        Completed
+                    </span>
+</div>
+<h1 class="text-4xl md:text-5xl font-extrabold text-indigo-900 headline-font tracking-tight leading-none">Quantum Computing Symposium</h1>
+<div class="flex flex-wrap gap-6 pt-4 text-slate-600">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-600">calendar_month</span>
+<span class="font-medium">Oct 14, 2023</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-indigo-600">location_on</span>
+<span class="font-medium">Main Auditorium, Block C</span>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-highest text-on-surface px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">share</span>
+                    Share
+                </button>
+<button class="bg-indigo-900 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 shadow-lg shadow-indigo-900/20">
+<span class="material-symbols-outlined">download</span>
+                    Download Event Kit
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Primary Content (8 cols) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- AI Summary Card (Glassmorphism highlight) -->
+<section class="bg-indigo-900/5 backdrop-blur-md rounded-xl p-8 border border-indigo-900/10 relative overflow-hidden">
+<div class="absolute -right-12 -top-12 opacity-5">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-indigo-900 text-white p-2 rounded-lg">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<h3 class="text-xl font-bold headline-font text-indigo-900">AI Outcome Summary</h3>
+</div>
+<div class="grid md:grid-cols-2 gap-8 relative z-10">
+<div class="space-y-4">
+<p class="text-on-surface-variant leading-relaxed font-medium">The symposium effectively bridged academic theory and practical implementation. Key outcomes include the proposal of a new Quantum Research Lab and three potential cross-departmental collaborations.</p>
+<div class="flex flex-col gap-2">
+<span class="text-xs font-bold uppercase tracking-widest text-indigo-900">Efficiency Metric</span>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[85%] rounded-full"></div>
+</div>
+<span class="text-right text-xs font-bold text-secondary">85% Engagement Rate</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<div class="text-2xl font-bold text-indigo-900">450+</div>
+<div class="text-xs text-slate-500 font-semibold uppercase">Attendees</div>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<div class="text-2xl font-bold text-indigo-900">12</div>
+<div class="text-xs text-slate-500 font-semibold uppercase">Live Demos</div>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<div class="text-2xl font-bold text-indigo-900">4.9/5</div>
+<div class="text-xs text-slate-500 font-semibold uppercase">Feedback</div>
+</div>
+<div class="bg-white p-4 rounded-lg shadow-sm">
+<div class="text-2xl font-bold text-indigo-900">92%</div>
+<div class="text-xs text-slate-500 font-semibold uppercase">Completion</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Participant List -->
+<section class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
+<h3 class="text-xl font-bold headline-font text-indigo-900">Participant Registry</h3>
+<div class="flex gap-2">
+<button class="text-xs font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-tighter">View All</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50">
+<th class="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Attendee Name</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Department</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Email Address</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<tr class="hover:bg-indigo-50/30 transition-colors">
+<td class="px-8 py-4 font-semibold text-indigo-950">Dr. Helena Vance</td>
+<td class="px-8 py-4 text-slate-600">Physics &amp; Tech</td>
+<td class="px-8 py-4 text-slate-500 text-sm italic">h.vance@scholar.edu</td>
+<td class="px-8 py-4 text-right">
+<span class="text-secondary font-bold text-xs">PRESENT</span>
+</td>
+</tr>
+<tr class="bg-slate-50/30 hover:bg-indigo-50/30 transition-colors">
+<td class="px-8 py-4 font-semibold text-indigo-950">Prof. Marcus Thorne</td>
+<td class="px-8 py-4 text-slate-600">Computer Science</td>
+<td class="px-8 py-4 text-slate-500 text-sm italic">m.thorne@scholar.edu</td>
+<td class="px-8 py-4 text-right">
+<span class="text-secondary font-bold text-xs">PRESENT</span>
+</td>
+</tr>
+<tr class="hover:bg-indigo-50/30 transition-colors">
+<td class="px-8 py-4 font-semibold text-indigo-950">Sarah Jenkins</td>
+<td class="px-8 py-4 text-slate-600">Postgrad Research</td>
+<td class="px-8 py-4 text-slate-500 text-sm italic">s.jenkins@scholar.edu</td>
+<td class="px-8 py-4 text-right">
+<span class="text-secondary font-bold text-xs">PRESENT</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Media Gallery -->
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-bold headline-font text-indigo-900">Event Media Gallery</h3>
+<button class="text-indigo-600 font-bold text-sm flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-lg">download</span>
+                            Download All
+                        </button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="group relative aspect-video bg-slate-200 rounded-lg overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="futuristic stage with blue lighting and large holographic display of quantum circuits during a symposium" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwjkru1kZkx8KoRpMa-DmvA2Mha3tFAdVKxPmj4P0ru0HfoVvj9clUgpwTHMVjFKf0pyBnM4u2m2s9PJ6h2NjJSHgcNfLCEZwdfmKEuMOtrGS65HJVZTk-osfSArlI6trYSOn2iN3bF7ObWwv49MOQHhaF_eKc_Gqvt769AuSR86jsHSNEe36326TQGuqZIiJSIWCpmkR5wiN1fcGSJQYhRSpPguJMhJSAVYRCR_VlpWvN_TmPWEFXBRSa4aAJkXMl4VKylPvcYuA"/>
+<div class="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-white text-indigo-900 p-2 rounded-full shadow-lg"><span class="material-symbols-outlined">download</span></button>
+</div>
+</div>
+<div class="group relative aspect-video bg-slate-200 rounded-lg overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up of glass spheres on a table reflecting blue neon lights in a modern university auditorium" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2wp_QCrQpLfJmZ0YYQzHV7Ok3j3Q0nDZK6VNFWgPCJQ-WKOf8ZB_EGPsHFlgNiY2V5tSeRuHqJbEu0hubkrARn2xJMiGaGKH67N8GfspOuviRxmnNGv6O3caZGqaKQ_gyacUtD7_wWjQHqKS6BSaiWG7HVJ3ohOh1kZU0RXB1EJ1F8Th0MD_Tw2HUnv4EDe5mgbj3iQG1WRgYO4NUkyX46mQ-05PLvr-cqlb63288EUD_S9PDUrF-OFMGZimdRGaKRuVZrkWuGEM"/>
+<div class="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-white text-indigo-900 p-2 rounded-full shadow-lg"><span class="material-symbols-outlined">download</span></button>
+</div>
+</div>
+<div class="group relative aspect-video bg-slate-200 rounded-lg overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="wide angle shot of a diverse group of academic professionals seated in a modern lecture hall listening intensely" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqTvtXQ3PkSpiTQ4qoKNTWZNnFfLbhi9bhHpLhpTgzaW3qsZ3-L_IxRnRpcvv95_-yRRSL0mPulrl9r2i6IKzS2C66GJiZXK7pG6T8NjqGVLn29o_IXkln8n67d3YCT_vM8vh3lMFVCrCalwxxuhjYASvuO2p7IVWaAJsbeFWPUQH7fZuDBroLj5hX93y_FCHTpZPmkHPpyoCxufh6clQjawE2Q117dDHLuhcjnalF1NdlEHQzKKMaeNMb6pwvbC6PvMD1AzJiU98"/>
+<div class="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-white text-indigo-900 p-2 rounded-full shadow-lg"><span class="material-symbols-outlined">play_circle</span></button>
+<span class="absolute bottom-2 left-2 text-[10px] text-white font-bold bg-indigo-900/60 px-2 py-0.5 rounded uppercase">Video</span>
+</div>
+</div>
+<div class="group relative aspect-video bg-slate-200 rounded-lg overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="detailed macro shot of a microchip under cool blue laboratory lighting with shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAorJ0R6IiY2X10DyIKRdTo7JOU4fS1fS8TYfKKM8mHs0WKRKprj6dKG0PFZ9KO5TC4WnEik4kVnbm8Hvjohb17IsjBCcOWAw9AULDbN_aJ5oeU8WMKhSmSMtnT2lJSWeStaZpDh7V9Y0bFN0BqffN0YFl0LxLwslhFHDeMbRSDznI0H4YiFZqMRsXVlRWordFCN4lYjYf_hsfTuGONebkzYnKpOgMgHCdACEamZmV9-YXVfhu-a0f-dC0okDh4dMIM2pXQGojNuRk"/>
+<div class="absolute inset-0 bg-indigo-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<button class="bg-white text-indigo-900 p-2 rounded-full shadow-lg"><span class="material-symbols-outlined">download</span></button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Meta & Sidebar (4 cols) -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Guest Speakers Section -->
+<section class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-900">
+<h3 class="text-lg font-bold headline-font text-indigo-900 mb-6">Distinguished Speakers</h3>
+<div class="space-y-6">
+<div class="flex items-center gap-4">
+<img alt="Dr. Julian Casablancas" class="w-14 h-14 rounded-lg object-cover" data-alt="professional headshot of an elderly scientist with gray hair and glasses, wearing a white lab coat over a formal shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCWxA6E4GYHpBaRvbUhOtuQOI3Mf5LEGuQvg3zomFF_IPPL7n2ebzh71GyCZpok5ly5tm2mKLFiwaqt-O4kWVvQS3fg2zoZiv5t_S82UB56Xf0wO7y4QNt9V9XGJ0zBqmqF6OYwjaEq4_I-Y4pV7WbcqaVlbJsbu_yk6PmNGarhTDQwt2jHI1RfgKsk9JG_U6TQ2uVDlA0oUOmpFoW3RmKQtt0GNgwpw2O3_8dHHphj4zN5-77w2-XxYbHyMrR-wKiuXHDwty8Rgs"/>
+<div>
+<h4 class="font-bold text-indigo-950">Dr. Julian Casablancas</h4>
+<p class="text-xs text-slate-500 font-medium">Head of Quantum AI, MIT</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-indigo-400 text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] text-indigo-400 font-bold uppercase tracking-tighter">Keynote</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<img alt="Dr. Sarah Chen" class="w-14 h-14 rounded-lg object-cover" data-alt="professional portrait of a young woman with a sharp business suit, smiling confidently against a minimal office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDaHnuATAAIb9nyORIMhXuiYyURZZJpV0oGQDUEsJQk2aWfXbMDqRnx-95Ld_6xCYYDntRdx8n0Xz_dlRHpI7d5nfnEoXxW047yDs1uLOQYK2nbe56lTjXHvz5GrMxVR1qJqFkBFzc77MEiL0ygXs0-rLNNWYyqOR3D1w7IS3HntvgbToUQymyNTY2IX4jEfMDk_3W6mVUv6YEGnpd71aiG7VF3C_f6_blnCsoO7nL_OjzRyd_cADC8qi1qoCCEqQNIH7FlbrEiCI"/>
+<div>
+<h4 class="font-bold text-indigo-950">Dr. Sarah Chen</h4>
+<p class="text-xs text-slate-500 font-medium">Senior Research Fellow, CERN</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-indigo-400 text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] text-indigo-400 font-bold uppercase tracking-tighter">Speaker</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PDF Report Preview -->
+<section class="bg-slate-900 text-white rounded-xl overflow-hidden">
+<div class="p-6">
+<div class="bg-indigo-800/50 w-fit p-2 rounded-lg mb-4">
+<span class="material-symbols-outlined text-white">description</span>
+</div>
+<h3 class="text-lg font-bold headline-font mb-2">Full Symposium Report</h3>
+<p class="text-slate-400 text-sm leading-relaxed mb-6">Detailed technical report containing all abstracts, findings, and panel discussion transcripts.</p>
+<div class="bg-white/5 border border-white/10 rounded-lg p-4 mb-6 flex items-center gap-3">
+<div class="bg-red-500/20 p-2 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-red-400">picture_as_pdf</span>
+</div>
+<div class="flex-1">
+<div class="text-xs font-bold text-white">QUANTUM_SYMP_2023.pdf</div>
+<div class="text-[10px] text-slate-500">12.4 MB • Oct 15, 2023</div>
+</div>
+</div>
+<button class="w-full bg-white text-indigo-900 py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">download</span>
+                            Download PDF
+                        </button>
+</div>
+</section>
+<!-- Activity Log / Insights -->
+<section class="bg-surface-container-low p-6 rounded-xl">
+<h3 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4">Log History</h3>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">Event Marked Completed</p>
+<p class="text-[10px] text-slate-500">Oct 14, 2023 • 5:30 PM</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">Gallery Uploaded</p>
+<p class="text-[10px] text-slate-500">Oct 14, 2023 • 6:15 PM</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1.5"></div>
+<div>
+<p class="text-xs font-bold text-on-surface">AI Insights Generated</p>
+<p class="text-[10px] text-slate-500">Oct 15, 2023 • 9:00 AM</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 z-50 flex justify-around py-3 px-2">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-indigo-900">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event</span>
+<span class="text-[10px] font-bold">Events</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-bold">Faculty</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">summarize</span>
+<span class="text-[10px] font-bold">Reports</span>
+</button>
+</div>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>

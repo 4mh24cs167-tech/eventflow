@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Department Management | The Ledger</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#e17c5a",
+                    "secondary-fixed": "#93f2f2",
+                    "primary": "#000666",
+                    "on-surface": "#191c1d",
+                    "on-primary-container": "#8690ee",
+                    "background": "#f8f9fa",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#5c1800",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "on-primary-fixed-variant": "#343d96",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-primary-fixed": "#000767",
+                    "surface-bright": "#f8f9fa",
+                    "on-secondary-fixed-variant": "#004f4f",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f3f4f5",
+                    "surface-container": "#edeeef",
+                    "on-background": "#191c1d",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-surface-variant": "#454652",
+                    "surface-variant": "#e1e3e4",
+                    "on-secondary-container": "#006e6e",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#1a237e",
+                    "surface": "#f8f9fa",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c6c5d4",
+                    "surface-tint": "#4c56af",
+                    "surface-dim": "#d9dadb",
+                    "on-secondary-fixed": "#002020",
+                    "surface-container-high": "#e7e8e9",
+                    "tertiary-fixed": "#ffdbd0",
+                    "secondary-fixed-dim": "#76d6d5",
+                    "inverse-surface": "#2e3132",
+                    "secondary": "#006a6a",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#90efef",
+                    "inverse-on-surface": "#f0f1f2",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#380b00",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "inverse-primary": "#bdc2ff",
+                    "on-secondary": "#ffffff",
+                    "outline": "#767683",
+                    "primary-fixed": "#e0e0ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .perspective-bar-track {
+            height: 4px;
+            background-color: #e1e3e4;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .perspective-bar-fill {
+            height: 100%;
+            background-color: #006a6a;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-slate-50 dark:bg-slate-900 flex flex-col h-full py-8 px-4">
+<div class="mb-12 px-4">
+<h1 class="text-2xl font-bold tracking-tighter text-indigo-900 dark:text-indigo-300">The Ledger</h1>
+<p class="font-manrope tracking-tight font-semibold text-xs text-slate-500 mt-1 uppercase tracking-widest">Academic Leadership</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard Tab -->
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope tracking-tight font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Departments Tab (ACTIVE) -->
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-indigo-900 dark:text-indigo-300 font-bold border-r-4 border-indigo-900 dark:border-indigo-400 bg-slate-200 dark:bg-slate-800 font-manrope tracking-tight font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span>Departments</span>
+</a>
+<!-- Events Tab -->
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope tracking-tight font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Events</span>
+</a>
+<!-- Reports Tab -->
+<a class="flex items-center gap-3 py-3 px-4 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-700 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 font-manrope tracking-tight font-semibold" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Reports</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<div class="flex items-center gap-3 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
+<img alt="Academic Institution Crest" class="w-10 h-10 rounded shadow-sm" data-alt="heraldic shield emblem for a prestigious university with gold and navy blue colors and classic academic symbols" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-ihfiFg8W_Ej_M6mHgkAl_fdKcYaIaaZ78nRQhwmJyxgahIARi0VEV90ApksssDLOQ4sZcsSebGUkodIr6-Ar_TxRWeurXdWY3HT23nPtZHXFmKSA1pFMY3Oy9TK_mPk422oYW4MsJ2oYj6JCHWTfbdFVuFyIvheqgMtGv3LMZXOrXZqnsiJ0IOM3375AB15N4KOcSfOmozDjTDCZcUJwbw0l7X-2C7_14tUCy326xU4B144jlFyl96MOrPbSMbUNEyqRCI1ehaY"/>
+<div class="overflow-hidden">
+<p class="text-xs font-bold text-indigo-900 dark:text-indigo-300 truncate">Scholar Blueprint</p>
+<p class="text-[10px] text-slate-500 truncate">V 2.4.0</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 bg-white/70 backdrop-blur-xl border-b border-slate-100/50 flex justify-between items-center h-16 px-8">
+<div class="flex items-center flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full bg-surface-container-highest border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none" placeholder="Search departments, HODs, or activities..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-500">
+<button class="material-symbols-outlined hover:text-indigo-600 transition-all" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined hover:text-indigo-600 transition-all" data-icon="settings">settings</button>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-md hover:shadow-lg transition-all active:opacity-90">
+                New Event
+            </button>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-100">
+<div class="text-right">
+<p class="text-xs font-bold text-indigo-900 leading-none">Dr. Alistair Vance</p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase tracking-tighter">Principal</p>
+</div>
+<img alt="Principal Profile" class="w-9 h-9 rounded-full ring-2 ring-indigo-50/50" data-alt="professional portrait of an elderly distinguished man with grey hair and sharp suit in a scholarly office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw5GhL0Gn0x9Wf5igiZCAzBusxjvpVS9qAl5zxmeZqTTHzCNIxt-_e2BlB3THozk-VO0_z-e8VNHD4lmcbdU5Kag5br93A0xk1XhOOpXpt5ZjFpytrPL4AcuisQiHSfRxV0h2xXcbsL2AtwfYh5PRlABK9wVlC8hLgfVYAwe8o9RHG6GbBaZrUuoaEVFfyaHn-DoP4i0__tNkVPJybv0bQfxAkdH2kaEUvZSk17Peblvk1yaqC97uSkPdDG0YzqyWgh-cGDXplS7A"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 pb-12 px-10 min-h-screen">
+<!-- Header Section -->
+<section class="flex justify-between items-end mb-10">
+<div>
+<h2 class="font-headline text-3xl font-extrabold text-primary tracking-tight">Department Management</h2>
+<p class="text-on-surface-variant font-medium mt-1">Regulate institutional structure and academic leadership assignments.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-manrope font-bold text-sm tracking-tight hover:bg-primary-container transition-all">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                Create New Department
+            </button>
+</section>
+<!-- Stats Overview (Asymmetric Layout) -->
+<section class="grid grid-cols-12 gap-6 mb-12">
+<div class="col-span-8 bg-surface-container-lowest p-8 rounded-xl flex items-center justify-between">
+<div>
+<span class="text-xs font-bold text-secondary uppercase tracking-[0.2em] mb-2 block">Institutional Capacity</span>
+<h3 class="font-headline text-4xl font-extrabold text-primary">14 <span class="text-xl font-normal text-on-surface-variant">Active Departments</span></h3>
+</div>
+<div class="w-64">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-semibold text-on-surface-variant uppercase">Academic Coverage</span>
+<span class="text-xs font-bold text-secondary">92%</span>
+</div>
+<div class="perspective-bar-track">
+<div class="perspective-bar-fill" style="width: 92%;"></div>
+</div>
+</div>
+</div>
+<div class="col-span-4 bg-primary-container p-8 rounded-xl text-white flex flex-col justify-between">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="verified_user">verified_user</span>
+<div>
+<h4 class="text-2xl font-bold">12 / 14</h4>
+<p class="text-sm opacity-70">HODs Assigned &amp; Verified</p>
+</div>
+</div>
+</section>
+<!-- Departments List (Curated Ledger Aesthetic) -->
+<section class="bg-surface-container-low rounded-2xl p-2">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<!-- Filters & Search Inner -->
+<div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/15">
+<div class="flex items-center gap-8">
+<button class="text-sm font-bold text-primary border-b-2 border-primary pb-1">All Departments</button>
+<button class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors pb-1">Engineering</button>
+<button class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors pb-1">Science</button>
+<button class="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors pb-1">Humanities</button>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="sort_by_alpha">sort_by_alpha</span>
+</button>
+</div>
+</div>
+<!-- Ledger Table -->
+<table class="w-full text-left">
+<thead>
+<tr class="text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant/60">
+<th class="px-8 py-5">Department Name</th>
+<th class="px-8 py-5">Assigned HOD</th>
+<th class="px-8 py-5">Total Events</th>
+<th class="px-8 py-5">Status</th>
+<th class="px-8 py-5 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="text-sm font-medium divide-y divide-outline-variant/10">
+<!-- Entry 1 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="computer">computer</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Computer Science</p>
+<p class="text-xs text-on-surface-variant">Founded 1994 • Wing A</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<img alt="HOD Avatar" class="w-8 h-8 rounded-full" data-alt="professional photo of a young female academic professor with glasses and a friendly expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrZMO1qdrvqYTmi2pla055rM4Ba6VDlcGV5bjqR0p23VDKv-ZOnm2v2dq5NqHLVGJ3-SK2GPwRRh4ZBWI9DzPCZ9D91AuL1K8joTIdsL-yin2XoiKzEFow-5fOW7nWZPQkI2Nsx7S6hIB7yKOfJ-ABCo3YPKRHnsjcc0tPAO9k5N6pBoOJ86FM4bTe3xFHycy0Gp4op056nREjCLmiXSBcNuRq2lXQx6g0R-tpssYBNtnfjJ__M1jc8v3yG82IbPvtnkegAnepR_0"/>
+<div>
+<p class="font-bold text-primary">Prof. Sarah Chen</p>
+<button class="text-[10px] uppercase font-extrabold text-secondary tracking-tighter hover:underline">Reassign</button>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="font-headline font-bold text-lg">124</span>
+<span class="text-xs text-on-surface-variant ml-1">sessions</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    Operational
+                                </span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Entry 2 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="precision_manufacturing">precision_manufacturing</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Mechanical Engineering</p>
+<p class="text-xs text-on-surface-variant">Founded 1988 • West Lab</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<img alt="HOD Avatar" class="w-8 h-8 rounded-full" data-alt="portrait of a middle-aged male professor with a beard in a workshop setting with machinery in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4iBT2gCYLbGRp5QsCkJ0eY7eXrUMbHLZfru7_dphFJnkYWdxjF6MSL0feOlV4Vq4HC-YtMYV4PAdQg1v0713tSyOPLu6Kq0nJ4fxspfW-7rltGWHyJl6hwEJhrt7pi9ZGCe4GWb2ZS844WlnIb3iAJ_b0Yiz5H1cAI1ETgX10etcNTBhbsnUirWMHgnknhqa4JNh_1r2NuGoHYFTMDnYUY0UByTAyQaAg57A9JMuKIvZas3p7SvU94-cUaKYVejWXkN1IMGiLCh0"/>
+<div>
+<p class="font-bold text-primary">Dr. Robert Miller</p>
+<button class="text-[10px] uppercase font-extrabold text-secondary tracking-tighter hover:underline">Reassign</button>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="font-headline font-bold text-lg">89</span>
+<span class="text-xs text-on-surface-variant ml-1">sessions</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    Operational
+                                </span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Entry 3 (Vacant HOD) -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group bg-tertiary/5">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="biotech">biotech</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Biotechnology</p>
+<p class="text-xs text-on-surface-variant">Founded 2012 • Science Block</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<button class="flex items-center gap-2 px-4 py-2 border-2 border-dashed border-outline-variant hover:border-primary hover:text-primary transition-all rounded-lg text-xs font-bold text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+                                    Assign HOD
+                                </button>
+</td>
+<td class="px-8 py-6">
+<span class="font-headline font-bold text-lg text-tertiary">12</span>
+<span class="text-xs text-on-surface-variant ml-1">sessions</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed/30 text-on-tertiary-fixed-variant text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                                    Review Required
+                                </span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Entry 4 -->
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl" data-icon="architecture">architecture</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Architecture &amp; Design</p>
+<p class="text-xs text-on-surface-variant">Founded 2005 • Design Studio</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<img alt="HOD Avatar" class="w-8 h-8 rounded-full" data-alt="creative looking woman with trendy hair and colorful glasses in a bright architectural studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmpvFkgPqB9jOcOu60DcdIk-dA_rICvd7NywF2FjoiLsWHKgFdO9O25FZbcPcKedV_Ii3Km4bFiYPVik5plx9M5QulJgyKkV-x59PWJhKO0bDS9axX3-8yZ3C37v4lSoD2_bbFtrZjpt8oMyu6UgpwVocoCyt1vIGsQFAxtd-3jrpdnibrg5v1WW51McUBLVefGx2YC9sD5QyKi5NXWebZif5sgsCqq4ybRvSaU53lT-R0k_zustyWGUgj9UIKoT1Y9FKiEcRBonQ"/>
+<div>
+<p class="font-bold text-primary">Dr. Elena Rodriguez</p>
+<button class="text-[10px] uppercase font-extrabold text-secondary tracking-tighter hover:underline">Reassign</button>
+</div>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="font-headline font-bold text-lg">210</span>
+<span class="text-xs text-on-surface-variant ml-1">sessions</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                    Operational
+                                </span>
+</td>
+<td class="px-8 py-6 text-right">
+<button class="p-2 hover:bg-surface-container-high rounded-full text-on-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination Footer -->
+<div class="px-8 py-4 bg-surface-container-low/30 flex justify-between items-center text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+<p>Showing 4 of 14 Departments</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center bg-surface-container-lowest rounded shadow-sm border border-outline-variant/10 disabled:opacity-30">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-white rounded shadow-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center bg-surface-container-lowest rounded shadow-sm border border-outline-variant/10">2</button>
+<button class="w-8 h-8 flex items-center justify-center bg-surface-container-lowest rounded shadow-sm border border-outline-variant/10">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Asymmetric Sidebar Feature: Quick Assignment Hub -->
+<section class="mt-12 grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-5">
+<div class="bg-white p-8 rounded-xl border-l-4 border-primary">
+<h4 class="font-headline text-xl font-bold text-primary mb-4">Pending HOD Appointments</h4>
+<p class="text-sm text-on-surface-variant mb-6">The following faculty members have been nominated for departmental leadership roles. Final approval required.</p>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center font-bold">JD</div>
+<div>
+<p class="text-sm font-bold">Jameson Dunn</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tight">Nominated: Humanities</p>
+</div>
+</div>
+<button class="bg-secondary text-white px-3 py-1 rounded text-xs font-bold hover:bg-on-secondary-container transition-all">Review</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-lg group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center font-bold">LS</div>
+<div>
+<p class="text-sm font-bold">Lydia Sterling</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-tight">Nominated: Physics</p>
+</div>
+</div>
+<button class="bg-secondary text-white px-3 py-1 rounded text-xs font-bold hover:bg-on-secondary-container transition-all">Review</button>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-7">
+<div class="h-full bg-surface-container-highest p-8 rounded-xl flex flex-col justify-center relative overflow-hidden">
+<!-- Texture Decor -->
+<div class="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
+<div class="relative z-10">
+<h4 class="font-headline text-xl font-extrabold text-primary mb-2">Curate the Academic Legacy</h4>
+<p class="text-on-surface-variant max-w-md mb-8">Establish new research wings or combine existing departments to align with the institution's 2025 strategic vision.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-lg">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="merge">merge</span>
+<p class="text-sm font-bold">Merge Departments</p>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-relaxed">Combine two departments for structural efficiency.</p>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-lg">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="split_scene">split_scene</span>
+<p class="text-sm font-bold">Split Wing</p>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-relaxed">Create a specialized department from an existing wing.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Only on Management Screens) -->
+<button class="fixed bottom-10 right-10 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-105 transition-transform group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-90 transition-transform duration-300" data-icon="add">add</span>
+</button>
+
+<script>
+// --- Event Management API Fetch Wrappers ---
+const API_BASE = 'http://localhost:3000/api';
+
+async function authLogin(email, password) {
+    try {
+        const res = await fetch(API_BASE + '/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if(res.ok && data.token) {
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            return data;
+        } else {
+            throw new Error(data.error);
+        }
+    } catch(err) {
+        console.error('Login Error:', err);
+        alert('Login failed: ' + err.message);
+    }
+}
+
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('jwt_token');
+    if(!token) {
+        console.warn('No authentication token found! Please login.');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': 'Bearer ' + token }),
+        ...options.headers
+    };
+    
+    try {
+        const res = await fetch(API_BASE + endpoint, { ...options, headers });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error || 'Server Error');
+        return data;
+    } catch (err) {
+        console.error('API Error (' + endpoint + '):', err.message);
+        throw err;
+    }
+}
+
+// These functions map directly to the backend capabilities
+window.EMS_API = {
+    login: authLogin,
+    principal: {
+        getDashboard: () => apiFetch('/principal/dashboard'),
+        getEvents: () => apiFetch('/principal/events'),
+        createDepartment: (name, hod_id) => apiFetch('/principal/departments', { method: 'POST', body: JSON.stringify({name, hod_id}) })
+    },
+    hod: {
+        getEvents: () => apiFetch('/hod/events'),
+        createCategory: (name) => apiFetch('/hod/categories', { method: 'POST', body: JSON.stringify({name}) }),
+        reviewEvent: (id, status) => apiFetch('/hod/events/' + id + '/review', { method: 'POST', body: JSON.stringify({status}) }),
+        triggerAI: (id) => apiFetch('/hod/events/' + id + '/trigger-ai', { method: 'POST' })
+    },
+    admin: {
+        createEvent: (payload) => apiFetch('/admin/events', { method: 'POST', body: JSON.stringify(payload) }),
+        configureForm: (eventId, type, fields) => apiFetch('/admin/events/' + eventId + '/forms', { method: 'POST', body: JSON.stringify({type, fields}) }),
+        uploadMedia: (eventId, type, url) => apiFetch('/admin/events/' + eventId + '/media', { method: 'POST', body: JSON.stringify({type, url}) })
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("EMS API Client Initialized. Available at window.EMS_API");
+    // Connect your UI buttons to window.EMS_API methods without changing HTML classes!
+});
+</script>
+</body></html>
