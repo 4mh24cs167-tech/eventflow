@@ -33,7 +33,14 @@ router.get('/dashboard', async (req: AuthRequest, res: any) => {
 
     try {
         let query = supabase.from('events').select('id, status').eq('admin_id', adminId);
-        if (year) query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+        if (year) {
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
+        }
         
         const { data: evs, error } = await query;
         if (error) throw error;
@@ -59,7 +66,14 @@ router.get('/events', async (req: AuthRequest, res: any) => {
     try {
         let query = supabase.from('events').select('*, categories(name), subcategories(name)').eq('admin_id', adminId);
         if (status) query = query.eq('status', status);
-        if (year) query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+        if (year) {
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
+        }
         query = query.order('date', { ascending: false });
 
         const { data, error } = await query;

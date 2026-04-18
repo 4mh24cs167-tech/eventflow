@@ -28,11 +28,20 @@ router.get('/dashboard', async (req: AuthRequest, res: any) => {
         let rjQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'REJECTED');
 
         if (year) {
-            evQ = evQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-            cpQ = cpQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-            pdQ = pdQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-            apQ = apQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-            rjQ = rjQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                evQ = evQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                cpQ = cpQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                pdQ = pdQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                apQ = apQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                rjQ = rjQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                evQ = evQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                cpQ = cpQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                pdQ = pdQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                apQ = apQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                rjQ = rjQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
         }
 
         const { count: totalEvents } = await evQ;
@@ -268,7 +277,12 @@ router.get('/events', async (req: AuthRequest, res: any) => {
             .eq('department_id', deptId);
         if (status) query = query.eq('status', status);
         if (year) {
-            query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
         }
         query = query.order('date', { ascending: false });
         const { data, error } = await query;
@@ -287,7 +301,12 @@ router.get('/global-events', async (req: AuthRequest, res: any) => {
         if (department_id) query = query.eq('department_id', department_id);
         if (status) query = query.eq('status', status);
         if (year) {
-            query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
         }
         query = query.order('date', { ascending: false });
         const { data, error } = await query;
@@ -365,7 +384,12 @@ router.get('/logs', async (req: AuthRequest, res: any) => {
             .limit(50);
             
         if (year) {
-            query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('updated_at', `${ys}-09-01T00:00:00.000Z`).lte('updated_at', `${ye}-08-31T23:59:59.999Z`);
+            } else {
+                query = query.gte('updated_at', `${year}-01-01T00:00:00.000Z`).lte('updated_at', `${year}-12-31T23:59:59.999Z`);
+            }
         }
 
         const { data: events, error } = await query;
@@ -579,13 +603,22 @@ router.get('/departments/all', async (req, res) => {
 
 router.get('/calendar', async (req: any, res: any) => {
     try {
-        const { month, year, department_id } = req.query;
+        const { month, year, department_id, academic_year } = req.query;
         let query = supabase.from('events')
             .select('*, departments(name)')
             .eq('status', 'APPROVED');
             
         if (department_id) query = query.eq('department_id', department_id);
         
+        if (academic_year) {
+            if (String(academic_year).includes('-')) {
+                const [ys, ye] = String(academic_year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${academic_year}-01-01`).lte('date', `${academic_year}-12-31`);
+            }
+        }
+
         if (month && year) {
             const startDate = `${year}-${month.padStart(2, '0')}-01`;
             const endMonth = parseInt(month) === 12 ? 1 : parseInt(month) + 1;

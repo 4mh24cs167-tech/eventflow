@@ -320,10 +320,6 @@ function renderApp() {
         <span class="text-indigo-700 dark:text-indigo-400 font-semibold text-sm" id="header-title">${navItems.find((n) => n.id === currentPage)?.label || 'Dashboard'}</span>
       </div>
       <div class="flex items-center gap-3">
-        <!-- Global Academic Year Filter -->
-        <select id="global-year-filter" class="academic-year-select text-xs font-bold text-slate-500 bg-transparent border-none outline-none hover:text-indigo-600 transition-colors dark:text-slate-400 cursor-pointer">
-          ${getAcademicYearOptions().map(ay => `<option value="${ay}" ${(pageState.academicYear || getCurrentAcademicYear()) === ay ? 'selected' : ''}>${academicYearLabel(ay)}</option>`).join('')}
-        </select>
         <!-- Dynamic Header Actions Vector -->
         <span id="header-actions" class="flex flex-row items-center justify-end gap-3 flex-nowrap shrink-0 whitespace-nowrap"></span>
       </div>
@@ -352,10 +348,7 @@ function renderApp() {
     });
   });
 
-  document.getElementById('global-year-filter').addEventListener('change', (e) => {
-    pageState.academicYear = e.target.value;
-    loadPage();
-  });
+
 
   document.getElementById('btn-logout').addEventListener('click', () => {
     api.auth.logout();
@@ -462,7 +455,8 @@ async function loadPage() {
 let pageState = {};
 function navigateTo(page, state = {}) {
   currentPage = page;
-  pageState = state;
+  const preservedYear = pageState.academicYear;
+  pageState = { ...state, academicYear: preservedYear };
   document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
   if (navItem) navItem.classList.add('active');
@@ -623,20 +617,25 @@ async function renderCalendar(container, headerActions, user) {
   const apiLayer = user.role === 'HOD' ? api.hod : api.principal;
   const departments = await apiLayer.getAllDepartments ? await apiLayer.getAllDepartments() : await apiLayer.getDepartments();
 
+  const targetYear = pageState.academicYear || getCurrentAcademicYear();
+
   headerActions.innerHTML = `
+    <select id="global-year-filter" class="filter-select">
+      ${getAcademicYearOptions().map(ay => `<option value="${ay}" ${targetYear === ay ? 'selected' : ''}>${academicYearLabel(ay)}</option>`).join('')}
+    </select>
     <select id="cal-dept-filter" class="filter-select">
       <option value="">All Departments</option>
       ${(departments || []).map((d) => `<option value="${d.id}" ${calDept === d.id ? 'selected' : ''}>${d.name}</option>`).join('')}
     </select>
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
-
-  const eventsPromise = apiLayer.getCalendar({ year: calYear, month: calMonth, department_id: calDept || undefined });
+  const eventsPromise = apiLayer.getCalendar({ year: calYear, month: calMonth, department_id: calDept || undefined, academic_year: targetYear });
   let schedulesPromise;
+  
   if (user.role === 'PRINCIPAL') {
-    schedulesPromise = apiLayer.getSchedules({ academic_year: getCurrentAcademicYear(), department_id: calDept || undefined });
+    schedulesPromise = apiLayer.getSchedules({ academic_year: targetYear, department_id: calDept || undefined });
   } else if (apiLayer.getSchedules) {
-    schedulesPromise = apiLayer.getSchedules(getCurrentAcademicYear());
+    schedulesPromise = apiLayer.getSchedules(targetYear);
   } else {
     schedulesPromise = Promise.resolve([]); // fallback
   }
@@ -721,18 +720,22 @@ async function renderCalendar(container, headerActions, user) {
   document.getElementById('cal-prev').addEventListener('click', () => {
     calMonth--;
     if (calMonth < 1) { calMonth = 12; calYear--; }
-    pageState = { calYear, calMonth, calDept };
+    pageState = { ...pageState, calYear, calMonth, calDept };
     loadPage();
   });
   document.getElementById('cal-next').addEventListener('click', () => {
     calMonth++;
     if (calMonth > 12) { calMonth = 1; calYear++; }
-    pageState = { calYear, calMonth, calDept };
+    pageState = { ...pageState, calYear, calMonth, calDept };
+    loadPage();
+  });
+  document.getElementById('global-year-filter')?.addEventListener('change', (e) => {
+    pageState = { ...pageState, academicYear: e.target.value };
     loadPage();
   });
   document.getElementById('cal-dept-filter').addEventListener('change', (e) => {
     calDept = e.target.value;
-    pageState = { calYear, calMonth, calDept };
+    pageState = { ...pageState, calYear, calMonth, calDept };
     loadPage();
   });
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
@@ -787,17 +790,12 @@ async function renderAllEvents(container, headerActions, user) {
       <option value="COMPLETED" ${filterStatus === 'COMPLETED' ? 'selected' : ''}>Completed</option>
       <option value="REJECTED" ${filterStatus === 'REJECTED' ? 'selected' : ''}>Rejected</option>
     </select>
-    <select id="ev-year-filter" class="filter-select">
-      <option value="">All Years</option>
-      ${[2024, 2025, 2026, 2027].map((y) => `<option value="${y}" ${filterYear == y ? 'selected' : ''}>${y}</option>`).join('')}
-    </select>
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
 
   const events = await api.principal.getEvents({
     department_id: filterDept || undefined,
     status: filterStatus || undefined,
-    year: filterYear || undefined,
   });
 
   container.innerHTML = events.length > 0 ? `
@@ -833,15 +831,14 @@ async function renderAllEvents(container, headerActions, user) {
   // Filter handlers
   const applyFilters = () => {
     pageState = {
+      ...pageState,
       filterDept: document.getElementById('ev-dept-filter').value,
       filterStatus: document.getElementById('ev-status-filter').value,
-      filterYear: document.getElementById('ev-year-filter').value,
     };
     loadPage();
   };
   document.getElementById('ev-dept-filter').addEventListener('change', applyFilters);
   document.getElementById('ev-status-filter').addEventListener('change', applyFilters);
-  document.getElementById('ev-year-filter').addEventListener('change', applyFilters);
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 }
 
@@ -1158,7 +1155,7 @@ async function renderLogs(container, headerActions, user) {
 
 async function renderGenericDashboard(container, user) {
   if (user.role === 'HOD') {
-    const year = pageState.globalYear || '';
+    const year = pageState.academicYear || getCurrentAcademicYear();
     const dash = await api.hod.getDashboard(year);
     container.innerHTML = `
       <div style="margin-bottom:6px;"><span style="font-size:0.85rem;color:var(--text-tertiary);">Department</span>
@@ -1194,7 +1191,7 @@ async function renderGenericDashboard(container, user) {
   }
   
   if (user.role === 'ADMIN') {
-    const year = pageState.globalYear || '';
+    const year = pageState.academicYear || getCurrentAcademicYear();
     const dash = await api.admin.getDashboard(year);
     // Also fetch events for the Status Tracking table
     const events = await api.admin.getEvents(year ? { year } : {});
@@ -1635,7 +1632,8 @@ async function renderHodReviews(container, headerActions, user) {
   headerActions.innerHTML = `<button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>`;
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
-  const events = await api.hod.getEvents({ status: 'PENDING_APPROVAL' });
+  const targetYear = pageState.academicYear || getCurrentAcademicYear();
+  const events = await api.hod.getEvents({ status: 'PENDING_APPROVAL', year: targetYear });
 
   container.innerHTML = `
     <div class="table-section">
@@ -1693,7 +1691,7 @@ async function renderHodGlobalEvents(container, headerActions, user) {
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
 
-  const events = await api.hod.getGlobalEvents({ department_id: filterDept || undefined, status: filterStatus || undefined });
+  const events = await api.hod.getGlobalEvents({ department_id: filterDept || undefined, status: filterStatus || undefined, year: pageState.academicYear || getCurrentAcademicYear() });
 
   container.innerHTML = `
     <div class="table-section">
@@ -1725,7 +1723,7 @@ async function renderHodGlobalEvents(container, headerActions, user) {
   `;
 
   const applyFilters = () => {
-    pageState = { filterDept: document.getElementById('ge-dept-filter').value, filterStatus: document.getElementById('ge-status-filter').value };
+    pageState = { ...pageState, filterDept: document.getElementById('ge-dept-filter').value, filterStatus: document.getElementById('ge-status-filter').value };
     loadPage();
   };
   document.getElementById('ge-dept-filter').addEventListener('change', applyFilters);
@@ -1751,10 +1749,11 @@ async function renderGenericEvents(container, headerActions, user) {
   `;
 
   let events = [];
+  const targetYear = pageState.academicYear || getCurrentAcademicYear();
   if (user.role === 'ADMIN') {
-    events = await api.admin.getEvents({ status: filterStatus || undefined });
+    events = await api.admin.getEvents({ status: filterStatus || undefined, year: targetYear });
   } else {
-    events = await api.hod.getEvents({ status: filterStatus || undefined });
+    events = await api.hod.getEvents({ status: filterStatus || undefined, year: targetYear });
   }
 
   container.innerHTML = `
@@ -1818,7 +1817,7 @@ async function renderGenericEvents(container, headerActions, user) {
   `;
 
   document.getElementById('de-status-filter').addEventListener('change', () => {
-    pageState = { filterStatus: document.getElementById('de-status-filter').value };
+    pageState = { ...pageState, filterStatus: document.getElementById('de-status-filter').value };
     loadPage();
   });
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
@@ -1826,7 +1825,7 @@ async function renderGenericEvents(container, headerActions, user) {
 
 // ===== HOD 6. DEPARTMENT LOGS =====
 async function renderHodLogs(container) {
-  const year = pageState.globalYear || '';
+  const year = pageState.academicYear || getCurrentAcademicYear();
   const logs = await api.hod.getLogs(year);
   
   container.innerHTML = `
@@ -1888,7 +1887,8 @@ async function renderHodVerification(container, headerActions, user) {
   headerActions.innerHTML = `<button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>`;
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
-  const events = await api.hod.getEvents({ status: 'APPROVED' });
+  const targetYear = pageState.academicYear || getCurrentAcademicYear();
+  const events = await api.hod.getEvents({ status: 'APPROVED', year: targetYear });
 
   container.innerHTML = `
     <div class="table-section">

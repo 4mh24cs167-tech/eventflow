@@ -202,6 +202,7 @@ export const api = {
       if (filters.month) params.set('month', filters.month);
       if (filters.year) params.set('year', filters.year);
       if (filters.department_id) params.set('department_id', filters.department_id);
+      if (filters.academic_year) params.set('academic_year', filters.academic_year);
       return apiFetch('/hod/calendar?' + params.toString());
     },
     getAllDepartments: () => apiFetch('/hod/departments/all'),

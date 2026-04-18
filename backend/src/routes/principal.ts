@@ -199,9 +199,14 @@ router.get('/events', async (req: any, res: any) => {
         if (department_id) query = query.eq('department_id', department_id);
         if (status) query = query.eq('status', status);
         if (year) {
-            const startDate = `${year}-01-01T00:00:00Z`;
-            const endDate = `${year}-12-31T23:59:59Z`;
-            query = query.gte('date', startDate).lte('date', endDate);
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01T00:00:00Z`).lte('date', `${ye}-08-31T23:59:59Z`);
+            } else {
+                const startDate = `${year}-01-01T00:00:00Z`;
+                const endDate = `${year}-12-31T23:59:59Z`;
+                query = query.gte('date', startDate).lte('date', endDate);
+            }
         }
 
         query = query.order('date', { ascending: false });
@@ -346,18 +351,32 @@ router.get('/logs', async (req, res) => {
 // ========== CALENDAR EVENTS ==========
 router.get('/calendar', async (req: any, res: any) => {
     try {
-        const { month, year, department_id } = req.query;
+        const { month, year, department_id, academic_year } = req.query;
 
         let query = supabase.from('events').select('id, title, date, status, venue, departments(name)');
 
         if (department_id) query = query.eq('department_id', department_id);
 
+        if (academic_year) {
+            if (String(academic_year).includes('-')) {
+                const [ys, ye] = String(academic_year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${academic_year}-01-01`).lte('date', `${academic_year}-12-31`);
+            }
+        }
+
         if (year && month) {
             const start = new Date(parseInt(year), parseInt(month) - 1, 1).toISOString();
             const end = new Date(parseInt(year), parseInt(month), 0, 23, 59, 59).toISOString();
             query = query.gte('date', start).lte('date', end);
-        } else if (year) {
-            query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+        } else if (year && !academic_year) {
+            if (String(year).includes('-')) {
+                const [ys, ye] = String(year).split('-');
+                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+            } else {
+                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+            }
         }
 
         query = query.order('date', { ascending: true });
