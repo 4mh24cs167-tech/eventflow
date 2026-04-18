@@ -730,7 +730,14 @@ async function renderCalendar(container, headerActions, user) {
     loadPage();
   });
   document.getElementById('global-year-filter')?.addEventListener('change', (e) => {
-    pageState = { ...pageState, academicYear: e.target.value };
+    const ay = e.target.value;
+    const startYear = ay.includes('-') ? parseInt(ay.split('-')[0], 10) : parseInt(ay, 10);
+    pageState = { 
+      ...pageState, 
+      academicYear: ay,
+      calYear: startYear,
+      calMonth: 9
+    };
     loadPage();
   });
   document.getElementById('cal-dept-filter').addEventListener('change', (e) => {
