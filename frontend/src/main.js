@@ -36,6 +36,129 @@ function academicYearDateRange(ay) {
   return { start: `${s}-09-01`, end: `${e}-08-31` };
 }
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// ===== DATE RANGE FILTER HELPERS =====
+function getDateRangeLabel() {
+  const ay = pageState.academicYear || getCurrentAcademicYear();
+  const from = pageState.fromMonth;
+  const to = pageState.toMonth;
+  if (!from && !to) return null;
+  const [startYear, endYear] = ay.split('-');
+  // Month-to-year mapping: Sep(9)-Dec(12) belongs to startYear, Jan(1)-Aug(8) to endYear
+  const monthYear = (m) => (m >= 9 ? startYear : endYear);
+  const fromLabel = from ? `${MONTH_NAMES_FULL[from - 1]} ${monthYear(from)}` : null;
+  const toLabel = to ? `${MONTH_NAMES_FULL[to - 1]} ${monthYear(to)}` : null;
+  if (fromLabel && toLabel) return `Showing data from ${fromLabel} to ${toLabel}`;
+  if (fromLabel) return `Showing data from ${fromLabel}`;
+  if (toLabel) return `Showing data up to ${toLabel}`;
+  return null;
+}
+
+function injectDateRangeFilter(headerActions) {
+  // Don't inject on detail/settings pages
+  const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown'];
+  if (noFilterPages.includes(currentPage)) return;
+
+  const ay = pageState.academicYear || getCurrentAcademicYear();
+  const fromM = pageState.fromMonth || '';
+  const toM = pageState.toMonth || '';
+
+  const yearOpts = getAcademicYearOptions().map(y =>
+    `<option value="${y}" ${ay === y ? 'selected' : ''}>${y.replace('-', '–')}</option>`
+  ).join('');
+
+  const fromOpts = `<option value="">From</option>` + MONTH_NAMES_FULL.map((m, i) =>
+    `<option value="${i + 1}" ${fromM == i + 1 ? 'selected' : ''}>${m.slice(0,3)}</option>`
+  ).join('');
+
+  const toOpts = `<option value="">To</option>` + MONTH_NAMES_FULL.map((m, i) =>
+    `<option value="${i + 1}" ${toM == i + 1 ? 'selected' : ''}>${m.slice(0,3)}</option>`
+  ).join('');
+
+  const filterDiv = document.createElement('div');
+  filterDiv.id = 'date-range-filter';
+  filterDiv.style.cssText = 'display:flex;align-items:center;gap:5px;flex-shrink:0;';
+  filterDiv.innerHTML = `
+    <style>
+      #date-range-filter select {
+        padding:5px 8px;font-size:0.78rem;font-weight:500;
+        border:1px solid var(--border,#e2e8f0);border-radius:8px;
+        background:var(--surface-0,#fff);color:var(--text-primary,#1e293b);
+        box-shadow:0 1px 3px rgba(0,0,0,0.07);cursor:pointer;
+        appearance:auto;outline:none;transition:border-color .2s;
+      }
+      #date-range-filter select:focus { border-color:var(--primary,#4f46e5); }
+      #drf-apply {
+        padding:5px 12px;font-size:0.78rem;font-weight:700;
+        border:none;border-radius:8px;cursor:pointer;
+        background:var(--primary,#4f46e5);color:#fff;
+        box-shadow:0 1px 4px rgba(79,70,229,0.25);
+        transition:opacity .2s;white-space:nowrap;
+      }
+      #drf-apply:hover { opacity:.88; }
+      #drf-reset {
+        padding:5px 8px;font-size:0.78rem;font-weight:600;
+        border:1px solid var(--border,#e2e8f0);border-radius:8px;
+        background:transparent;color:var(--text-tertiary,#94a3b8);
+        cursor:pointer;transition:color .2s;
+      }
+      #drf-reset:hover { color:var(--error,#ef4444); }
+      @media(max-width:640px){
+        #date-range-filter { gap:3px; }
+        #date-range-filter select { padding:4px 5px;font-size:0.72rem; }
+        #drf-apply,#drf-reset { padding:4px 8px;font-size:0.72rem; }
+      }
+    </style>
+    <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-tertiary);flex-shrink:0;">date_range</span>
+    <select id="drf-year" title="Academic Year">${yearOpts}</select>
+    <select id="drf-from" title="From Month">${fromOpts}</select>
+    <span style="color:var(--text-tertiary);font-size:0.75rem;flex-shrink:0;">→</span>
+    <select id="drf-to" title="To Month">${toOpts}</select>
+    <button id="drf-apply">Apply</button>
+    ${(fromM || toM) ? `<button id="drf-reset" title="Clear filter">✕</button>` : ''}
+  `;
+
+  // Insert BEFORE existing header-action buttons
+  headerActions.insertBefore(filterDiv, headerActions.firstChild);
+
+  // Handlers
+  document.getElementById('drf-apply')?.addEventListener('click', () => {
+    pageState.academicYear = document.getElementById('drf-year')?.value || ay;
+    const newFrom = document.getElementById('drf-from')?.value;
+    const newTo = document.getElementById('drf-to')?.value;
+    pageState.fromMonth = newFrom ? parseInt(newFrom) : '';
+    pageState.toMonth = newTo ? parseInt(newTo) : '';
+    loadPage();
+  });
+
+  document.getElementById('drf-reset')?.addEventListener('click', () => {
+    pageState.fromMonth = '';
+    pageState.toMonth = '';
+    loadPage();
+  });
+}
+
+function injectDateRangeBanner() {
+  const label = getDateRangeLabel();
+  if (!label) return;
+  const existing = document.getElementById('date-range-banner');
+  if (existing) return;
+  const banner = document.createElement('div');
+  banner.id = 'date-range-banner';
+  banner.style.cssText = [
+    'display:flex;align-items:center;gap:8px;',
+    'padding:8px 16px;margin-bottom:20px;',
+    'background:linear-gradient(90deg,var(--primary-surface,#e0e7ff),transparent);',
+    'border-left:3px solid var(--primary,#4f46e5);border-radius:0 8px 8px 0;',
+    'font-size:0.82rem;color:var(--text-secondary,#475569);font-weight:500;',
+  ].join('');
+  banner.innerHTML = `<span class="material-symbols-outlined" style="font-size:16px;color:var(--primary,#4f46e5);">info</span> ${label}`;
+  const content = document.getElementById('main-content');
+  if (content && content.firstChild) {
+    content.insertBefore(banner, content.firstChild);
+  }
+}
 
 // Schedule status helpers
 function getScheduleStatusClass(status) {
@@ -642,6 +765,10 @@ async function loadPage() {
       case 'settings': renderSettings(content, headerActions, user); break;
       default: await renderDashboard(content, headerActions, user);
     }
+    // Inject date range filter into header (all pages except detail views)
+    injectDateRangeFilter(headerActions);
+    // Inject date range banner into content area
+    injectDateRangeBanner();
   } catch (err) {
     content.innerHTML = `
       <div class="empty-state">
@@ -655,8 +782,9 @@ async function loadPage() {
 let pageState = {};
 function navigateTo(page, state = {}) {
   currentPage = page;
-  const preservedYear = pageState.academicYear;
-  pageState = { ...state, academicYear: preservedYear };
+  // Preserve global filter state across navigation
+  const { academicYear, fromMonth, toMonth } = pageState;
+  pageState = { ...state, academicYear, fromMonth, toMonth };
   document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
   if (navItem) navItem.classList.add('active');
