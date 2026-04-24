@@ -160,6 +160,26 @@ function injectDateRangeBanner() {
   }
 }
 
+// Returns { date_from, date_to } ISO strings based on current pageState
+function getDateRangeFilter() {
+  const ay = pageState.academicYear || getCurrentAcademicYear();
+  const fromM = pageState.fromMonth;
+  const toM = pageState.toMonth;
+  if (!fromM && !toM) return {};
+  const [startYear, endYear] = ay.split('-').map(Number);
+  // Months 9-12 belong to startYear, months 1-8 to endYear
+  const monthYear = (m) => (m >= 9 ? startYear : endYear);
+  const pad = (n) => String(n).padStart(2, '0');
+  const lastDay = (y, m) => new Date(y, m, 0).getDate();
+  const result = {};
+  if (fromM) result.date_from = `${monthYear(fromM)}-${pad(fromM)}-01`;
+  if (toM) {
+    const ty = monthYear(toM);
+    result.date_to = `${ty}-${pad(toM)}-${lastDay(ty, toM)}`;
+  }
+  return result;
+}
+
 // Schedule status helpers
 function getScheduleStatusClass(status) {
   switch (status) {
@@ -806,7 +826,8 @@ async function renderDashboard(container, headerActions, user) {
   `;
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
-  const dash = await api.principal.getDashboard();
+  const dateFilter = getDateRangeFilter();
+  const dash = await api.principal.getDashboard(dateFilter);
 
   container.innerHTML = `
     <div class="metrics-grid">
@@ -1132,9 +1153,11 @@ async function renderAllEvents(container, headerActions, user) {
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
 
+  const dateFilter = getDateRangeFilter();
   const events = await api.principal.getEvents({
     department_id: filterDept || undefined,
     status: filterStatus || undefined,
+    ...dateFilter
   });
 
   container.innerHTML = events.length > 0 ? `
@@ -1501,7 +1524,8 @@ async function renderLogs(container, headerActions, user) {
 async function renderGenericDashboard(container, user) {
   if (user.role === 'HOD') {
     const year = pageState.academicYear || getCurrentAcademicYear();
-    const dash = await api.hod.getDashboard(year);
+  const dateFilter = getDateRangeFilter();
+  const dash = await api.hod.getDashboard(year, dateFilter);
     container.innerHTML = `
       <div style="margin-bottom:6px;"><span style="font-size:0.85rem;color:var(--text-tertiary);">Department</span>
       <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${dash.departmentName}</h2></div>
@@ -1536,9 +1560,10 @@ async function renderGenericDashboard(container, user) {
   
   if (user.role === 'ADMIN') {
     const year = pageState.academicYear || getCurrentAcademicYear();
-    const dash = await api.admin.getDashboard(year);
+    const dateFilter = getDateRangeFilter();
+    const dash = await api.admin.getDashboard(year, dateFilter);
     // Also fetch events for the Status Tracking table
-    const events = await api.admin.getEvents(year ? { year } : {});
+    const events = await api.admin.getEvents(year ? { year, ...dateFilter } : { ...dateFilter });
     
     container.innerHTML = `
 <!-- Hero Metrics: Bento Grid Layout -->
@@ -1927,7 +1952,8 @@ async function renderHodReviews(container, headerActions, user) {
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
   const targetYear = pageState.academicYear || getCurrentAcademicYear();
-  const events = await api.hod.getEvents({ status: 'PENDING_APPROVAL', year: targetYear });
+  const dateFilter = getDateRangeFilter();
+  const events = await api.hod.getEvents({ status: 'PENDING_APPROVAL', year: targetYear, ...dateFilter });
 
   container.innerHTML = `
     <div class="table-section">
@@ -1988,7 +2014,8 @@ async function renderHodGlobalEvents(container, headerActions, user) {
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
 
-  const events = await api.hod.getGlobalEvents({ department_id: filterDept || undefined, status: filterStatus || undefined, year: pageState.academicYear || getCurrentAcademicYear() });
+  const dateFilter = getDateRangeFilter();
+  const events = await api.hod.getGlobalEvents({ department_id: filterDept || undefined, status: filterStatus || undefined, year: pageState.academicYear || getCurrentAcademicYear(), ...dateFilter });
 
   container.innerHTML = `
     <div class="table-section">
@@ -2050,10 +2077,11 @@ async function renderGenericEvents(container, headerActions, user) {
 
   let events = [];
   const targetYear = pageState.academicYear || getCurrentAcademicYear();
+  const dateFilter = getDateRangeFilter();
   if (user.role === 'ADMIN') {
-    events = await api.admin.getEvents({ status: filterStatus || undefined, year: targetYear });
+    events = await api.admin.getEvents({ status: filterStatus || undefined, year: targetYear, ...dateFilter });
   } else {
-    events = await api.hod.getEvents({ status: filterStatus || undefined, year: targetYear });
+    events = await api.hod.getEvents({ status: filterStatus || undefined, year: targetYear, ...dateFilter });
   }
 
   container.innerHTML = `
@@ -2191,7 +2219,8 @@ async function renderHodVerification(container, headerActions, user) {
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
   const targetYear = pageState.academicYear || getCurrentAcademicYear();
-  const events = await api.hod.getEvents({ status: 'APPROVED', year: targetYear });
+  const dateFilter = getDateRangeFilter();
+  const events = await api.hod.getEvents({ status: 'APPROVED', year: targetYear, ...dateFilter });
 
   container.innerHTML = `
     <div class="table-section">

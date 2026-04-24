@@ -20,16 +20,18 @@ const handleError = (res: any, err: any) => {
 // ========== DASHBOARD ==========
 router.get('/dashboard', async (req: AuthRequest, res: any) => {
     const adminId = req.user.id;
-    const { year } = req.query as { year?: string };
+    const { year, date_from, date_to } = req.query as { year?: string; date_from?: string; date_to?: string };
 
     try {
         let query = supabase.from('events').select('id, status').eq('admin_id', adminId);
-        if (year) {
+        if (date_from) query = (query as any).gte('date', date_from);
+        if (date_to) query = (query as any).lte('date', date_to);
+        if (!date_from && !date_to && year) {
             if (String(year).includes('-')) {
                 const [ys, ye] = String(year).split('-');
-                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                query = (query as any).gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
             } else {
-                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                query = (query as any).gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
             }
         }
         
@@ -52,17 +54,19 @@ router.get('/dashboard', async (req: AuthRequest, res: any) => {
 // ========== EVENTS MANAGEMENT ==========
 router.get('/events', async (req: AuthRequest, res: any) => {
     const adminId = req.user.id;
-    const { status, year } = req.query as any;
+    const { status, year, date_from, date_to } = req.query as any;
 
     try {
         let query = supabase.from('events').select('*, categories(name), subcategories(name)').eq('admin_id', adminId);
         if (status) query = query.eq('status', status);
-        if (year) {
+        if (date_from) query = (query as any).gte('date', date_from);
+        if (date_to) query = (query as any).lte('date', date_to);
+        if (!date_from && !date_to && year) {
             if (String(year).includes('-')) {
                 const [ys, ye] = String(year).split('-');
-                query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                query = (query as any).gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
             } else {
-                query = query.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                query = (query as any).gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
             }
         }
         query = query.order('date', { ascending: false });

@@ -12,15 +12,38 @@ router.use(requireRole(['PRINCIPAL']));
 const handleError = (res: any, err: any) => res.status(500).json({ error: err.message });
 
 // ========== DASHBOARD ==========
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', async (req: any, res: any) => {
     try {
+        const { date_from, date_to } = req.query;
+        
+        // Helper to apply optional date range to a query
+        const withDateRange = (q: any) => {
+            if (date_from) q = q.gte('date', date_from);
+            if (date_to) q = q.lte('date', date_to);
+            return q;
+        };
+
         const { count: deptCount } = await supabase.from('departments').select('*', { count: 'exact', head: true });
-        const { count: eventCount } = await supabase.from('events').select('*', { count: 'exact', head: true });
-        const { count: completedCount } = await supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'COMPLETED');
-        const { count: pendingCount } = await supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PENDING_APPROVAL');
-        const { count: approvedCount } = await supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'APPROVED');
-        const { count: rejectedCount } = await supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'REJECTED');
-        const { count: participantCount } = await supabase.from('participants').select('*', { count: 'exact', head: true });
+        const { count: eventCount } = await withDateRange(supabase.from('events').select('*', { count: 'exact', head: true }));
+        const { count: completedCount } = await withDateRange(supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'COMPLETED'));
+        const { count: pendingCount } = await withDateRange(supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'PENDING_APPROVAL'));
+        const { count: approvedCount } = await withDateRange(supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'APPROVED'));
+        const { count: rejectedCount } = await withDateRange(supabase.from('events').select('*', { count: 'exact', head: true }).eq('status', 'REJECTED'));
+        
+        // Participant count: filter by events in range
+        let participantCount = 0;
+        if (date_from || date_to) {
+            const evQ = withDateRange(supabase.from('events').select('id'));
+            const { data: rangeEvents } = await evQ;
+            if (rangeEvents && rangeEvents.length > 0) {
+                const ids = rangeEvents.map((e: any) => e.id);
+                const { count: pc } = await supabase.from('participants').select('*', { count: 'exact', head: true }).in('event_id', ids);
+                participantCount = pc || 0;
+            }
+        } else {
+            const { count: pc } = await supabase.from('participants').select('*', { count: 'exact', head: true });
+            participantCount = pc || 0;
+        }
 
         res.json({
             totalDepartments: deptCount || 0,
@@ -192,20 +215,23 @@ router.get('/hods', async (req, res) => {
 // ========== ALL EVENTS ==========
 router.get('/events', async (req: any, res: any) => {
     try {
-        const { department_id, status, year } = req.query;
+        const { department_id, status, year, date_from, date_to } = req.query;
 
         let query = supabase.from('events').select('*, departments(name), categories(name)');
 
         if (department_id) query = query.eq('department_id', department_id);
         if (status) query = query.eq('status', status);
-        if (year) {
+        
+        // Explicit date range takes priority over year
+        if (date_from) query = query.gte('date', date_from);
+        if (date_to) query = query.lte('date', date_to);
+        
+        if (!date_from && !date_to && year) {
             if (String(year).includes('-')) {
                 const [ys, ye] = String(year).split('-');
                 query = query.gte('date', `${ys}-09-01T00:00:00Z`).lte('date', `${ye}-08-31T23:59:59Z`);
             } else {
-                const startDate = `${year}-01-01T00:00:00Z`;
-                const endDate = `${year}-12-31T23:59:59Z`;
-                query = query.gte('date', startDate).lte('date', endDate);
+                query = query.gte('date', `${year}-01-01T00:00:00Z`).lte('date', `${year}-12-31T23:59:59Z`);
             }
         }
 

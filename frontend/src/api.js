@@ -92,7 +92,13 @@ export const api = {
   },
 
   principal: {
-    getDashboard: () => apiFetch('/principal/dashboard'),
+    getDashboard: (filters = {}) => {
+      const params = new URLSearchParams();
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
+      const qs = params.toString();
+      return apiFetch(`/principal/dashboard${qs ? '?' + qs : ''}`);
+    },
     getDepartments: () => apiFetch('/principal/departments'),
     createDepartment: (name, hod_id) =>
       apiFetch('/principal/departments', {
@@ -117,6 +123,8 @@ export const api = {
       if (filters.department_id) params.set('department_id', filters.department_id);
       if (filters.status) params.set('status', filters.status);
       if (filters.year) params.set('year', filters.year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
       const qs = params.toString();
       return apiFetch(`/principal/events${qs ? '?' + qs : ''}`);
     },
@@ -149,7 +157,14 @@ export const api = {
   },
 
   hod: {
-    getDashboard: (year) => apiFetch(year ? `/hod/dashboard?year=${year}` : '/hod/dashboard'),
+    getDashboard: (year, filters = {}) => {
+      const params = new URLSearchParams();
+      if (year) params.set('year', year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
+      const qs = params.toString();
+      return apiFetch(qs ? `/hod/dashboard?${qs}` : '/hod/dashboard');
+    },
     getCategories: () => apiFetch('/hod/categories'),
     createCategory: (name) =>
       apiFetch('/hod/categories', {
@@ -184,6 +199,8 @@ export const api = {
       const params = new URLSearchParams();
       if (filters.status) params.set('status', filters.status);
       if (filters.year) params.set('year', filters.year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
       const qs = params.toString();
       return apiFetch(`/hod/events${qs ? '?' + qs : ''}`);
     },
@@ -192,6 +209,8 @@ export const api = {
       if (filters.department_id) params.set('department_id', filters.department_id);
       if (filters.status) params.set('status', filters.status);
       if (filters.year) params.set('year', filters.year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
       const qs = params.toString();
       return apiFetch(`/hod/global-events${qs ? '?' + qs : ''}`);
     },
@@ -244,11 +263,20 @@ export const api = {
 
   admin: {
     getCategories: () => apiFetch('/admin/categories'),
-    getDashboard: (year) => apiFetch(year ? `/admin/dashboard?year=${year}` : '/admin/dashboard'),
+    getDashboard: (year, filters = {}) => {
+      const params = new URLSearchParams();
+      if (year) params.set('year', year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
+      const qs = params.toString();
+      return apiFetch(qs ? `/admin/dashboard?${qs}` : '/admin/dashboard');
+    },
     getEvents: (filters = {}) => {
       const params = new URLSearchParams();
       if (filters.status) params.set('status', filters.status);
       if (filters.year) params.set('year', filters.year);
+      if (filters.date_from) params.set('date_from', filters.date_from);
+      if (filters.date_to) params.set('date_to', filters.date_to);
       const qs = params.toString();
       return apiFetch(`/admin/events${qs ? '?' + qs : ''}`);
     },

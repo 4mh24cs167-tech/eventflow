@@ -18,31 +18,29 @@ const handleError = (res: any, err: any) => {
 router.get('/dashboard', async (req: AuthRequest, res: any) => {
     const deptId = req.user.departmentId;
     if (!deptId) return res.status(400).json({ error: 'No department assigned to your account' });
-    const { year } = req.query as any;
+    const { year, date_from, date_to } = req.query as any;
 
     try {
-        let evQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId);
-        let cpQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'COMPLETED');
-        let pdQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'PENDING_APPROVAL');
-        let apQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'APPROVED');
-        let rjQ = supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'REJECTED');
-
-        if (year) {
-            if (String(year).includes('-')) {
-                const [ys, ye] = String(year).split('-');
-                evQ = evQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
-                cpQ = cpQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
-                pdQ = pdQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
-                apQ = apQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
-                rjQ = rjQ.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
-            } else {
-                evQ = evQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-                cpQ = cpQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-                pdQ = pdQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-                apQ = apQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
-                rjQ = rjQ.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+        // Apply date filter helper - explicit range takes priority over year
+        const applyDateFilter = (q: any) => {
+            if (date_from) q = q.gte('date', date_from);
+            if (date_to) q = q.lte('date', date_to);
+            if (!date_from && !date_to && year) {
+                if (String(year).includes('-')) {
+                    const [ys, ye] = String(year).split('-');
+                    q = q.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
+                } else {
+                    q = q.gte('date', `${year}-01-01`).lte('date', `${year}-12-31`);
+                }
             }
-        }
+            return q;
+        };
+
+        let evQ = applyDateFilter(supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId));
+        let cpQ = applyDateFilter(supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'COMPLETED'));
+        let pdQ = applyDateFilter(supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'PENDING_APPROVAL'));
+        let apQ = applyDateFilter(supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'APPROVED'));
+        let rjQ = applyDateFilter(supabase.from('events').select('id', { count: 'exact', head: true }).eq('department_id', deptId).eq('status', 'REJECTED'));
 
         const { count: totalEvents } = await evQ;
         const { count: completed } = await cpQ;
@@ -54,10 +52,11 @@ router.get('/dashboard', async (req: AuthRequest, res: any) => {
             .from('categories').select('id', { count: 'exact', head: true })
             .eq('department_id', deptId);
 
-        // Get participant count via event IDs (no complex join)
+        // Participant count filtered by date range
         let totalParticipants = 0;
-        const { data: deptEvents } = await supabase
-            .from('events').select('id').eq('department_id', deptId);
+        const { data: deptEvents } = await applyDateFilter(
+            supabase.from('events').select('id').eq('department_id', deptId)
+        );
         if (deptEvents && deptEvents.length > 0) {
             const eventIds = deptEvents.map((e: any) => e.id);
             const { count: pCount } = await supabase
@@ -66,7 +65,6 @@ router.get('/dashboard', async (req: AuthRequest, res: any) => {
             totalParticipants = pCount || 0;
         }
 
-        // Get department name
         const { data: dept } = await supabase
             .from('departments').select('name').eq('id', deptId).single();
 
@@ -269,14 +267,16 @@ router.post('/events/:id/review', async (req: AuthRequest, res: any) => {
 router.get('/events', async (req: AuthRequest, res: any) => {
     const deptId = req.user.departmentId;
     if (!deptId) return res.json([]);
-    const { status, year } = req.query as any;
+    const { status, year, date_from, date_to } = req.query as any;
     try {
         let query = supabase
             .from('events')
             .select('*, categories(name), subcategories(name)')
             .eq('department_id', deptId);
         if (status) query = query.eq('status', status);
-        if (year) {
+        if (date_from) query = query.gte('date', date_from);
+        if (date_to) query = query.lte('date', date_to);
+        if (!date_from && !date_to && year) {
             if (String(year).includes('-')) {
                 const [ys, ye] = String(year).split('-');
                 query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
@@ -293,14 +293,16 @@ router.get('/events', async (req: AuthRequest, res: any) => {
 
 // ========== GLOBAL EVENTS (all departments, limited access) ==========
 router.get('/global-events', async (req: AuthRequest, res: any) => {
-    const { department_id, status, year } = req.query as any;
+    const { department_id, status, year, date_from, date_to } = req.query as any;
     try {
         let query = supabase
             .from('events')
             .select('*, departments(name), categories(name)');
         if (department_id) query = query.eq('department_id', department_id);
         if (status) query = query.eq('status', status);
-        if (year) {
+        if (date_from) query = query.gte('date', date_from);
+        if (date_to) query = query.lte('date', date_to);
+        if (!date_from && !date_to && year) {
             if (String(year).includes('-')) {
                 const [ys, ye] = String(year).split('-');
                 query = query.gte('date', `${ys}-09-01`).lte('date', `${ye}-08-31`);
