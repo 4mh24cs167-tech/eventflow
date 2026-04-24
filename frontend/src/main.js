@@ -1090,9 +1090,11 @@ async function renderEventDetail(container, headerActions, user) {
   const ev = await api.principal.getEventDetails(eventId);
   document.getElementById('header-title').textContent = ev.title || 'Event Details';
 
-  const images = (ev.media || []).filter((m) => m.type === 'IMAGE');
-  const videos = (ev.media || []).filter((m) => m.type === 'VIDEO');
-  const reports = (ev.media || []).filter((m) => m.type === 'REPORT_PDF');
+  const isDrive = (u) => u && (u.includes('drive.google.com') || u.includes('docs.google.com'));
+  const images = (ev.media || []).filter((m) => m.type === 'IMAGE' && !isDrive(m.url));
+  const videos = (ev.media || []).filter((m) => m.type === 'VIDEO' && !isDrive(m.url));
+  const reports = (ev.media || []).filter((m) => m.type === 'REPORT_PDF' && !isDrive(m.url));
+  const driveLinks = (ev.media || []).filter((m) => isDrive(m.url));
 
   container.innerHTML = `
     <!-- Event Info -->
@@ -1174,8 +1176,16 @@ async function renderEventDetail(container, headerActions, user) {
             </div>
             <div style="margin-top:8px;"><a href="${reports[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Reports</a></div>
           </div>` : ''}
-          ${images.length === 0 && videos.length === 0 && reports.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded for this event.</p></div>' : ''}
+          ${images.length === 0 && videos.length === 0 && reports.length === 0 && driveLinks.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded for this event.</p></div>' : ''}
         </div>
+
+        ${driveLinks.length > 0 ? `
+        <div class="detail-card">
+          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">add_to_drive</span> Drive Links (${driveLinks.length})</h3>
+          <div class="media-list">
+            ${driveLinks.map((m) => `<a href="${m.url}" target="_blank" class="media-link" style="background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:8px;"><span class="material-symbols-outlined" style="color:#4285f4;">add_to_drive</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.url.length > 60 ? m.url.substring(0,60) + '...' : m.url}</span><span class="material-symbols-outlined">open_in_new</span></a>`).join('')}
+          </div>
+        </div>` : ''}
       </div>
 
       <!-- Sidebar -->
@@ -2055,9 +2065,11 @@ async function renderHodEventDetail(container, headerActions, user) {
   const ev = await api.hod.getEventDetails(eventId);
   document.getElementById('header-title').textContent = ev.title || 'Event Details';
 
-  const images = (ev.media || []).filter((m) => m.type === 'IMAGE');
-  const videos = (ev.media || []).filter((m) => m.type === 'VIDEO');
-  const reports = (ev.media || []).filter((m) => m.type === 'REPORT_PDF');
+  const isDrive = (u) => u && (u.includes('drive.google.com') || u.includes('docs.google.com'));
+  const images = (ev.media || []).filter((m) => m.type === 'IMAGE' && !isDrive(m.url));
+  const videos = (ev.media || []).filter((m) => m.type === 'VIDEO' && !isDrive(m.url));
+  const reports = (ev.media || []).filter((m) => m.type === 'REPORT_PDF' && !isDrive(m.url));
+  const driveLinks = (ev.media || []).filter((m) => isDrive(m.url));
 
   container.innerHTML = `
     <div class="detail-grid">
@@ -2119,8 +2131,16 @@ async function renderHodEventDetail(container, headerActions, user) {
           ${images.length > 0 ? `<div class="detail-section"><h4>🖼️ Images (${images.length})</h4><div class="media-grid">${images.map((m) => `<a href="${m.url}" target="_blank" class="media-item"><img src="${m.url}" alt="Event image" /><span class="material-symbols-outlined media-download">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${images[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Images</a></div></div>` : ''}
           ${videos.length > 0 ? `<div class="detail-section"><h4>🎥 Videos (${videos.length})</h4><div class="media-list">${videos.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">play_circle</span> ${m.url.split('/').pop() || 'Video'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${videos[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Videos</a></div></div>` : ''}
           ${reports.length > 0 ? `<div class="detail-section"><h4>📄 Reports (${reports.length})</h4><div class="media-list">${reports.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">description</span> ${m.url.split('/').pop() || 'Report'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${reports[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Reports</a></div></div>` : ''}
-          ${images.length === 0 && videos.length === 0 && reports.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded.</p></div>' : ''}
+          ${images.length === 0 && videos.length === 0 && reports.length === 0 && driveLinks.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded.</p></div>' : ''}
         </div>
+
+        ${driveLinks.length > 0 ? `
+        <div class="detail-card">
+          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">add_to_drive</span> Drive Links (${driveLinks.length})</h3>
+          <div class="media-list">
+            ${driveLinks.map((m) => `<a href="${m.url}" target="_blank" class="media-link" style="background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:8px;"><span class="material-symbols-outlined" style="color:#4285f4;">add_to_drive</span> <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.url.length > 60 ? m.url.substring(0,60) + '...' : m.url}</span><span class="material-symbols-outlined">open_in_new</span></a>`).join('')}
+          </div>
+        </div>` : ''}
       </div>
 
       <!-- Sidebar -->
@@ -2409,9 +2429,11 @@ async function renderAdminEventDetail(container, headerActions, user) {
       </div>
     `;
   } else if (activeTab === 'media') {
-    const images = details.media.filter(m => m.type === 'IMAGE');
-    const videos = details.media.filter(m => m.type === 'VIDEO');
-    const reports = details.media.filter(m => m.type === 'REPORT_PDF');
+    const isDrive = (u) => u && (u.includes('drive.google.com') || u.includes('docs.google.com'));
+    const images = details.media.filter(m => m.type === 'IMAGE' && !isDrive(m.url));
+    const videos = details.media.filter(m => m.type === 'VIDEO' && !isDrive(m.url));
+    const reports = details.media.filter(m => m.type === 'REPORT_PDF' && !isDrive(m.url));
+    const driveLinks = details.media.filter(m => isDrive(m.url));
     
     const mediaItem = (m, icon, iconColor, label) => `
       <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:8px; background:var(--surface-0);">
@@ -2465,6 +2487,22 @@ async function renderAdminEventDetail(container, headerActions, user) {
           <h3 style="margin-bottom:16px;">🎥 Videos (${videos.length})</h3>
           ${videos.length > 0 ? videos.map(v => mediaItem(v, 'play_circle', 'var(--success)', 'View Video')).join('') : '<p style="color:var(--text-tertiary);">No videos uploaded.</p>'}
         </div>
+        ${driveLinks.length > 0 ? `
+        <div class="detail-card">
+          <h3 style="margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#4285f4;">add_to_drive</span> Drive Links (${driveLinks.length})</h3>
+          ${driveLinks.map(d => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px;background:var(--surface-0);">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                <span class="material-symbols-outlined" style="color:#4285f4;font-size:22px;">add_to_drive</span>
+                <a href="${d.url}" target="_blank" style="color:var(--text-primary);text-decoration:none;font-size:0.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.url.length > 50 ? d.url.substring(0,50) + '...' : d.url}</a>
+              </div>
+              <div style="display:flex;gap:6px;flex-shrink:0;">
+                <a href="${d.url}" target="_blank" style="color:var(--primary);cursor:pointer;" title="Open"><span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span></a>
+                <button onclick="window.__deleteMedia('${d.id}')" style="background:none;border:none;color:var(--error);cursor:pointer;" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+              </div>
+            </div>
+          `).join('')}
+        </div>` : ''}
       </div>
     `;
   }
