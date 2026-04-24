@@ -606,9 +606,6 @@ async function renderDepartments(container, headerActions, user) {
                 <td><span class="status-badge status-pending"><span class="status-dot"></span> ${d.pending_count}</span></td>
                 <td style="text-align:right;">
                   <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
-                    <button class="btn-outline" onclick="window.__viewEventChart('${d.id}','${d.name}')">
-                      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">bar_chart</span> Event Chart
-                    </button>
                     <button class="btn-outline" onclick="window.__drillDept('${d.id}','${d.name}')">
                       <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">visibility</span> View Events
                     </button>
@@ -2602,11 +2599,14 @@ async function renderPublicForm(hash) {
 
   } catch (err) {
     app.innerHTML = `
-      <div class="login-page">
-        <div class="login-container" style="text-align:center;">
-          <span class="material-symbols-outlined" style="font-size:48px; color:var(--error); margin-bottom:16px;">error</span>
-          <h2>Link Invalid</h2>
-          <p style="color:var(--text-secondary);">${err.message}</p>
+      <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--surface-1); padding:24px;">
+        <div style="background:var(--surface-0); border:1px solid var(--border); border-radius:var(--radius-lg); padding:48px 40px; text-align:center; max-width:420px; width:100%; box-shadow:var(--shadow-lg);">
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--error-surface, rgba(239,68,68,0.1)); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+            <span class="material-symbols-outlined" style="font-size:32px; color:var(--error);">error</span>
+          </div>
+          <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Link Invalid</h2>
+          <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6;">${err.message}</p>
+          <p style="color:var(--text-tertiary); font-size:0.8rem; margin-top:20px;">Please check the link or contact the event organizer.</p>
         </div>
       </div>
     `;
