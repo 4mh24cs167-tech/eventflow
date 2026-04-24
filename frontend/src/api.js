@@ -79,7 +79,11 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ theme }),
       }),
-
+    forgotPassword: (email) =>
+      apiFetch('/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      }),
   },
 
   principal: {
@@ -318,6 +322,8 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(payload),
         isPublic: true
-      })
+      }),
+    getUpcomingEvents: () =>
+      apiFetch('/public/upcoming-events', { isPublic: true }),
   }
 };

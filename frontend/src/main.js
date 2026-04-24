@@ -120,7 +120,6 @@ function init() {
 // ===== LOGIN PAGE =====
 function renderLogin() {
   const app = document.getElementById('app');
-  // Ensures the app container is setup as a column to push footer down
   app.className = 'min-h-screen flex flex-col w-full';
   
   app.innerHTML = `
@@ -146,7 +145,7 @@ function renderLogin() {
       </div>
 
       <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
-        <!-- Left Side: Branding & Announcements -->
+        <!-- Left Side: Branding & Live Events -->
         <div class="lg:col-span-7 flex flex-col gap-6 md:gap-8 order-2 lg:order-1">
           <div class="space-y-4 text-center lg:text-left">
             <h1 class="text-4xl md:text-5xl font-headline font-extrabold tracking-tight text-primary dark:text-primary-fixed leading-tight">
@@ -158,22 +157,17 @@ function renderLogin() {
             </p>
           </div>
 
-          <!-- Bento Style Announcements -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="p-6 bg-surface-container-lowest dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 drop-shadow-sm">
-              <div class="flex items-center gap-2 text-secondary dark:text-secondary-fixed">
-                <span class="material-symbols-outlined" style="font-size: 20px;">verified_user</span>
-                <span class="font-headline font-bold text-sm tracking-wide uppercase">Security Protocols</span>
-              </div>
-              <p class="text-sm text-on-surface-variant dark:text-slate-400">Multi-factor authentication is now mandatory for all HOD-level administrative actions.</p>
+          <!-- Live Upcoming Events Scroller -->
+          <div class="p-6 bg-surface-container-lowest dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-xl drop-shadow-sm">
+            <div class="flex items-center gap-2 text-secondary dark:text-secondary-fixed mb-4">
+              <span class="material-symbols-outlined" style="font-size: 20px;">event</span>
+              <span class="font-headline font-bold text-sm tracking-wide uppercase">Live Upcoming Events</span>
+              <span class="ml-auto inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             </div>
-            
-            <div class="p-6 bg-surface-container-lowest dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-xl space-y-3 drop-shadow-sm">
-              <div class="flex items-center gap-2 text-tertiary dark:text-tertiary-fixed-dim">
-                <span class="material-symbols-outlined" style="font-size: 20px;">event_note</span>
-                <span class="font-headline font-bold text-sm tracking-wide uppercase">System Notice</span>
+            <div id="events-scroller" style="height:160px;overflow:hidden;position:relative;">
+              <div id="events-scroller-inner" style="display:flex;flex-direction:column;gap:0;transition:transform 0.6s ease;">
+                <div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">Loading events...</div>
               </div>
-              <p class="text-sm text-on-surface-variant dark:text-slate-400">Scheduled maintenance window: Saturday, 02:00 AM - 04:00 AM GMT.</p>
             </div>
           </div>
         </div>
@@ -191,10 +185,8 @@ function renderLogin() {
             </div>
             
             <form class="space-y-5" id="login-form">
-              <!-- Error Message Container (initially hidden by CSS not having 'show', wait we'll just style it empty) -->
               <div id="login-error" class="hidden text-sm font-bold text-error dark:text-error-container bg-error/10 dark:bg-error-container/10 p-3 rounded-lg text-center" style="display: none;"></div>
 
-              <!-- Email Field -->
               <div class="space-y-1.5">
                 <label class="block text-xs font-bold font-headline uppercase tracking-wider text-on-surface-variant dark:text-slate-400" for="login-email">Institutional ID / Email</label>
                 <div class="relative group">
@@ -203,11 +195,10 @@ function renderLogin() {
                 </div>
               </div>
               
-              <!-- Password Field -->
               <div class="space-y-1.5">
                 <div class="flex justify-between items-end">
                   <label class="block text-xs font-bold font-headline uppercase tracking-wider text-on-surface-variant dark:text-slate-400" for="login-password">Password</label>
-                  <a class="text-xs font-bold text-secondary dark:text-secondary-fixed hover:underline" href="#">Forgot?</a>
+                  <a class="text-xs font-bold text-secondary dark:text-secondary-fixed hover:underline cursor-pointer" id="forgot-password-link">Forgot?</a>
                 </div>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant dark:text-outline material-symbols-outlined" style="font-size: 18px;">lock</span>
@@ -229,6 +220,20 @@ function renderLogin() {
       </div>
     </main>
 
+    <!-- Forgot Password Modal -->
+    <div id="forgot-modal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;">
+      <div style="background:var(--surface-1,#fff);border-radius:16px;padding:32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:8px;color:var(--text-primary);">Reset Password</h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;">Enter your email and we'll send a temporary password.</p>
+        <input type="email" id="forgot-email" placeholder="your@email.com" style="width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface-0);color:var(--text-primary);font-size:0.9rem;margin-bottom:16px;box-sizing:border-box;" />
+        <div style="display:flex;gap:8px;">
+          <button id="forgot-cancel" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-primary);cursor:pointer;font-weight:600;">Cancel</button>
+          <button id="forgot-submit" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;cursor:pointer;font-weight:600;">Send Reset</button>
+        </div>
+        <div id="forgot-msg" style="margin-top:12px;font-size:0.8rem;text-align:center;"></div>
+      </div>
+    </div>
+
     <!-- Footer -->
     <footer class="mt-auto flex flex-col md:flex-row justify-between items-center px-6 md:px-12 py-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 backdrop-blur w-full z-20">
       <div class="text-sm font-bold text-indigo-900 dark:text-indigo-100 mb-4 md:mb-0 font-headline">Event Flow</div>
@@ -243,15 +248,83 @@ function renderLogin() {
     </footer>
   `;
 
-  // Attach event listener to new login form
+  // Attach event listener to login form
   document.getElementById('login-form').addEventListener('submit', handleLogin);
 
   // Login page theme toggle
   document.getElementById('login-theme-toggle')?.addEventListener('click', () => {
     const newTheme = toggleTheme();
-    // Re-render to update the icon
     renderLogin();
   });
+
+  // Forgot password modal
+  document.getElementById('forgot-password-link')?.addEventListener('click', () => {
+    const modal = document.getElementById('forgot-modal');
+    modal.style.display = 'flex';
+    document.getElementById('forgot-email').value = document.getElementById('login-email').value || '';
+    document.getElementById('forgot-msg').textContent = '';
+  });
+  document.getElementById('forgot-cancel')?.addEventListener('click', () => {
+    document.getElementById('forgot-modal').style.display = 'none';
+  });
+  document.getElementById('forgot-submit')?.addEventListener('click', async () => {
+    const email = document.getElementById('forgot-email').value.trim();
+    const msgEl = document.getElementById('forgot-msg');
+    if (!email) { msgEl.textContent = 'Please enter your email'; msgEl.style.color = 'var(--error)'; return; }
+    const btn = document.getElementById('forgot-submit');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const data = await api.auth.forgotPassword(email);
+      msgEl.textContent = data.message || 'Temporary password sent to your email!';
+      msgEl.style.color = 'var(--success, green)';
+    } catch (err) {
+      msgEl.textContent = err.message;
+      msgEl.style.color = 'var(--error, red)';
+    }
+    btn.disabled = false; btn.textContent = 'Send Reset';
+  });
+
+  // Load and auto-scroll upcoming events
+  loadUpcomingEvents();
+}
+
+async function loadUpcomingEvents() {
+  const inner = document.getElementById('events-scroller-inner');
+  if (!inner) return;
+  try {
+    const events = await api.public.getUpcomingEvents();
+    if (!events || events.length === 0) {
+      inner.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">No upcoming events</div>';
+      return;
+    }
+    // Render event items
+    const itemHtml = events.map(ev => `
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border,#e2e8f0);display:flex;align-items:center;gap:12px;min-height:48px;">
+        <span class="material-symbols-outlined" style="font-size:20px;color:var(--primary);flex-shrink:0;">event</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ev.title}</div>
+          <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:2px;">${ev.department} · ${new Date(ev.date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+        <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--success-surface,#dcfce7);color:var(--success,#16a34a);flex-shrink:0;">Upcoming</span>
+      </div>
+    `).join('');
+    // Duplicate items for seamless looping
+    inner.innerHTML = itemHtml + itemHtml;
+
+    // Auto-scroll animation
+    const scroller = document.getElementById('events-scroller');
+    if (!scroller) return;
+    let scrollPos = 0;
+    const totalHeight = inner.scrollHeight / 2;
+    const scrollInterval = setInterval(() => {
+      if (!document.getElementById('events-scroller')) { clearInterval(scrollInterval); return; }
+      scrollPos += 1;
+      if (scrollPos >= totalHeight) scrollPos = 0;
+      inner.style.transform = `translateY(-${scrollPos}px)`;
+    }, 40);
+  } catch (err) {
+    inner.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">Could not load events</div>';
+  }
 }
 
 async function handleLogin(e) {

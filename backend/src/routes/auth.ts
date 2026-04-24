@@ -115,4 +115,45 @@ router.post('/theme', authenticateToken, async (req: AuthRequest, res: any) => {
   }
 });
 
+// Forgot password (public, no auth required)
+router.post('/forgot-password', async (req, res: any) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  try {
+    const { data: user, error } = await supabase.from('users').select('id, name, email').eq('email', email).single();
+    if (error || !user) return res.status(404).json({ error: 'No account found with this email address' });
+
+    // Generate a temporary password
+    const tempPass = 'Temp' + Math.random().toString(36).slice(2, 8) + '!' + Math.floor(Math.random() * 90 + 10);
+    const hashed = await bcrypt.hash(tempPass, 10);
+    const { error: updateErr } = await supabase.from('users').update({ password: hashed }).eq('id', user.id);
+    if (updateErr) throw updateErr;
+
+    // Send email with temporary password
+    const { sendBrevoEmail } = await import('../utils/mailer');
+    await sendBrevoEmail({
+      to: [{ email: user.email, name: user.name }],
+      subject: 'Event Flow — Password Reset',
+      htmlContent: `
+        <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px;">
+          <h2 style="color:#4f46e5;">Password Reset</h2>
+          <p>Hi <strong>${user.name}</strong>,</p>
+          <p>Your password has been reset. Use this temporary password to log in:</p>
+          <div style="background:#f1f5f9;padding:16px;border-radius:8px;text-align:center;margin:20px 0;">
+            <code style="font-size:1.4rem;font-weight:bold;color:#1e293b;">${tempPass}</code>
+          </div>
+          <p style="color:#64748b;font-size:0.85rem;">Please change your password after logging in.</p>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;"/>
+          <p style="color:#94a3b8;font-size:0.75rem;">Event Flow — Academic Event Management</p>
+        </div>
+      `,
+    });
+
+    res.json({ message: 'A temporary password has been sent to your email' });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 export default router;
