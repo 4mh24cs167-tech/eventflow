@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('*')
+      .select('*, theme_preference')
       .eq('email', email)
       .single();
 
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    res.json({ token, user: { id: user.id, name: user.name, role: user.role, email: user.email } });
+    res.json({ token, user: { id: user.id, name: user.name, role: user.role, email: user.email, theme_preference: user.theme_preference || 'dark' } });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -92,6 +92,24 @@ router.post('/change-password', authenticateToken, async (req: AuthRequest, res:
     if (updateErr) throw updateErr;
 
     res.json({ message: 'Password changed successfully' });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Save theme preference (authenticated)
+router.post('/theme', authenticateToken, async (req: AuthRequest, res: any) => {
+  const { theme } = req.body;
+  const userId = req.user.id;
+
+  if (!theme || !['light', 'dark'].includes(theme)) {
+    return res.status(400).json({ error: 'Invalid theme. Must be "light" or "dark".' });
+  }
+
+  try {
+    const { error } = await supabase.from('users').update({ theme_preference: theme }).eq('id', userId);
+    if (error) throw error;
+    res.json({ message: 'Theme updated', theme });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }

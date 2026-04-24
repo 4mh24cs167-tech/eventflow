@@ -448,5 +448,63 @@ router.get('/schedules', async (req: any, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
+// ========== DEPARTMENT EVENT CHART ==========
+router.get('/departments/:id/event-chart', async (req, res: any) => {
+    const { id } = req.params;
+    try {
+        // Get department info
+        const { data: dept } = await supabase.from('departments').select('id, name').eq('id', id).single();
+        if (!dept) return res.status(404).json({ error: 'Department not found' });
+
+        // Get all categories for this department
+        const { data: categories, error: catErr } = await supabase
+            .from('categories')
+            .select('id, name')
+            .eq('department_id', id)
+            .order('name', { ascending: true });
+        if (catErr) throw catErr;
+
+        // For each category, get subcategories and event counts
+        const chart = await Promise.all((categories || []).map(async (cat: any) => {
+            // Count events for this category
+            const { count: catEventCount } = await supabase
+                .from('events')
+                .select('*', { count: 'exact', head: true })
+                .eq('category_id', cat.id)
+                .eq('department_id', id);
+
+            // Get subcategories
+            const { data: subcats } = await supabase
+                .from('subcategories')
+                .select('id, name')
+                .eq('category_id', cat.id)
+                .order('name', { ascending: true });
+
+            // Count events per subcategory
+            const subcatData = await Promise.all((subcats || []).map(async (sub: any) => {
+                const { count: subEventCount } = await supabase
+                    .from('events')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('subcategory_id', sub.id)
+                    .eq('department_id', id);
+                return {
+                    id: sub.id,
+                    name: sub.name,
+                    event_count: subEventCount || 0,
+                };
+            }));
+
+            return {
+                id: cat.id,
+                name: cat.name,
+                event_count: catEventCount || 0,
+                subcategories: subcatData,
+            };
+        }));
+
+        res.json({ department: dept, chart });
+    } catch (err) { handleError(res, err); }
+});
+
 export default router;
 

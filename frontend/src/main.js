@@ -67,22 +67,36 @@ function getScheduleStatusIcon(status) {
 }
 
 // ===== THEME MANAGEMENT =====
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  if(theme === 'dark') document.documentElement.classList.add('dark');
+  else document.documentElement.classList.remove('dark');
+  localStorage.setItem('theme', theme);
+}
 function initTheme() {
-  const saved = localStorage.getItem('theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
-  if(saved === 'dark') document.documentElement.classList.add('dark');
+  // If logged in, use user's saved preference; otherwise use localStorage or default to dark
+  const user = api.auth.getUser();
+  const saved = user?.theme_preference || localStorage.getItem('theme') || 'dark';
+  applyTheme(saved);
 }
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  if(next === 'dark') document.documentElement.classList.add('dark');
-  else document.documentElement.classList.remove('dark');
-  localStorage.setItem('theme', next);
+  applyTheme(next);
+  // If logged in, persist to API (fire-and-forget)
+  if (api.auth.isLoggedIn()) {
+    api.auth.saveTheme(next).catch(() => {});
+    // Update the stored user object
+    const user = api.auth.getUser();
+    if (user) {
+      user.theme_preference = next;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }
   return next;
 }
 function getCurrentTheme() {
-  return document.documentElement.getAttribute('data-theme') || 'light';
+  return document.documentElement.getAttribute('data-theme') || 'dark';
 }
 
 // ===== BOOTSTRAP =====
@@ -113,7 +127,10 @@ function renderLogin() {
     <!-- TopAppBar -->
     <header class="w-full top-0 left-0 flex justify-between items-center px-6 md:px-8 py-4 bg-slate-50 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition z-20">
       <div class="text-2xl font-extrabold tracking-tighter text-indigo-900 dark:text-indigo-100 font-headline">Event Flow</div>
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4">
+        <button id="login-theme-toggle" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors" title="Toggle Dark/Light Mode">
+          <span class="material-symbols-outlined" style="font-size: 20px;">${getCurrentTheme() === 'dark' ? 'light_mode' : 'dark_mode'}</span>
+        </button>
         <div class="flex items-center gap-4 text-slate-500 dark:text-slate-400 font-medium font-body cursor-pointer hover:text-primary transition-colors">
           <span class="material-symbols-outlined text-indigo-900 dark:text-indigo-400" style="font-size: 20px;">help_outline</span>
           <span class="hidden md:block">Support</span>
@@ -228,6 +245,13 @@ function renderLogin() {
 
   // Attach event listener to new login form
   document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+  // Login page theme toggle
+  document.getElementById('login-theme-toggle')?.addEventListener('click', () => {
+    const newTheme = toggleTheme();
+    // Re-render to update the icon
+    renderLogin();
+  });
 }
 
 async function handleLogin(e) {
@@ -248,7 +272,11 @@ async function handleLogin(e) {
   }
 
   try {
-    await api.auth.login(email, password);
+    const result = await api.auth.login(email, password);
+    // Apply user's theme preference
+    if (result.user?.theme_preference) {
+      applyTheme(result.user.theme_preference);
+    }
     showToast('Welcome back!', 'success');
     renderApp();
   } catch (err) {
@@ -575,7 +603,10 @@ async function renderDepartments(container, headerActions, user) {
                 <td><span class="status-badge status-completed"><span class="status-dot"></span> ${d.completed_count}</span></td>
                 <td><span class="status-badge status-pending"><span class="status-dot"></span> ${d.pending_count}</span></td>
                 <td style="text-align:right;">
-                  <div style="display:flex;gap:6px;justify-content:flex-end;">
+                  <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
+                    <button class="btn-outline" onclick="window.__viewEventChart('${d.id}','${d.name}')">
+                      <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">bar_chart</span> Event Chart
+                    </button>
                     <button class="btn-outline" onclick="window.__drillDept('${d.id}','${d.name}')">
                       <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">visibility</span> View Events
                     </button>
@@ -2382,12 +2413,32 @@ async function renderPublicForm(hash) {
     
     if (formConfig.type === 'REGISTRATION') {
       fieldsHtml = `
-        <div class="form-group"><label>Full Name *</label><input type="text" id="pf-name" required /></div>
-        <div class="form-group"><label>Email Address *</label><input type="email" id="pf-email" required /></div>
-        <div class="form-group"><label>Phone Number</label><input type="tel" id="pf-phone" /></div>
-        <div style="display:flex; gap:12px;">
-          <div class="form-group" style="flex:1;"><label>Department</label><input type="text" id="pf-dept" /></div>
-          <div class="form-group" style="flex:1;"><label>Year</label><input type="text" id="pf-year" /></div>
+        <div class="form-group"><label>Email Address *</label>
+          <div style="display:flex; gap:8px;">
+            <input type="email" id="pf-email" required style="flex:1;" />
+            <button type="button" id="btn-send-otp" class="btn-primary" style="padding:10px 18px; white-space:nowrap; font-size:0.85rem;">Send OTP</button>
+          </div>
+        </div>
+        <div id="otp-section" style="display:none;">
+          <div class="form-group"><label>Enter OTP *</label>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="pf-otp" maxlength="6" placeholder="6-digit code" style="flex:1; letter-spacing:4px; font-size:1.1rem; text-align:center;" />
+              <button type="button" id="btn-verify-otp" class="btn-primary" style="padding:10px 18px; white-space:nowrap; font-size:0.85rem;">Verify</button>
+            </div>
+            <p id="otp-status" style="font-size:0.8rem; margin-top:6px; color:var(--text-tertiary);"></p>
+          </div>
+        </div>
+        <div id="remaining-fields" style="display:none;">
+          <div style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--success-surface); border:1px solid var(--success); border-radius:var(--radius-md); margin-bottom:16px;">
+            <span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">verified</span>
+            <span style="font-size:0.85rem; font-weight:600; color:var(--success);">Email verified successfully!</span>
+          </div>
+          <div class="form-group"><label>Full Name *</label><input type="text" id="pf-name" required /></div>
+          <div class="form-group"><label>Phone Number</label><input type="tel" id="pf-phone" /></div>
+          <div style="display:flex; gap:12px;">
+            <div class="form-group" style="flex:1;"><label>Department</label><input type="text" id="pf-dept" /></div>
+            <div class="form-group" style="flex:1;"><label>Year</label><input type="text" id="pf-year" /></div>
+          </div>
         </div>
       `;
     } else {
@@ -2411,13 +2462,15 @@ async function renderPublicForm(hash) {
     if (Array.isArray(formConfig.fields)) {
       formConfig.fields.forEach((f, idx) => {
         fieldsHtml += `
-          <div class="form-group">
+          <div class="form-group" ${formConfig.type === 'REGISTRATION' ? 'data-custom-field="true" style="display:none;"' : ''}>
             <label>${f.label} ${f.required ? '*' : ''}</label>
             ${f.type === 'textarea' ? `<textarea id="pf-custom-${idx}" rows="2" ${f.required ? 'required' : ''}></textarea>` : `<input type="${f.type || 'text'}" id="pf-custom-${idx}" ${f.required ? 'required' : ''} />`}
           </div>
         `;
       });
     }
+
+    const submitBtnLabel = formConfig.type === 'REGISTRATION' ? 'Submit Registration' : 'Submit Feedback';
 
     app.innerHTML = `
       <div class="login-page">
@@ -2432,15 +2485,73 @@ async function renderPublicForm(hash) {
           </div>
           <form id="public-form" style="margin-top:24px;">
             ${fieldsHtml}
-            <button type="submit" class="btn-primary" style="width:100%; margin-top:24px; padding:12px;">Submit ${formConfig.type === 'REGISTRATION' ? 'Registration' : 'Feedback'}</button>
+            <button type="submit" id="btn-submit-form" class="btn-primary" style="width:100%; margin-top:24px; padding:12px; ${formConfig.type === 'REGISTRATION' ? 'display:none;' : ''}">${submitBtnLabel}</button>
           </form>
         </div>
       </div>
     `;
 
+    let emailVerified = formConfig.type !== 'REGISTRATION'; // Feedback doesn't need OTP
+
+    // OTP flow for registration forms
+    if (formConfig.type === 'REGISTRATION') {
+      document.getElementById('btn-send-otp').addEventListener('click', async () => {
+        const email = document.getElementById('pf-email').value;
+        if (!email) return alert('Please enter your email address.');
+        const btn = document.getElementById('btn-send-otp');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+          await api.public.sendOtp(hash, email);
+          document.getElementById('otp-section').style.display = 'block';
+          document.getElementById('otp-status').textContent = 'OTP sent! Check your email inbox (and spam folder).';
+          document.getElementById('otp-status').style.color = 'var(--success)';
+          btn.textContent = 'Resend OTP';
+          btn.disabled = false;
+        } catch (err) {
+          document.getElementById('otp-status').textContent = err.message;
+          document.getElementById('otp-status').style.color = 'var(--error)';
+          document.getElementById('otp-section').style.display = 'block';
+          btn.textContent = 'Send OTP';
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('btn-verify-otp').addEventListener('click', async () => {
+        const email = document.getElementById('pf-email').value;
+        const otp = document.getElementById('pf-otp').value;
+        if (!otp || otp.length !== 6) return alert('Please enter the 6-digit OTP.');
+        const btn = document.getElementById('btn-verify-otp');
+        btn.disabled = true;
+        btn.textContent = 'Verifying...';
+        try {
+          await api.public.verifyOtp(hash, email, otp);
+          emailVerified = true;
+          // Lock email field
+          document.getElementById('pf-email').readOnly = true;
+          document.getElementById('pf-email').style.opacity = '0.6';
+          document.getElementById('btn-send-otp').style.display = 'none';
+          document.getElementById('otp-section').style.display = 'none';
+          // Show remaining fields
+          document.getElementById('remaining-fields').style.display = 'block';
+          document.getElementById('btn-submit-form').style.display = 'block';
+          // Show custom fields
+          document.querySelectorAll('[data-custom-field]').forEach(el => { el.style.display = 'block'; });
+        } catch (err) {
+          document.getElementById('otp-status').textContent = err.message;
+          document.getElementById('otp-status').style.color = 'var(--error)';
+          btn.textContent = 'Verify';
+          btn.disabled = false;
+        }
+      });
+    }
+
+    // For feedback forms, show submit button immediately (already visible)
+
     document.getElementById('public-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
+      if (!emailVerified) return alert('Please verify your email with OTP first.');
+      const btn = document.getElementById('btn-submit-form');
       btn.disabled = true;
       btn.textContent = 'Submitting...';
 
@@ -2483,7 +2594,7 @@ async function renderPublicForm(hash) {
       } catch (err) {
         alert(err.message || 'Error submitting form');
         btn.disabled = false;
-        btn.textContent = `Submit ${formConfig.type === 'REGISTRATION' ? 'Registration' : 'Feedback'}`;
+        btn.textContent = `${submitBtnLabel}`;
       }
     });
 
@@ -3247,6 +3358,66 @@ window.__downloadCategoryCsvTemplate = () => {
 window.__closeModal = closeModal;
 window.__nav = (page) => navigateTo(page);
 window.__drillDept = (id, name) => navigateTo('dept-drilldown', { deptId: id, deptName: name });
+window.__viewEventChart = async (id, name) => {
+  openModal(`Event Chart — ${name}`, '<div class="loading-spinner"><div class="spinner"></div></div>');
+  try {
+    const data = await api.principal.getDeptEventChart(id);
+    const chart = data.chart || [];
+    
+    let totalEvents = 0;
+    chart.forEach(c => { totalEvents += c.event_count; });
+
+    let tableHtml = '';
+    if (chart.length === 0) {
+      tableHtml = '<div class="empty-state"><p>No categories created for this department yet.</p></div>';
+    } else {
+      tableHtml = `
+        <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
+          <span style="font-size:0.85rem; color:var(--text-secondary);">Total Categories: <strong style="color:var(--text-primary);">${chart.length}</strong></span>
+          <span style="font-size:0.85rem; color:var(--text-secondary);">Total Events: <strong style="color:var(--primary);">${totalEvents}</strong></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th style="text-align:center;">Events</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${chart.map(cat => {
+                if (cat.subcategories.length === 0) {
+                  return `<tr>
+                    <td><span style="font-weight:700; color:var(--text-primary);">${cat.name}</span></td>
+                    <td style="color:var(--text-tertiary); font-style:italic;">No subcategories</td>
+                    <td style="text-align:center;"><span style="font-weight:700; font-size:1.1rem;">${cat.event_count}</span></td>
+                  </tr>`;
+                }
+                return cat.subcategories.map((sub, idx) => `<tr>
+                  ${idx === 0 ? `<td rowspan="${cat.subcategories.length}" style="vertical-align:top; border-right:2px solid var(--primary-glow);">
+                    <div style="font-weight:700; color:var(--text-primary);">${cat.name}</div>
+                    <div style="font-size:0.75rem; color:var(--text-tertiary); margin-top:2px;">${cat.event_count} total events</div>
+                  </td>` : ''}
+                  <td>
+                    <span style="color:var(--text-secondary);">${sub.name}</span>
+                  </td>
+                  <td style="text-align:center;">
+                    <span style="font-weight:700; font-size:1rem; color:${sub.event_count > 0 ? 'var(--success)' : 'var(--text-tertiary)'};">${sub.event_count}</span>
+                  </td>
+                </tr>`).join('');
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+    
+    document.querySelector('.modal-body').innerHTML = tableHtml;
+  } catch (err) {
+    document.querySelector('.modal-body').innerHTML = `<p style="color:var(--error);">${err.message}</p>`;
+  }
+};
 window.__viewEvent = (id) => navigateTo('event-detail', { eventId: id, backTo: currentPage });
 window.__editDept = (id, name, hodId) => showEditDepartmentModal(id, name, hodId);
 window.__createHod = () => showCreateHodModal();

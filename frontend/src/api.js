@@ -74,6 +74,11 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ currentPassword, newPassword }),
       }),
+    saveTheme: (theme) =>
+      apiFetch('/auth/theme', {
+        method: 'POST',
+        body: JSON.stringify({ theme }),
+      }),
 
   },
 
@@ -125,6 +130,7 @@ export const api = {
       const qs = params.toString();
       return apiFetch(`/principal/schedules${qs ? '?' + qs : ''}`);
     },
+    getDeptEventChart: (deptId) => apiFetch(`/principal/departments/${deptId}/event-chart`),
   },
 
   hod: {
@@ -278,6 +284,18 @@ export const api = {
   public: {
     getFormConfig: (hash) =>
       apiFetch(`/public/forms/${hash}`, { isPublic: true }),
+    sendOtp: (hash, email) =>
+      apiFetch(`/public/forms/${hash}/send-otp`, {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+        isPublic: true
+      }),
+    verifyOtp: (hash, email, otp) =>
+      apiFetch(`/public/forms/${hash}/verify-otp`, {
+        method: 'POST',
+        body: JSON.stringify({ email, otp }),
+        isPublic: true
+      }),
     submitForm: (hash, payload) =>
       apiFetch(`/public/forms/${hash}/submit`, {
         method: 'POST',
