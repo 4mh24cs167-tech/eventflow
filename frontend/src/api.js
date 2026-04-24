@@ -277,6 +277,8 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ type, url }),
       }),
+    deleteMedia: (mediaId) =>
+      apiFetch(`/admin/media/${mediaId}`, { method: 'DELETE' }),
     getParticipants: (eventId) =>
       apiFetch(`/admin/events/${eventId}/participants`),
     getFeedbacks: (eventId) =>

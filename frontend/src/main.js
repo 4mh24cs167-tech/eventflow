@@ -1005,22 +1005,25 @@ async function renderEventDetail(container, headerActions, user) {
           <div class="detail-section">
             <h4>🖼️ Images (${images.length})</h4>
             <div class="media-grid">
-              ${images.map((m) => `<a href="${m.url}" target="_blank" class="media-item"><img src="${m.url}" alt="Event image" /><span class="material-symbols-outlined media-download">download</span></a>`).join('')}
+              ${images.map((m) => `<a href="${m.url}" target="_blank" class="media-item"><img src="${m.url}" alt="Event image" /><span class="material-symbols-outlined media-download">open_in_new</span></a>`).join('')}
             </div>
+            <div style="margin-top:8px;"><a href="${images[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Images</a></div>
           </div>` : ''}
           ${videos.length > 0 ? `
           <div class="detail-section">
             <h4>🎥 Videos (${videos.length})</h4>
             <div class="media-list">
-              ${videos.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">play_circle</span> ${m.url.split('/').pop() || 'Video'}<span class="material-symbols-outlined">download</span></a>`).join('')}
+              ${videos.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">play_circle</span> ${m.url.split('/').pop() || 'Video'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}
             </div>
+            <div style="margin-top:8px;"><a href="${videos[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Videos</a></div>
           </div>` : ''}
           ${reports.length > 0 ? `
           <div class="detail-section">
             <h4>📄 Reports (${reports.length})</h4>
             <div class="media-list">
-              ${reports.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">description</span> ${m.url.split('/').pop() || 'Report PDF'}<span class="material-symbols-outlined">download</span></a>`).join('')}
+              ${reports.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">description</span> ${m.url.split('/').pop() || 'Report PDF'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}
             </div>
+            <div style="margin-top:8px;"><a href="${reports[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Reports</a></div>
           </div>` : ''}
           ${images.length === 0 && videos.length === 0 && reports.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded for this event.</p></div>' : ''}
         </div>
@@ -1310,59 +1313,6 @@ async function renderGenericDashboard(container, user) {
   </div>
 </section>
 
-<!-- Secondary Insights Section -->
-<section class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
-  <div class="lg:col-span-2 space-y-6">
-    <h3 class="text-lg font-extrabold text-on-surface dark:text-slate-100">Capacity Insights</h3>
-    <div class="bg-surface-container-lowest dark:bg-slate-800 p-8 rounded-xl">
-      <div class="space-y-8">
-        <div>
-          <div class="flex justify-between items-end mb-2">
-            <span class="text-sm font-bold text-indigo-950 dark:text-indigo-300">Auditorium Usage</span>
-            <span class="text-xs text-secondary dark:text-teal-400 font-bold">84% Capacity</span>
-          </div>
-          <div class="w-full h-1 bg-surface-container-highest dark:bg-slate-700 rounded-full overflow-hidden">
-            <div class="h-full bg-secondary dark:bg-teal-500 w-[84%]"></div>
-          </div>
-        </div>
-        <div>
-          <div class="flex justify-between items-end mb-2">
-            <span class="text-sm font-bold text-indigo-950 dark:text-indigo-300">Budget Allocation</span>
-            <span class="text-xs text-primary dark:text-indigo-400 font-bold">62% Utilized</span>
-          </div>
-          <div class="w-full h-1 bg-surface-container-highest dark:bg-slate-700 rounded-full overflow-hidden">
-            <div class="h-full bg-primary dark:bg-indigo-500 w-[62%]"></div>
-          </div>
-        </div>
-        <div>
-          <div class="flex justify-between items-end mb-2">
-            <span class="text-sm font-bold text-indigo-950 dark:text-indigo-300">Volunteer Enrollment</span>
-            <span class="text-xs text-tertiary dark:text-amber-500 font-bold">45% Registered</span>
-          </div>
-          <div class="w-full h-1 bg-surface-container-highest dark:bg-slate-700 rounded-full overflow-hidden">
-            <div class="h-full bg-tertiary dark:bg-amber-600 w-[45%]"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Urgent Alerts / Feed -->
-  <div>
-    <h3 class="text-lg font-extrabold text-on-surface dark:text-slate-100 mb-6">Recent Activity</h3>
-    <div class="space-y-4">
-      <div class="p-4 bg-surface-container-low dark:bg-slate-800 rounded-xl border-l-4 border-tertiary dark:border-amber-600">
-        <p class="text-xs font-bold text-tertiary dark:text-amber-500 uppercase mb-1">Alert • Budget Overrun</p>
-        <p class="text-sm text-on-surface dark:text-slate-300 font-medium leading-relaxed">Tech Symposium budget exceeded by 12%. Immediate review required.</p>
-        <p class="text-[10px] text-slate-400 mt-2">2 hours ago</p>
-      </div>
-      <div class="p-4 bg-surface-container-low dark:bg-slate-800 rounded-xl">
-        <p class="text-xs font-bold text-secondary dark:text-teal-400 uppercase mb-1">Update • Approval</p>
-        <p class="text-sm text-on-surface dark:text-slate-300 font-medium leading-relaxed">Principal approved the Guest Lecturer series for Q4.</p>
-        <p class="text-[10px] text-slate-400 mt-2">5 hours ago</p>
-      </div>
-    </div>
-  </div>
-</section>
     `;
     return;
   }
@@ -2017,9 +1967,9 @@ async function renderHodEventDetail(container, headerActions, user) {
         <!-- Media -->
         <div class="detail-card">
           <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">perm_media</span> Media Gallery</h3>
-          ${images.length > 0 ? `<div class="detail-section"><h4>🖼️ Images (${images.length})</h4><div class="media-grid">${images.map((m) => `<a href="${m.url}" target="_blank" class="media-item"><img src="${m.url}" alt="Event image" /><span class="material-symbols-outlined media-download">download</span></a>`).join('')}</div></div>` : ''}
-          ${videos.length > 0 ? `<div class="detail-section"><h4>🎥 Videos (${videos.length})</h4><div class="media-list">${videos.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">play_circle</span> ${m.url.split('/').pop() || 'Video'}<span class="material-symbols-outlined">download</span></a>`).join('')}</div></div>` : ''}
-          ${reports.length > 0 ? `<div class="detail-section"><h4>📄 Reports (${reports.length})</h4><div class="media-list">${reports.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">description</span> ${m.url.split('/').pop() || 'Report'}<span class="material-symbols-outlined">download</span></a>`).join('')}</div></div>` : ''}
+          ${images.length > 0 ? `<div class="detail-section"><h4>🖼️ Images (${images.length})</h4><div class="media-grid">${images.map((m) => `<a href="${m.url}" target="_blank" class="media-item"><img src="${m.url}" alt="Event image" /><span class="material-symbols-outlined media-download">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${images[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Images</a></div></div>` : ''}
+          ${videos.length > 0 ? `<div class="detail-section"><h4>🎥 Videos (${videos.length})</h4><div class="media-list">${videos.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">play_circle</span> ${m.url.split('/').pop() || 'Video'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${videos[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Videos</a></div></div>` : ''}
+          ${reports.length > 0 ? `<div class="detail-section"><h4>📄 Reports (${reports.length})</h4><div class="media-list">${reports.map((m) => `<a href="${m.url}" target="_blank" class="media-link"><span class="material-symbols-outlined">description</span> ${m.url.split('/').pop() || 'Report'}<span class="material-symbols-outlined">open_in_new</span></a>`).join('')}</div><div style="margin-top:8px;"><a href="${reports[0].url}" download style="color:var(--primary);font-size:0.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">download</span> Download Reports</a></div></div>` : ''}
           ${images.length === 0 && videos.length === 0 && reports.length === 0 ? '<div class="empty-state" style="padding:24px;"><p>No media uploaded.</p></div>' : ''}
         </div>
       </div>
@@ -2311,8 +2261,21 @@ async function renderAdminEventDetail(container, headerActions, user) {
     `;
   } else if (activeTab === 'media') {
     const images = details.media.filter(m => m.type === 'IMAGE');
+    const videos = details.media.filter(m => m.type === 'VIDEO');
     const reports = details.media.filter(m => m.type === 'REPORT_PDF');
     
+    const mediaItem = (m, icon, iconColor, label) => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:8px; background:var(--surface-0);">
+         <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+           <span class="material-symbols-outlined" style="color:${iconColor};font-size:22px;">${icon}</span>
+           <a href="${m.url}" target="_blank" style="color:var(--text-primary); text-decoration:none; font-size:0.85rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${label}</a>
+         </div>
+         <div style="display:flex; gap:6px; flex-shrink:0;">
+           <a href="${m.url}" target="_blank" style="color:var(--primary);cursor:pointer;" title="Open"><span class="material-symbols-outlined" style="font-size:18px;">open_in_new</span></a>
+           <button onclick="window.__deleteMedia('${m.id}')" style="background:none;border:none;color:var(--error);cursor:pointer;" title="Delete"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+         </div>
+      </div>`;
+
     contentHtml = `
       <div class="detail-card" style="margin-bottom:24px;">
         <h3>Upload Post-Event Media</h3>
@@ -2342,26 +2305,16 @@ async function renderAdminEventDetail(container, headerActions, user) {
       
       <div class="detail-grid">
         <div class="detail-card">
-          <h3 style="margin-bottom:16px;">Reports</h3>
-          ${reports.length > 0 ? reports.map(r => `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border:1px solid var(--border); border-radius:4px; margin-bottom:8px;">
-               <div style="display:flex; align-items:center; gap:8px;">
-                 <span class="material-symbols-outlined" style="color:var(--error);">picture_as_pdf</span>
-                 <a href="${r.url}" target="_blank" style="color:var(--text-primary); text-decoration:none;">View Report</a>
-               </div>
-            </div>
-          `).join('') : '<p style="color:var(--text-tertiary);">No reports uploaded.</p>'}
+          <h3 style="margin-bottom:16px;">📄 Reports (${reports.length})</h3>
+          ${reports.length > 0 ? reports.map(r => mediaItem(r, 'picture_as_pdf', 'var(--error)', 'View Report')).join('') : '<p style="color:var(--text-tertiary);">No reports uploaded.</p>'}
         </div>
         <div class="detail-card">
-          <h3 style="margin-bottom:16px;">Gallery Attachments</h3>
-          ${images.length > 0 ? images.map(i => `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border:1px solid var(--border); border-radius:4px; margin-bottom:8px;">
-               <div style="display:flex; align-items:center; gap:8px;">
-                 <span class="material-symbols-outlined" style="color:var(--info);">image</span>
-                 <a href="${i.url}" target="_blank" style="color:var(--text-primary); text-decoration:none;">View Gallery/Image Link</a>
-               </div>
-            </div>
-          `).join('') : '<p style="color:var(--text-tertiary);">No media uploaded.</p>'}
+          <h3 style="margin-bottom:16px;">🖼️ Images (${images.length})</h3>
+          ${images.length > 0 ? images.map(i => mediaItem(i, 'image', 'var(--info)', 'View Image')).join('') : '<p style="color:var(--text-tertiary);">No images uploaded.</p>'}
+        </div>
+        <div class="detail-card">
+          <h3 style="margin-bottom:16px;">🎥 Videos (${videos.length})</h3>
+          ${videos.length > 0 ? videos.map(v => mediaItem(v, 'play_circle', 'var(--success)', 'View Video')).join('') : '<p style="color:var(--text-tertiary);">No videos uploaded.</p>'}
         </div>
       </div>
     `;
@@ -3889,6 +3842,15 @@ window.__uploadMedia = async (eventId) => {
       await api.admin.uploadMediaUrl(eventId, type, url);
     }
     showToast('Media added successfully!', 'success');
+    loadPage();
+  } catch(err) { showToast(err.message, 'error'); }
+};
+
+window.__deleteMedia = async (mediaId) => {
+  if (!confirm('Delete this media item?')) return;
+  try {
+    await api.admin.deleteMedia(mediaId);
+    showToast('Media deleted', 'success');
     loadPage();
   } catch(err) { showToast(err.message, 'error'); }
 };

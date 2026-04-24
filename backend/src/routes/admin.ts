@@ -283,6 +283,29 @@ router.post('/events/:id/media', upload.array('files', 15), async (req: AuthRequ
     } catch (err) { handleError(res, err); }
 });
 
+// ========== DELETE MEDIA ==========
+router.delete('/media/:mediaId', async (req: AuthRequest, res: any) => {
+    const { mediaId } = req.params;
+    try {
+        const { data: media, error: findErr } = await supabase.from('media').select('*').eq('id', mediaId).single();
+        if (findErr || !media) return res.status(404).json({ error: 'Media not found' });
+
+        // Try deleting from Supabase Storage if it's a storage URL
+        if (media.url && media.url.includes('supabase') && media.url.includes('event-media')) {
+            try {
+                const storagePath = media.url.split('/event-media/')[1];
+                if (storagePath) {
+                    await supabase.storage.from('event-media').remove([storagePath]);
+                }
+            } catch (e) { console.warn('Storage delete failed (non-critical):', e); }
+        }
+
+        const { error } = await supabase.from('media').delete().eq('id', mediaId);
+        if (error) throw error;
+        res.json({ message: 'Media deleted' });
+    } catch (err) { handleError(res, err); }
+});
+
 // ========== PARTICIPANT MANAGEMENT (EXECUTION) ==========
 router.get('/events/:id/participants', async (req: AuthRequest, res: any) => {
     const { id } = req.params;
