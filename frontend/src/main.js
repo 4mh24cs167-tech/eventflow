@@ -2272,42 +2272,44 @@ async function renderAdminEventDetail(container, headerActions, user) {
     const fbForm = details.forms.find(f => f.type === 'FEEDBACK');
 
     const isCompleted = details.status === 'COMPLETED';
+    const fbClosed = fbForm && !fbForm.is_active;
 
     contentHtml = `
       <div class="metrics-grid">
-        <div class="detail-card" ${isCompleted ? 'style="opacity:0.6;pointer-events:none;position:relative;"' : ''}>
+        <div class="detail-card" style="position:relative;">
           ${isCompleted ? '<div style="position:absolute;top:12px;right:12px;background:var(--error);color:#fff;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;letter-spacing:0.05em;z-index:2;">CLOSED</div>' : ''}
           <h3 style="margin-bottom:12px; display:flex; justify-content:space-between;">Registration Form
             ${regForm ? `<span class="status-badge ${regForm.is_active && !isCompleted ? 'status-approved' : 'status-rejected'}">${regForm.is_active && !isCompleted ? 'Open' : 'Closed'}</span>` : ''}
           </h3>
           ${regForm ? `
-            <div style="background:var(--bg-secondary); padding:8px; border-radius:4px; font-family:monospace; font-size:0.8rem; margin-bottom:12px; word-break:break-all;">
+            <div style="background:var(--bg-secondary); padding:8px; border-radius:4px; font-family:monospace; font-size:0.8rem; margin-bottom:12px; word-break:break-all;${isCompleted ? 'opacity:0.5;' : ''}">
               ${window.location.origin}/?form=${regForm.link_hash}
             </div>
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <button class="btn-outline" style="flex:1;" onclick="navigator.clipboard.writeText('${window.location.origin}/?form=${regForm.link_hash}'); showToast('Link copied!')">Copy Link</button>
+              <button class="btn-outline" style="flex:1;${isCompleted ? 'opacity:0.4;pointer-events:none;' : ''}" onclick="navigator.clipboard.writeText('${window.location.origin}/?form=${regForm.link_hash}'); showToast('Link copied!')">Copy Link</button>
               <button class="btn-outline" style="flex:1;" onclick="window.__downloadParticipantsCSV('${details.id}')"><span class="material-symbols-outlined" style="font-size:16px;">download</span> CSV</button>
             </div>
-            ${!isCompleted ? `<button class="btn-${regForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'REGISTRATION', ${!regForm.is_active})">${regForm.is_active ? 'Close Registration' : 'Open Registration'}</button>` : '<div style="padding:10px;background:var(--error-surface);border:1px solid var(--error);border-radius:var(--radius-md);text-align:center;margin-bottom:12px;font-size:0.85rem;font-weight:600;color:var(--error);">Registration closed — Event completed</div>'}
+            ${isCompleted ? '<div style="padding:10px;background:var(--error-surface);border:1px solid var(--error);border-radius:var(--radius-md);text-align:center;margin-bottom:12px;font-size:0.85rem;font-weight:600;color:var(--error);">Registration closed — Event completed</div>' : `<button class="btn-${regForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'REGISTRATION', ${!regForm.is_active})">${regForm.is_active ? 'Close Registration' : 'Open Registration'}</button>`}
           ` : '<p style="color:var(--text-tertiary); margin-bottom:12px;">Not created yet.</p>'}
           ${!isCompleted ? `<button class="btn-outline" style="width:100%;" onclick="window.__openFormBuilder('${details.id}', 'REGISTRATION')"><span class="material-symbols-outlined">edit</span> Configure Form</button>` : ''}
         </div>
         
-        <div class="detail-card">
+        <div class="detail-card" style="position:relative;">
+          ${fbClosed ? '<div style="position:absolute;top:12px;right:12px;background:var(--error);color:#fff;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;letter-spacing:0.05em;z-index:2;">CLOSED</div>' : ''}
           <h3 style="margin-bottom:12px; display:flex; justify-content:space-between;">Feedback Form
             ${fbForm ? `<span class="status-badge ${fbForm.is_active ? 'status-approved' : 'status-rejected'}">${fbForm.is_active ? 'Open' : 'Closed'}</span>` : ''}
           </h3>
           ${fbForm ? `
-            <div style="background:var(--bg-secondary); padding:8px; border-radius:4px; font-family:monospace; font-size:0.8rem; margin-bottom:12px; word-break:break-all;">
+            <div style="background:var(--bg-secondary); padding:8px; border-radius:4px; font-family:monospace; font-size:0.8rem; margin-bottom:12px; word-break:break-all;${fbClosed ? 'opacity:0.5;' : ''}">
               ${window.location.origin}/?form=${fbForm.link_hash}
             </div>
             <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <button class="btn-outline" style="flex:1;" onclick="navigator.clipboard.writeText('${window.location.origin}/?form=${fbForm.link_hash}'); showToast('Link copied!')">Copy Link</button>
+              <button class="btn-outline" style="flex:1;${fbClosed ? 'opacity:0.4;pointer-events:none;' : ''}" onclick="navigator.clipboard.writeText('${window.location.origin}/?form=${fbForm.link_hash}'); showToast('Link copied!')">Copy Link</button>
               <button class="btn-outline" style="flex:1;" onclick="window.__downloadFeedbackCSV('${details.id}')"><span class="material-symbols-outlined" style="font-size:16px;">download</span> CSV</button>
             </div>
-            <button class="btn-${fbForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'FEEDBACK', ${!fbForm.is_active})">${fbForm.is_active ? 'Close Feedback' : 'Open Feedback'}</button>
+            ${fbClosed ? '<div style="padding:10px;background:var(--error-surface);border:1px solid var(--error);border-radius:var(--radius-md);text-align:center;margin-bottom:12px;font-size:0.85rem;font-weight:600;color:var(--error);">Feedback form closed</div>' : `<button class="btn-${fbForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'FEEDBACK', ${!fbForm.is_active})">${fbForm.is_active ? 'Close Feedback' : 'Open Feedback'}</button>`}
           ` : '<p style="color:var(--text-tertiary); margin-bottom:12px;">Not created yet.</p>'}
-          <button class="btn-outline" style="width:100%;" onclick="window.__openFormBuilder('${details.id}', 'FEEDBACK')"><span class="material-symbols-outlined">edit</span> Configure Form</button>
+          ${!fbClosed ? `<button class="btn-outline" style="width:100%;" onclick="window.__openFormBuilder('${details.id}', 'FEEDBACK')"><span class="material-symbols-outlined">edit</span> Configure Form</button>` : ''}
         </div>
       </div>
     `;
@@ -3925,19 +3927,22 @@ window.__uploadMedia = async (eventId) => {
 
   if(files.length === 0 && !url) return showToast('Please select file(s) or provide a URL', 'error');
 
-  const formData = new FormData();
-  formData.append('type', type);
-  if (files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-  }
-  if (url) formData.append('url', url);
-
   try {
-     await api.admin.uploadMedia(eventId, formData);
-     showToast('Media added successfully!', 'success');
-     loadPage();
+    if (files.length > 0) {
+      // File upload via FormData (works on localhost, may fail on Vercel)
+      const formData = new FormData();
+      formData.append('type', type);
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+      if (url) formData.append('url', url);
+      await api.admin.uploadMedia(eventId, formData);
+    } else {
+      // URL-only via JSON (works on Vercel)
+      await api.admin.uploadMediaUrl(eventId, type, url);
+    }
+    showToast('Media added successfully!', 'success');
+    loadPage();
   } catch(err) { showToast(err.message, 'error'); }
 };
 

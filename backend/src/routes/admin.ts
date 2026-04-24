@@ -225,15 +225,29 @@ router.post('/events/:id/forms', async (req: AuthRequest, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
-// ========== MEDIA UPLOAD ==========
-// ========== MEDIA UPLOAD ==========
+// ========== MEDIA UPLOAD (URL-only, works on Vercel) ==========
+router.post('/events/:id/media-url', async (req: AuthRequest, res: any) => {
+    const { id } = req.params;
+    const { type, url } = req.body;
+    if (!url || !type) return res.status(400).json({ error: 'Type and URL are required.' });
+    try {
+        const urls = url.split(',').map((u: string) => u.trim()).filter((u: string) => u !== '');
+        const inserts = urls.map((attachUrl: string) => ({ event_id: id, type, url: attachUrl }));
+        if (inserts.length === 0) return res.status(400).json({ error: 'No valid URLs provided.' });
+        const { data, error } = await supabase.from('media').insert(inserts).select();
+        if (error) throw error;
+        res.json({ message: `Successfully attached ${inserts.length} media item(s)`, data });
+    } catch (err) { handleError(res, err); }
+});
+
+// ========== MEDIA UPLOAD (File + URL, localhost only) ==========
 router.post('/events/:id/media', upload.array('files', 15), async (req: AuthRequest, res: any) => {
     const { id } = req.params;
     const { type } = req.body; 
-    let urlString = req.body.url; // Fallback if they passed custom string/URL(s)
+    let urlString = req.body.url;
     
     try {
-        let inserts = [];
+        let inserts: any[] = [];
         const files = req.files as Express.Multer.File[];
         
         if (files && files.length > 0) {
@@ -244,7 +258,7 @@ router.post('/events/:id/media', upload.array('files', 15), async (req: AuthRequ
         }
         
         if (urlString && typeof urlString === 'string') {
-            const urls = urlString.split(',').map(u => u.trim()).filter(u => u !== '');
+            const urls = urlString.split(',').map((u: string) => u.trim()).filter((u: string) => u !== '');
             for (const attachUrl of urls) {
                 inserts.push({ event_id: id, type, url: attachUrl });
             }

@@ -272,6 +272,11 @@ export const api = {
         method: 'POST',
         body: formData,
       }),
+    uploadMediaUrl: (eventId, type, url) =>
+      apiFetch(`/admin/events/${eventId}/media-url`, {
+        method: 'POST',
+        body: JSON.stringify({ type, url }),
+      }),
     getParticipants: (eventId) =>
       apiFetch(`/admin/events/${eventId}/participants`),
     getFeedbacks: (eventId) =>
