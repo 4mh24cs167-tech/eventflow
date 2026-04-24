@@ -4373,3 +4373,16 @@ document.addEventListener('click', (e) => {
     }
   }
 });
+
+// Global table search filter
+window.__filterTable = (input) => {
+  const term = input.value.toLowerCase();
+  const container = input.closest('.table-section') || input.closest('.detail-card') || input.closest('.glass-panel');
+  if (!container) return;
+  const table = container.querySelector('table');
+  if (!table) return;
+  const rows = table.querySelectorAll('tbody tr:not(.cat-subcats-row)');
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+  });
+};
