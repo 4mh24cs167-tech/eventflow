@@ -28,24 +28,32 @@ function cleanupExpiredOtps() {
 const verifiedEmails = new Set<string>();
 
 // GET /public/upcoming-events
-// Returns upcoming/active events for the login page scroller
+// Returns upcoming HOD-approved events for the login page scroller
 router.get('/upcoming-events', async (req, res: any) => {
     try {
         const { data, error } = await supabase
             .from('events')
             .select('id, title, date, venue, status, departments(name)')
-            .in('status', ['APPROVED', 'PENDING_APPROVAL', 'PENDING_REVIEW'])
+            .eq('status', 'APPROVED')
             .gte('date', new Date().toISOString().split('T')[0])
             .order('date', { ascending: true })
-            .limit(20);
+            .limit(30);
         if (error) throw error;
-        const events = (data || []).map((e: any) => ({
-            title: e.title,
-            date: e.date,
-            venue: e.venue,
-            department: e.departments?.name || 'Unknown Dept',
-            status: e.status,
-        }));
+        // Deduplicate by title (show each event only once)
+        const seen = new Set<string>();
+        const events = (data || []).reduce((acc: any[], e: any) => {
+            const key = e.title.toLowerCase().trim();
+            if (!seen.has(key)) {
+                seen.add(key);
+                acc.push({
+                    title: e.title,
+                    date: e.date,
+                    venue: e.venue,
+                    department: e.departments?.name || 'Unknown Dept',
+                });
+            }
+            return acc;
+        }, []);
         res.json(events);
     } catch (err) { handleError(res, err); }
 });

@@ -381,7 +381,7 @@ async function loadUpcomingEvents() {
           <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ev.title}</div>
           <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:2px;">${ev.department} · ${new Date(ev.date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</div>
         </div>
-        <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--success-surface,#dcfce7);color:var(--success,#16a34a);flex-shrink:0;">Upcoming</span>
+        <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--primary-surface,#e0e7ff);color:var(--primary,#4f46e5);flex-shrink:0;">Approved</span>
       </div>
     `).join('');
     // Duplicate items for seamless looping
@@ -557,7 +557,6 @@ function getNavItems(role) {
       { id: 'events', icon: 'event_note', label: 'My Dept Events' },
       { id: 'reviews', icon: 'approval', label: 'Review Queue' },
       { id: 'calendar', icon: 'calendar_month', label: 'College Calendar' },
-      { id: 'verification', icon: 'verified', label: 'Verification' },
       { id: 'logs', icon: 'history', label: 'Dept Logs' },
       settingsItem,
     ];
@@ -601,7 +600,7 @@ async function loadPage() {
       case 'reviews': await renderHodReviews(content, headerActions, user); break;
       case 'categories': await renderHodCategories(content, headerActions, user); break;
       case 'global-events': await renderHodGlobalEvents(content, headerActions, user); break;
-      case 'verification': await renderHodVerification(content, headerActions, user); break;
+
       case 'hod-event-detail': await renderHodEventDetail(content, headerActions, user); break;
       case 'admin-mgmt': await renderHodAdminMgmt(content, headerActions, user); break;
       case 'admin-event-detail': await renderAdminEventDetail(content, headerActions, user); break;
@@ -1358,7 +1357,6 @@ async function renderGenericDashboard(container, user) {
           <div class="quick-actions">
             <button class="quick-action-btn" onclick="window.__nav('reviews')"><span class="material-symbols-outlined">approval</span><span>Review Queue</span></button>
             <button class="quick-action-btn" onclick="window.__nav('calendar')"><span class="material-symbols-outlined">calendar_month</span><span>Calendar</span></button>
-            <button class="quick-action-btn" onclick="window.__nav('verification')"><span class="material-symbols-outlined">verified</span><span>Verification</span></button>
             <button class="quick-action-btn" onclick="window.__nav('logs')"><span class="material-symbols-outlined">history</span><span>Dept Logs</span></button>
           </div>
         </div>
