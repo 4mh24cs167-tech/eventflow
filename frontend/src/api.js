@@ -274,6 +274,10 @@ export const api = {
       }),
     getParticipants: (eventId) =>
       apiFetch(`/admin/events/${eventId}/participants`),
+    getFeedbacks: (eventId) =>
+      apiFetch(`/admin/events/${eventId}/feedbacks`),
+    aiEvaluate: (eventId) =>
+      apiFetch(`/admin/events/${eventId}/ai-evaluate`, { method: 'POST' }),
     toggleAttendance: (participantId, present) =>
       apiFetch(`/admin/participants/${participantId}/attendance`, {
         method: 'PUT',

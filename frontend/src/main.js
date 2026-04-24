@@ -2228,8 +2228,9 @@ async function renderAdminEventDetail(container, headerActions, user) {
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'forms' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="forms" style="${lockedStyle}" ${lockedTitle}>Form Builder</button>
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'execution' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="execution" style="${lockedStyle}" ${lockedTitle}>Execution (${details.participantCount})</button>
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'media' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="media" style="${lockedStyle}" ${lockedTitle}>Media & Reports</button>
+      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'feedback' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="feedback" style="${lockedStyle}" ${lockedTitle}>Feedback & AI</button>
     </div>
-    ${!isApprovedOrCompleted && (activeTab === 'forms' || activeTab === 'execution' || activeTab === 'media') ? '<div style="background:var(--accent-surface);border:1px solid var(--accent);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:18px;">lock</span><span style="font-size:0.85rem;color:var(--accent);font-weight:600;">This section is locked until the HOD approves the event.</span></div>' : ''}
+    ${!isApprovedOrCompleted && (activeTab === 'forms' || activeTab === 'execution' || activeTab === 'media' || activeTab === 'feedback') ? '<div style="background:var(--accent-surface);border:1px solid var(--accent);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:18px;">lock</span><span style="font-size:0.85rem;color:var(--accent);font-weight:600;">This section is locked until the HOD approves the event.</span></div>' : ''}
   `;
 
   let contentHtml = '';
@@ -2391,6 +2392,25 @@ async function renderAdminEventDetail(container, headerActions, user) {
                </div>
             </div>
           `).join('') : '<p style="color:var(--text-tertiary);">No media uploaded.</p>'}
+        </div>
+      </div>
+    `;
+  } else if (activeTab === 'feedback') {
+    contentHtml = `
+      <div class="detail-card" style="margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h3 style="margin:0;">AI Feedback Evaluation</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:4px;">Powered by Google Gemini — analyzes all participant feedback</p>
+          </div>
+          <button class="btn-primary" id="btn-ai-evaluate" onclick="window.__triggerAIEval('${details.id}')" style="display:flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> Generate AI Report
+          </button>
+        </div>
+        <div id="ai-result" style="display:none;"></div>
+        <div id="ai-placeholder" style="text-align:center;padding:40px 20px;color:var(--text-tertiary);">
+          <span class="material-symbols-outlined" style="font-size:48px;opacity:0.3;">psychology</span>
+          <p style="margin-top:12px;">Click "Generate AI Report" to analyze feedback data.</p>
         </div>
       </div>
     `;
@@ -3814,6 +3834,87 @@ window.__editAdminEventModal = async (eventId) => {
       loadPage();
     } catch(err) { showToast(err.message, 'error'); }
   });
+};
+
+window.__triggerAIEval = async (eventId) => {
+  const btn = document.getElementById('btn-ai-evaluate');
+  const resultDiv = document.getElementById('ai-result');
+  const placeholder = document.getElementById('ai-placeholder');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;animation:spin 1s linear infinite;">progress_activity</span> Analyzing...';
+  placeholder.style.display = 'none';
+
+  try {
+    const data = await api.admin.aiEvaluate(eventId);
+    
+    const ratingColor = data.overall_rating >= 4 ? '#34a853' : data.overall_rating >= 3 ? '#fbbc04' : '#ea4335';
+    const ratingLabel = data.overall_rating >= 4.5 ? 'Excellent' : data.overall_rating >= 3.5 ? 'Good' : data.overall_rating >= 2.5 ? 'Average' : 'Needs Improvement';
+
+    const formatBullets = (text) => {
+      if (!text) return '<p style="color:var(--text-tertiary);">No data</p>';
+      return text.split(/\n|•|●|‣|-(?=\s)/).filter(s => s.trim()).map(s => 
+        `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;">
+          <span style="color:var(--primary);font-size:8px;margin-top:6px;">●</span>
+          <span style="font-size:0.9rem;color:var(--text-primary);line-height:1.5;">${s.trim()}</span>
+        </div>`
+      ).join('');
+    };
+
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr;gap:20px;">
+        <!-- Rating & Summary -->
+        <div style="display:flex;gap:24px;align-items:center;padding:24px;background:linear-gradient(135deg,var(--primary-surface),var(--surface-1));border-radius:var(--radius-lg);border:1px solid var(--border);flex-wrap:wrap;">
+          <div style="text-align:center;min-width:100px;">
+            <div style="width:80px;height:80px;border-radius:50%;background:${ratingColor};display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:0 4px 16px ${ratingColor}33;">
+              <span style="font-size:1.8rem;font-weight:800;color:#fff;">${data.overall_rating}</span>
+            </div>
+            <span style="font-size:0.75rem;font-weight:700;color:${ratingColor};text-transform:uppercase;letter-spacing:0.05em;">${ratingLabel}</span>
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <h4 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Event Summary</h4>
+            <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.6;">${data.summary}</p>
+          </div>
+        </div>
+
+        <!-- Strengths & Improvements -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div style="padding:20px;background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius-lg);border-top:3px solid var(--success);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <span class="material-symbols-outlined" style="color:var(--success);font-size:20px;">thumb_up</span>
+              <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin:0;">Strengths</h4>
+            </div>
+            ${formatBullets(data.strengths)}
+          </div>
+          <div style="padding:20px;background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius-lg);border-top:3px solid var(--accent);">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+              <span class="material-symbols-outlined" style="color:var(--accent);font-size:20px;">lightbulb</span>
+              <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin:0;">Areas for Improvement</h4>
+            </div>
+            ${formatBullets(data.improvements)}
+          </div>
+        </div>
+
+        <!-- Insights -->
+        <div style="padding:20px;background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius-lg);border-left:4px solid var(--primary);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <span class="material-symbols-outlined" style="color:var(--primary);font-size:20px;">insights</span>
+            <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);margin:0;">Key Insights & Recommendations</h4>
+          </div>
+          <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.6;">${data.insights}</p>
+        </div>
+      </div>
+    `;
+
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> Regenerate Report';
+    btn.disabled = false;
+  } catch(err) {
+    showToast(err.message, 'error');
+    placeholder.style.display = 'block';
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> Generate AI Report';
+    btn.disabled = false;
+  }
 };
 
 window.__uploadMedia = async (eventId) => {

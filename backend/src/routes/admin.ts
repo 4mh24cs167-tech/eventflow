@@ -307,6 +307,74 @@ router.get('/events/:id/feedbacks', async (req: AuthRequest, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
+// ========== AI FEEDBACK EVALUATION ==========
+router.post('/events/:id/ai-evaluate', async (req: AuthRequest, res: any) => {
+    const { id } = req.params;
+    const adminId = req.user.id;
+    try {
+        // Verify ownership
+        const { data: ev } = await supabase.from('events').select('id, title, target_count').eq('id', id).eq('admin_id', adminId).single();
+        if (!ev) return res.status(403).json({ error: 'Unauthorized' });
+
+        // Get feedbacks
+        const { data: feedbacks } = await supabase.from('feedbacks').select('rating, quality, suggestions').eq('event_id', id);
+        if (!feedbacks || feedbacks.length === 0) {
+            return res.status(400).json({ error: 'No feedback data available for AI evaluation. At least one feedback submission is required.' });
+        }
+
+        // Get participant count
+        const { count: participantCount } = await supabase.from('participants').select('id', { count: 'exact', head: true }).eq('event_id', id);
+
+        const avgRating = feedbacks.reduce((s: number, f: any) => s + f.rating, 0) / feedbacks.length;
+        const ratingDist = [1,2,3,4,5].map(r => ({ rating: r, count: feedbacks.filter((f: any) => f.rating === r).length }));
+
+        // Build fallback result
+        let aiResult: any = {
+            overall_rating: Math.round(avgRating * 10) / 10,
+            summary: `Event "${ev.title}" received ${feedbacks.length} feedback responses with an average rating of ${avgRating.toFixed(1)}/5. ${participantCount || 0} participants registered against a target of ${ev.target_count || 'N/A'}.`,
+            strengths: feedbacks.filter((f: any) => f.quality).map((f: any) => f.quality).filter(Boolean).slice(0, 5).join('; ') || 'No specific strengths mentioned.',
+            improvements: feedbacks.filter((f: any) => f.suggestions).map((f: any) => f.suggestions).filter(Boolean).slice(0, 5).join('; ') || 'No specific improvements suggested.',
+            insights: `Rating distribution: ${ratingDist.map(r => `${r.rating}★: ${r.count}`).join(', ')}. Participation rate: ${ev.target_count ? Math.round(((participantCount || 0) / ev.target_count) * 100) : 'N/A'}%.`
+        };
+
+        // Use Gemini if API key is available
+        if (process.env.AI_API_KEY) {
+            try {
+                const { GoogleGenerativeAI } = require('@google/generative-ai');
+                const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const prompt = `You are an educational event quality analyst. Analyze this college event feedback data and provide a professional evaluation.
+
+Event: "${ev.title}"
+Target Participants: ${ev.target_count || 'Not set'}
+Actual Participants: ${participantCount || 0}
+Total Feedbacks: ${feedbacks.length}
+Average Rating: ${avgRating.toFixed(1)}/5
+
+Feedback Data:
+${feedbacks.map((f: any, i: number) => `[${i+1}] Rating: ${f.rating}/5 | Liked: "${f.quality || 'N/A'}" | Suggestions: "${f.suggestions || 'N/A'}"`).join('\n')}
+
+Return ONLY a valid JSON object (no markdown, no code blocks) with these exact keys:
+"overall_rating": (number 1-5 with one decimal),
+"summary": (2-3 sentence professional performance summary),
+"strengths": (3-5 bullet points of what went well, separated by newlines),
+"improvements": (3-5 bullet points of actionable improvements, separated by newlines),
+"insights": (2-3 sentences about participation trends, engagement patterns, and recommendations for future events)`;
+
+                const result = await model.generateContent(prompt);
+                const responseText = result.response.text();
+                const cleaned = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+                const parsed = JSON.parse(cleaned);
+                aiResult = { ...aiResult, ...parsed };
+            } catch (aiErr) {
+                console.warn('AI evaluation failed, using statistical fallback:', aiErr);
+            }
+        }
+
+        res.json(aiResult);
+    } catch (err) { handleError(res, err); }
+});
+
 // ========== PUBLIC / META REQS FOR ADMIN ==========
 router.get('/categories', async (req: AuthRequest, res: any) => {
     const adminId = req.user.id;
