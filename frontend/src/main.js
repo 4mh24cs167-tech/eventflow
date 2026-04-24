@@ -1026,21 +1026,8 @@ async function renderEventDetail(container, headerActions, user) {
         </div>
       </div>
 
-      <!-- Sidebar: AI Summary -->
+      <!-- Sidebar -->
       <div class="detail-sidebar">
-        <div class="detail-card ai-card">
-          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">psychology</span> AI Evaluation</h3>
-          ${ev.ai_evaluation ? `
-            <div class="ai-rating">
-              <span class="ai-rating-value">${ev.ai_evaluation.overall_rating}</span>
-              <span class="ai-rating-label">/ 5.0 Overall</span>
-            </div>
-            <div class="ai-section"><strong>Summary</strong><p>${ev.ai_evaluation.summary || '—'}</p></div>
-            <div class="ai-section"><strong>Strengths</strong><p>${ev.ai_evaluation.strengths || '—'}</p></div>
-            <div class="ai-section"><strong>Improvements</strong><p>${ev.ai_evaluation.improvements || '—'}</p></div>
-            <div class="ai-section"><strong>Insights</strong><p>${ev.ai_evaluation.insights || '—'}</p></div>
-          ` : '<div class="empty-state" style="padding:20px;"><span class="material-symbols-outlined">smart_toy</span><p>AI evaluation not yet generated.</p></div>'}
-        </div>
 
         <div class="detail-card">
           <h3>Feedback Summary</h3>
@@ -2039,25 +2026,7 @@ async function renderHodEventDetail(container, headerActions, user) {
 
       <!-- Sidebar -->
       <div class="detail-sidebar">
-        <!-- AI Evaluation -->
-        <div class="detail-card ai-card">
-          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">psychology</span> AI Evaluation</h3>
-          ${ev.ai_evaluation ? `
-            <div class="ai-rating">
-              <span class="ai-rating-value">${ev.ai_evaluation.overall_rating}</span>
-              <span class="ai-rating-label">/ 5.0 Overall</span>
-            </div>
-            <div class="ai-section"><strong>Summary</strong><p>${ev.ai_evaluation.summary || '—'}</p></div>
-            <div class="ai-section"><strong>Strengths</strong><p>${ev.ai_evaluation.strengths || '—'}</p></div>
-            <div class="ai-section"><strong>Improvements</strong><p>${ev.ai_evaluation.improvements || '—'}</p></div>
-            <div class="ai-section"><strong>Insights</strong><p>${ev.ai_evaluation.insights || '—'}</p></div>
-          ` : `
-            <div class="empty-state" style="padding:20px;"><span class="material-symbols-outlined">smart_toy</span><p>AI evaluation not yet generated.</p></div>
-          `}
-          ${ev.is_own_dept ? `<button class="btn-primary" style="width:100%;margin-top:12px;" onclick="window.__triggerAIAndRefresh('${ev.id}')">
-            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">psychology</span> ${ev.ai_evaluation ? 'Regenerate AI Review' : 'Generate AI Review'}
-          </button>` : ''}
-        </div>
+
 
         <!-- Actions (own dept) -->
         ${ev.is_own_dept ? `
@@ -2228,9 +2197,8 @@ async function renderAdminEventDetail(container, headerActions, user) {
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'forms' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="forms" style="${lockedStyle}" ${lockedTitle}>Form Builder</button>
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'execution' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="execution" style="${lockedStyle}" ${lockedTitle}>Execution (${details.participantCount})</button>
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'media' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="media" style="${lockedStyle}" ${lockedTitle}>Media & Reports</button>
-      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'feedback' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="feedback" style="${lockedStyle}" ${lockedTitle}>Feedback & AI</button>
     </div>
-    ${!isApprovedOrCompleted && (activeTab === 'forms' || activeTab === 'execution' || activeTab === 'media' || activeTab === 'feedback') ? '<div style="background:var(--accent-surface);border:1px solid var(--accent);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:18px;">lock</span><span style="font-size:0.85rem;color:var(--accent);font-weight:600;">This section is locked until the HOD approves the event.</span></div>' : ''}
+    ${!isApprovedOrCompleted && (activeTab === 'forms' || activeTab === 'execution' || activeTab === 'media') ? '<div style="background:var(--accent-surface);border:1px solid var(--accent);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:18px;">lock</span><span style="font-size:0.85rem;color:var(--accent);font-weight:600;">This section is locked until the HOD approves the event.</span></div>' : ''}
   `;
 
   let contentHtml = '';
@@ -2394,25 +2362,6 @@ async function renderAdminEventDetail(container, headerActions, user) {
                </div>
             </div>
           `).join('') : '<p style="color:var(--text-tertiary);">No media uploaded.</p>'}
-        </div>
-      </div>
-    `;
-  } else if (activeTab === 'feedback') {
-    contentHtml = `
-      <div class="detail-card" style="margin-bottom:24px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-          <div>
-            <h3 style="margin:0;">AI Feedback Evaluation</h3>
-            <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:4px;">Powered by Google Gemini — analyzes all participant feedback</p>
-          </div>
-          <button class="btn-primary" id="btn-ai-evaluate" onclick="window.__triggerAIEval('${details.id}')" style="display:flex;align-items:center;gap:6px;">
-            <span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> Generate AI Report
-          </button>
-        </div>
-        <div id="ai-result" style="display:none;"></div>
-        <div id="ai-placeholder" style="text-align:center;padding:40px 20px;color:var(--text-tertiary);">
-          <span class="material-symbols-outlined" style="font-size:48px;opacity:0.3;">psychology</span>
-          <p style="margin-top:12px;">Click "Generate AI Report" to analyze feedback data.</p>
         </div>
       </div>
     `;
