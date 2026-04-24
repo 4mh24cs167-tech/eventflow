@@ -1128,7 +1128,12 @@ async function renderEventDetail(container, headerActions, user) {
 
         <!-- Participants -->
         <div class="detail-card">
-          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">groups</span> Participants (${ev.participant_count})</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="margin:0;"><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">groups</span> Participants (${ev.participant_count})</h3>
+            ${ev.participants.length > 0 ? `<button class="btn-outline" style="padding:4px 12px;font-size:0.75rem;" onclick="window.__downloadParticipantsFromData(${JSON.stringify(ev.participants).replace(/'/g,'\\u0027').replace(/"/g,'&quot;')}, '${ev.title}')">
+              <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">download</span> CSV
+            </button>` : ''}
+          </div>
           ${ev.participants.length > 0 ? `
           <div style="overflow-x:auto;">
             <table class="data-table compact">
@@ -2097,7 +2102,12 @@ async function renderHodEventDetail(container, headerActions, user) {
         <!-- Participants (own dept only) -->
         ${ev.is_own_dept ? `
         <div class="detail-card">
-          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">groups</span> Participants (${ev.participant_count})</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <h3 style="margin:0;"><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:6px;">groups</span> Participants (${ev.participant_count})</h3>
+            ${ev.participants.length > 0 ? `<button class="btn-outline" style="padding:4px 12px;font-size:0.75rem;" onclick="window.__downloadParticipantsFromData(${JSON.stringify(ev.participants).replace(/'/g,'\\u0027').replace(/"/g,'&quot;')}, '${ev.title}')">
+              <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">download</span> CSV
+            </button>` : ''}
+          </div>
           ${ev.participants.length > 0 ? `
           <div style="overflow-x:auto;">
             <table class="data-table compact">
@@ -4167,23 +4177,28 @@ window.__downloadFeedbackCSV = async (eventId) => {
     const feedbacks = await api.admin.getFeedbacks(eventId);
     if (!feedbacks || feedbacks.length === 0) return showToast('No feedback data yet.', 'info');
     
-    // Attempt dynamic headers based on the first record
-    let header = ['Submission Date'];
+    // Build headers: fixed columns + dynamic custom_data keys
+    const fixedHeaders = ['Submission Date', 'Rating', 'What They Liked', 'Suggestions'];
+    const customKeys = [];
     if (feedbacks.length > 0) {
       const keys = Object.keys(feedbacks[0].custom_data || {});
-      header = header.concat(keys);
+      keys.forEach(k => { if (!customKeys.includes(k)) customKeys.push(k); });
     }
+    const header = [...fixedHeaders, ...customKeys];
 
     const rows = feedbacks.map(f => {
       const data = f.custom_data || {};
-      const row = [new Date(f.created_at).toLocaleString()];
-      header.slice(1).forEach(k => {
-        row.push(data[k] || '');
-      });
+      const row = [
+        new Date(f.created_at).toLocaleString(),
+        f.rating || '',
+        f.quality || '',
+        f.suggestions || '',
+      ];
+      customKeys.forEach(k => row.push(data[k] || ''));
       return row.map(field => `"${String(field).replace(/"/g, '""')}"`);
     });
 
-    const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\\n');
+    const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -4192,6 +4207,28 @@ window.__downloadFeedbackCSV = async (eventId) => {
     a.click();
     URL.revokeObjectURL(url);
   } catch (err) { showToast(err.message, 'error'); }
+};
+
+// Download participants CSV from pre-loaded data (for HOD/Principal)
+window.__downloadParticipantsFromData = (participants, eventTitle) => {
+  if (!participants || participants.length === 0) return showToast('No participants data.', 'info');
+  const header = ['Name', 'Email', 'Phone', 'Department', 'Year', 'Registration Date'];
+  const rows = participants.map(p => [
+    p.name || 'N/A',
+    p.email || 'N/A',
+    p.phone || 'N/A',
+    p.department || 'N/A',
+    p.year || 'N/A',
+    p.created_at ? new Date(p.created_at).toLocaleString() : 'N/A'
+  ].map(field => `"${String(field).replace(/"/g, '""')}"`));
+  const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(eventTitle || 'event').replace(/[^a-zA-Z0-9]/g, '_')}_participants.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 };
 
 window.__addSubcat = (catId, catName) => showAddSubcategoryModal(catId, catName);
