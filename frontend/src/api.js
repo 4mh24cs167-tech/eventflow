@@ -131,6 +131,12 @@ export const api = {
       return apiFetch(`/principal/schedules${qs ? '?' + qs : ''}`);
     },
     getDeptEventChart: (deptId) => apiFetch(`/principal/departments/${deptId}/event-chart`),
+    getCategoriesOverview: (filters = {}) => {
+      const params = new URLSearchParams();
+      if (filters.department_id) params.set('department_id', filters.department_id);
+      const qs = params.toString();
+      return apiFetch(`/principal/categories-overview${qs ? '?' + qs : ''}`);
+    },
   },
 
   hod: {

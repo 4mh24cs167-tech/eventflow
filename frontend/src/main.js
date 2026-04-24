@@ -390,6 +390,7 @@ function getNavItems(role) {
     return [
       { id: 'dashboard', icon: 'dashboard', label: 'Dashboard' },
       { id: 'departments', icon: 'business', label: 'Departments' },
+      { id: 'category-overview', icon: 'category', label: 'Category Overview' },
       { id: 'schedule-overview', icon: 'event_repeat', label: 'Schedule Overview' },
       { id: 'calendar', icon: 'calendar_month', label: 'Event Calendar' },
       { id: 'events', icon: 'event_note', label: 'All Events' },
@@ -458,6 +459,7 @@ async function loadPage() {
       case 'scheduling': await renderHodScheduling(content, headerActions, user); break;
       case 'hod-schedules': await renderAdminSchedules(content, headerActions, user); break;
       case 'schedule-overview': await renderPrincipalScheduleOverview(content, headerActions, user); break;
+      case 'category-overview': await renderCategoryOverview(content, headerActions, user); break;
       case 'settings': renderSettings(content, headerActions, user); break;
       default: await renderDashboard(content, headerActions, user);
     }
@@ -3252,6 +3254,195 @@ async function showCreateHodModal() {
 
 // =============================================
 //       SETTINGS PAGE
+// =============================================
+
+// ===== CATEGORY OVERVIEW (Principal) =====
+async function renderCategoryOverview(container, headerActions, user) {
+  const filterDept = pageState.catOverviewDept || '';
+  const viewMode = pageState.catOverviewView || 'table';
+
+  const data = await api.principal.getCategoriesOverview(filterDept ? { department_id: filterDept } : {});
+  const { departments, categories, stats } = data;
+
+  headerActions.innerHTML = `
+    <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
+  `;
+
+  // Stat cards
+  const statsHtml = `
+    <div class="metrics-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom:24px;">
+      ${metricCard('business', stats.total_departments, 'Departments', 'Total', '')}
+      ${metricCard('category', stats.total_categories, 'Categories', 'Total', 'accent-secondary')}
+      ${metricCard('account_tree', stats.total_subcategories, 'Subcategories', 'Total', 'accent-info')}
+      ${metricCard('event_note', stats.total_events, 'Events', 'Total', 'accent-primary')}
+    </div>
+  `;
+
+  // Department filter chips
+  const chipsHtml = `
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+      <button class="btn-outline ${!filterDept ? 'active' : ''}" data-dept-filter="" style="${!filterDept ? 'background:var(--primary);color:#fff;border-color:var(--primary);' : ''}">
+        <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">apps</span> All Departments
+      </button>
+      ${departments.map(d => `
+        <button class="btn-outline ${filterDept === d.id ? 'active' : ''}" data-dept-filter="${d.id}" style="${filterDept === d.id ? 'background:var(--primary);color:#fff;border-color:var(--primary);' : ''}">
+          ${d.name}
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  // View toggle
+  const toggleHtml = `
+    <div style="display:flex; justify-content:flex-end; margin-bottom:16px; gap:4px;">
+      <button class="btn-icon" id="view-table" title="Table View" style="${viewMode === 'table' ? 'background:var(--primary);color:#fff;border-radius:var(--radius-md);' : ''}">
+        <span class="material-symbols-outlined" style="font-size:18px;">table_rows</span>
+      </button>
+      <button class="btn-icon" id="view-grid" title="Card View" style="${viewMode === 'grid' ? 'background:var(--primary);color:#fff;border-radius:var(--radius-md);' : ''}">
+        <span class="material-symbols-outlined" style="font-size:18px;">grid_view</span>
+      </button>
+    </div>
+  `;
+
+  let contentHtml = '';
+
+  if (categories.length === 0) {
+    contentHtml = '<div class="empty-state"><span class="material-symbols-outlined">category</span><p>No categories found.</p></div>';
+  } else if (viewMode === 'table') {
+    // Table view with expandable rows
+    contentHtml = `
+      <div class="table-section">
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="cat-overview-table">
+            <thead>
+              <tr>
+                <th style="width:30px;"></th>
+                <th>Category</th>
+                <th>Department</th>
+                <th style="text-align:center;">Subcategories</th>
+                <th style="text-align:center;">Events</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${categories.map(cat => `
+                <tr class="clickable-row cat-row" data-cat-id="${cat.id}" style="cursor:pointer;">
+                  <td><span class="material-symbols-outlined cat-expand-icon" style="font-size:18px;color:var(--text-tertiary);transition:transform 0.2s;">chevron_right</span></td>
+                  <td>
+                    <div style="font-weight:700;color:var(--text-primary);">${cat.name}</div>
+                  </td>
+                  <td><span class="category-tag">${cat.department_name}</span></td>
+                  <td style="text-align:center;"><span style="font-weight:600;">${cat.subcategories.length}</span></td>
+                  <td style="text-align:center;"><span style="font-weight:700;font-size:1.05rem;color:${cat.event_count > 0 ? 'var(--primary)' : 'var(--text-tertiary)'};">${cat.event_count}</span></td>
+                </tr>
+                <tr class="cat-subcats-row" data-parent="${cat.id}" style="display:none;">
+                  <td colspan="5" style="padding:0;">
+                    <div style="background:var(--surface-1);padding:12px 16px 12px 48px;border-top:1px solid var(--border);">
+                      ${cat.subcategories.length > 0 ? `
+                        <table style="width:100%;border-collapse:collapse;">
+                          <thead>
+                            <tr>
+                              <th style="text-align:left;font-size:0.7rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;padding:6px 12px;">Subcategory</th>
+                              <th style="text-align:center;font-size:0.7rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;padding:6px 12px;">Events</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${cat.subcategories.map(sub => `
+                              <tr>
+                                <td style="padding:8px 12px;font-size:0.85rem;color:var(--text-secondary);border-bottom:1px solid var(--border);">
+                                  <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;margin-right:6px;color:var(--text-tertiary);">subdirectory_arrow_right</span>
+                                  ${sub.name}
+                                </td>
+                                <td style="text-align:center;padding:8px 12px;font-weight:700;font-size:0.95rem;color:${sub.event_count > 0 ? 'var(--success)' : 'var(--text-tertiary)'};border-bottom:1px solid var(--border);">${sub.event_count}</td>
+                              </tr>
+                            `).join('')}
+                          </tbody>
+                        </table>
+                      ` : '<p style="font-size:0.8rem;color:var(--text-tertiary);font-style:italic;padding:4px 0;">No subcategories</p>'}
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  } else {
+    // Grid/Card view
+    contentHtml = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;">
+        ${categories.map(cat => `
+          <div class="detail-card" style="position:relative;overflow:hidden;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+              <div>
+                <h3 style="font-size:1rem;font-weight:800;margin-bottom:4px;">${cat.name}</h3>
+                <span class="category-tag">${cat.department_name}</span>
+              </div>
+              <div style="text-align:center;padding:8px 14px;background:var(--primary-surface);border-radius:var(--radius-md);">
+                <div style="font-size:1.4rem;font-weight:800;color:var(--primary);">${cat.event_count}</div>
+                <div style="font-size:0.65rem;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;">Events</div>
+              </div>
+            </div>
+            ${cat.subcategories.length > 0 ? `
+              <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:12px;">
+                <div style="font-size:0.7rem;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Subcategories (${cat.subcategories.length})</div>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  ${cat.subcategories.map(sub => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surface-1);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                      <span style="font-size:0.8rem;color:var(--text-secondary);">${sub.name}</span>
+                      <span style="font-size:0.85rem;font-weight:700;color:${sub.event_count > 0 ? 'var(--success)' : 'var(--text-tertiary)'};">${sub.event_count}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : '<p style="font-size:0.8rem;color:var(--text-tertiary);font-style:italic;margin-top:12px;">No subcategories created</p>'}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  container.innerHTML = statsHtml + chipsHtml + toggleHtml + contentHtml;
+
+  // Filter chip handlers
+  container.querySelectorAll('[data-dept-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pageState.catOverviewDept = btn.dataset.deptFilter;
+      loadPage();
+    });
+  });
+
+  // View toggle handlers
+  document.getElementById('view-table')?.addEventListener('click', () => {
+    pageState.catOverviewView = 'table';
+    loadPage();
+  });
+  document.getElementById('view-grid')?.addEventListener('click', () => {
+    pageState.catOverviewView = 'grid';
+    loadPage();
+  });
+
+  // Expandable row handlers (table view)
+  container.querySelectorAll('.cat-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const catId = row.dataset.catId;
+      const subcatRow = container.querySelector(`.cat-subcats-row[data-parent="${catId}"]`);
+      const icon = row.querySelector('.cat-expand-icon');
+      if (subcatRow.style.display === 'none') {
+        subcatRow.style.display = 'table-row';
+        icon.style.transform = 'rotate(90deg)';
+      } else {
+        subcatRow.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+      }
+    });
+  });
+
+  document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
+}
+
+// =============================================
+//       SETTINGS
 // =============================================
 
 function renderSettings(container, headerActions, user) {

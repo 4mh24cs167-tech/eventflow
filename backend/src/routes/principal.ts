@@ -506,5 +506,89 @@ router.get('/departments/:id/event-chart', async (req, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
+// ========== CATEGORIES OVERVIEW (all departments) ==========
+router.get('/categories-overview', async (req: any, res: any) => {
+    try {
+        const { department_id } = req.query;
+
+        // Get all departments
+        const { data: departments } = await supabase.from('departments').select('id, name').order('name');
+
+        // Get all categories with department info
+        let catQuery = supabase.from('categories').select('id, name, department_id, created_at').order('name');
+        if (department_id) catQuery = catQuery.eq('department_id', department_id);
+        const { data: categories, error: catErr } = await catQuery;
+        if (catErr) throw catErr;
+
+        // Get all subcategories
+        const catIds = (categories || []).map((c: any) => c.id);
+        let subcategories: any[] = [];
+        if (catIds.length > 0) {
+            const { data: subs } = await supabase
+                .from('subcategories')
+                .select('id, name, category_id, created_at')
+                .in('category_id', catIds)
+                .order('name');
+            subcategories = subs || [];
+        }
+
+        // Count events per category and per subcategory
+        const catEventCounts: Record<string, number> = {};
+        const subEventCounts: Record<string, number> = {};
+
+        for (const cat of (categories || [])) {
+            const { count } = await supabase
+                .from('events')
+                .select('*', { count: 'exact', head: true })
+                .eq('category_id', cat.id);
+            catEventCounts[cat.id] = count || 0;
+        }
+
+        for (const sub of subcategories) {
+            const { count } = await supabase
+                .from('events')
+                .select('*', { count: 'exact', head: true })
+                .eq('subcategory_id', sub.id);
+            subEventCounts[sub.id] = count || 0;
+        }
+
+        // Build dept map
+        const deptMap: Record<string, string> = {};
+        (departments || []).forEach((d: any) => { deptMap[d.id] = d.name; });
+
+        // Build response
+        const result = (categories || []).map((cat: any) => ({
+            id: cat.id,
+            name: cat.name,
+            department_id: cat.department_id,
+            department_name: deptMap[cat.department_id] || '—',
+            created_at: cat.created_at,
+            event_count: catEventCounts[cat.id] || 0,
+            subcategories: subcategories
+                .filter((s: any) => s.category_id === cat.id)
+                .map((s: any) => ({
+                    id: s.id,
+                    name: s.name,
+                    event_count: subEventCounts[s.id] || 0,
+                    created_at: s.created_at,
+                })),
+        }));
+
+        // Summary stats
+        const totalEvents = Object.values(catEventCounts).reduce((a, b) => a + b, 0);
+
+        res.json({
+            departments: departments || [],
+            categories: result,
+            stats: {
+                total_departments: (departments || []).length,
+                total_categories: (categories || []).length,
+                total_subcategories: subcategories.length,
+                total_events: totalEvents,
+            }
+        });
+    } catch (err) { handleError(res, err); }
+});
+
 export default router;
 
