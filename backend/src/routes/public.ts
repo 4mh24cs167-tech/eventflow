@@ -33,23 +33,23 @@ router.get('/upcoming-events', async (req, res: any) => {
     try {
         const { data, error } = await supabase
             .from('events')
-            .select('id, title, date, venue, status, departments(name)')
+            .select('id, title, date, venue, status, departments(name), categories(name)')
             .eq('status', 'APPROVED')
             .gte('date', new Date().toISOString().split('T')[0])
             .order('date', { ascending: true })
             .limit(30);
         if (error) throw error;
-        // Deduplicate by title (show each event only once)
+        // Deduplicate by event ID
         const seen = new Set<string>();
         const events = (data || []).reduce((acc: any[], e: any) => {
-            const key = e.title.toLowerCase().trim();
-            if (!seen.has(key)) {
-                seen.add(key);
+            if (!seen.has(e.id)) {
+                seen.add(e.id);
                 acc.push({
                     title: e.title,
                     date: e.date,
                     venue: e.venue,
                     department: e.departments?.name || 'Unknown Dept',
+                    category: e.categories?.name || '',
                 });
             }
             return acc;

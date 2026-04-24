@@ -381,7 +381,7 @@ async function loadUpcomingEvents() {
           <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${ev.title}</div>
           <div style="font-size:0.75rem;color:var(--text-tertiary);margin-top:2px;">${ev.department} · ${new Date(ev.date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</div>
         </div>
-        <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--primary-surface,#e0e7ff);color:var(--primary,#4f46e5);flex-shrink:0;">Approved</span>
+        ${ev.category ? `<span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--primary-surface,#e0e7ff);color:var(--primary,#4f46e5);flex-shrink:0;white-space:nowrap;">${ev.category}</span>` : ''}
       </div>
     `).join('');
     // Duplicate items for seamless looping
