@@ -384,23 +384,44 @@ async function loadUpcomingEvents() {
         ${ev.category ? `<span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--primary-surface,#e0e7ff);color:var(--primary,#4f46e5);flex-shrink:0;white-space:nowrap;">${ev.category}</span>` : ''}
       </div>
     `).join('');
-    // Duplicate items for seamless looping
-    inner.innerHTML = itemHtml + itemHtml;
+    // We need the base content to be taller than the container (160px) so the loop is seamless
+    const estItemHeight = 60; 
+    const copiesNeeded = Math.ceil(160 / (events.length * estItemHeight));
+    const copies = Math.max(1, copiesNeeded);
+    
+    let baseBlock = '';
+    for (let i = 0; i < copies; i++) {
+      baseBlock += itemHtml;
+    }
+    
+    // Duplicate the base block exactly once for the CSS translateY(-50%) trick
+    inner.innerHTML = baseBlock + baseBlock;
 
-    // Auto-scroll animation
-    const scroller = document.getElementById('events-scroller');
-    if (!scroller) return;
-    let scrollPos = 0;
-    const totalHeight = inner.scrollHeight / 2;
-    let animationFrame;
-    const scrollStep = () => {
-      if (!document.getElementById('events-scroller')) return;
-      scrollPos += 0.5; // Smooth speed
-      if (scrollPos >= totalHeight) scrollPos = 0;
-      inner.style.transform = `translateY(-${scrollPos}px)`;
-      animationFrame = requestAnimationFrame(scrollStep);
-    };
-    animationFrame = requestAnimationFrame(scrollStep);
+    // Add CSS animation if not exists
+    if (!document.getElementById('events-marquee-style')) {
+      const style = document.createElement('style');
+      style.id = 'events-marquee-style';
+      style.innerHTML = `
+        @keyframes marquee-up {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(-50%); }
+        }
+        .animate-marquee-up {
+          /* Duration will be overridden inline */
+          animation: marquee-up 10s linear infinite;
+        }
+        .animate-marquee-up:hover {
+          animation-play-state: paused;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
+    // Set animation duration based on total items so speed is constant
+    const totalItemsInBase = events.length * copies;
+    const duration = totalItemsInBase * 3.5; // 3.5 seconds per item
+    inner.style.animation = `marquee-up ${duration}s linear infinite`;
+    inner.classList.add('animate-marquee-up');
   } catch (err) {
     inner.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">Could not load events</div>';
   }
