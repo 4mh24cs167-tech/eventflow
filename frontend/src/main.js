@@ -205,16 +205,7 @@ function renderLogin() {
                 </button>
               </div>
               
-              <div class="flex items-center gap-4 py-2">
-                <div class="h-[1px] flex-grow bg-outline-variant/30 dark:bg-outline/30"></div>
-                <span class="text-xs font-medium text-outline-variant dark:text-outline uppercase tracking-wider">or</span>
-                <div class="h-[1px] flex-grow bg-outline-variant/30 dark:bg-outline/30"></div>
-              </div>
-              
-              <button class="w-full flex items-center justify-center gap-3 bg-surface-container-lowest dark:bg-slate-800 hover:bg-surface-container-low dark:hover:bg-slate-700 text-primary dark:text-primary-fixed border border-outline-variant/30 dark:border-outline/30 font-headline font-bold py-3 rounded-lg transition-colors" type="button">
-                <img alt="Google" class="w-5 h-5 opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBasqpNjPeRE4lVoIqRblgBuorpCTeoU3MZp6aUqathXtklnvgu7NSG4ARksKf8V9hKNpCon-yeAWjoDgFQ2QeO10iiuFtuYH-3LHN9EsAqTNUqQwV3SIqGzmYoV-i2LwzPmK2l4nqzBdUEpofn-597z2ChzJtZg1EQDbBDhE7ZBg47140rsGceKdGh4u0eb_ITT-LyBuYjzM9O2NrQTJxlXV-i5AOfw31A0u2P7Tx-ijZvqNA5EE25FVs45n2chxz0m-sAG1WtVAEB" />
-                <span>Single Sign-On</span>
-              </button>
+
             </form>
           </div>
         </div>
@@ -2322,22 +2313,22 @@ async function renderAdminEventDetail(container, headerActions, user) {
         <h3>Upload Post-Event Media</h3>
         <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Upload a physical file or provide a direct web URL.</p>
         <div style="display:flex; flex-direction:column; gap:12px;">
-           <div style="display:flex; gap:12px; align-items:flex-end;">
-               <div class="form-group" style="margin:0; width:150px;">
-                 <label>Type</label>
-                 <select id="media-type">
+           <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+               <div style="margin:0; width:150px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Type</label>
+                 <select id="media-type" style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;">
                    <option value="IMAGE">Image</option>
                    <option value="VIDEO">Video</option>
                    <option value="REPORT_PDF">Report (PDF)</option>
                  </select>
                </div>
-               <div class="form-group" style="margin:0; flex:1;">
-                 <label>Select File(s) (Max 50MB each)</label>
-                 <input type="file" id="media-file" multiple style="padding:6px;" accept="image/*,video/*,application/pdf" />
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Select File(s) (Max 50MB each)</label>
+                 <input type="file" id="media-file" multiple accept="image/*,video/*,application/pdf" style="width:100%; padding:8px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
                </div>
-               <div class="form-group" style="margin:0; flex:1;">
-                 <label>Or Web URL(s) (Comma separated)</label>
-                 <input type="text" id="media-url" placeholder="https://..." />
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Or Web URL(s) (Comma separated)</label>
+                 <input type="text" id="media-url" placeholder="https://..." style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
                </div>
            </div>
            <button class="btn-primary" style="align-self:flex-end;" onclick="window.__uploadMedia('${details.id}')">Add Media</button>
@@ -2478,11 +2469,14 @@ async function renderPublicForm(hash) {
         const res = await api.public.submitForm(hash, payload);
         
         app.innerHTML = `
-          <div class="login-page">
-            <div class="login-container" style="text-align:center; padding:48px 32px;">
-              <span class="material-symbols-outlined" style="font-size:48px; color:var(--success); margin-bottom:16px;">check_circle</span>
-              <h2 style="margin-bottom:8px;">Success!</h2>
-              <p style="color:var(--text-secondary);">${res.message}</p>
+          <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--surface-1); padding:24px;">
+            <div style="background:var(--surface-0); border:1px solid var(--border); border-radius:var(--radius-lg); padding:48px 40px; text-align:center; max-width:420px; width:100%; box-shadow:var(--shadow-lg);">
+              <div style="width:64px; height:64px; border-radius:50%; background:var(--success-surface); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                <span class="material-symbols-outlined" style="font-size:32px; color:var(--success);">check_circle</span>
+              </div>
+              <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Registration Successful!</h2>
+              <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6;">${res.message}</p>
+              <p style="color:var(--text-tertiary); font-size:0.8rem; margin-top:20px;">You may close this tab now.</p>
             </div>
           </div>
         `;
