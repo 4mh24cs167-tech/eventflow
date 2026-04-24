@@ -202,7 +202,8 @@ function renderLogin() {
                 </div>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant dark:text-outline material-symbols-outlined" style="font-size: 18px;">lock</span>
-                  <input class="w-full bg-surface-container-low dark:bg-slate-800/50 border-none rounded-lg pl-10 pr-4 py-3.5 text-on-surface dark:text-slate-100 focus:ring-0 focus:ring-offset-0 placeholder:text-outline-variant dark:placeholder:text-outline transition-all border-b-2 border-transparent focus:border-primary dark:focus:border-primary-fixed" id="login-password" placeholder="••••••••" type="password" required />
+                  <input class="w-full bg-surface-container-low dark:bg-slate-800/50 border-none rounded-lg pl-10 pr-10 py-3.5 text-on-surface dark:text-slate-100 focus:ring-0 focus:ring-offset-0 placeholder:text-outline-variant dark:placeholder:text-outline transition-all border-b-2 border-transparent focus:border-primary dark:focus:border-primary-fixed" id="login-password" placeholder="••••••••" type="password" required />
+                  <span class="material-symbols-outlined pw-toggle absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-outline-variant hover:text-primary dark:hover:text-primary-fixed" style="font-size:20px;user-select:none;">visibility_off</span>
                 </div>
               </div>
 
@@ -253,8 +254,14 @@ function renderLogin() {
         <!-- Step 3: New Password -->
         <div id="forgot-step-3" style="display:none;">
           <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;">Set your new password (min 6 characters).</p>
-          <input type="password" id="forgot-new-pass" placeholder="New Password" style="width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface-0);color:var(--text-primary);font-size:0.9rem;margin-bottom:10px;box-sizing:border-box;" />
-          <input type="password" id="forgot-confirm-pass" placeholder="Confirm Password" style="width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface-0);color:var(--text-primary);font-size:0.9rem;margin-bottom:16px;box-sizing:border-box;" />
+          <div style="position:relative;width:100%;margin-bottom:10px;">
+            <input type="password" id="forgot-new-pass" placeholder="New Password" style="width:100%;padding:12px 14px;padding-right:40px;border:1px solid var(--border);border-radius:8px;background:var(--surface-0);color:var(--text-primary);font-size:0.9rem;box-sizing:border-box;" />
+            <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+          </div>
+          <div style="position:relative;width:100%;margin-bottom:16px;">
+            <input type="password" id="forgot-confirm-pass" placeholder="Confirm Password" style="width:100%;padding:12px 14px;padding-right:40px;border:1px solid var(--border);border-radius:8px;background:var(--surface-0);color:var(--text-primary);font-size:0.9rem;box-sizing:border-box;" />
+            <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+          </div>
           <div style="display:flex;gap:8px;">
             <button id="forgot-back-2" style="flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-primary);cursor:pointer;font-weight:600;">Back</button>
             <button id="forgot-reset-pass" style="flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;cursor:pointer;font-weight:600;">Reset Password</button>
@@ -2279,7 +2286,10 @@ function showCreateAdminModal() {
       </div>
       <div class="form-group">
         <label for="admin-password">Password</label>
-        <input type="password" id="admin-password" placeholder="Min 6 characters" required />
+        <div style="position:relative;width:100%;">
+          <input type="password" id="admin-password" placeholder="Min 6 characters" required style="padding-right:40px;" />
+          <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -3368,7 +3378,10 @@ async function showCreateHodModal() {
       </div>
       <div class="form-group">
         <label for="hod-password">Password</label>
-        <input type="password" id="hod-password" placeholder="Min 6 characters" required />
+        <div style="position:relative;width:100%;">
+          <input type="password" id="hod-password" placeholder="Min 6 characters" required style="padding-right:40px;" />
+          <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+        </div>
       </div>
       <div class="form-group">
         <label for="hod-dept">Assign to Department <span style="color:var(--error);">*</span></label>
@@ -3615,51 +3628,66 @@ function renderSettings(container, headerActions, user) {
   const isDark = getCurrentTheme() === 'dark';
 
   container.innerHTML = `
-    <div style="max-width:600px;">
-      <!-- Theme Toggle -->
-      <div class="detail-card" style="margin-bottom:20px;">
-        <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">palette</span> Appearance</h3>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
-          <div>
-            <div style="font-size:0.9rem;font-weight:600;color:var(--text-primary);">Dark Mode</div>
-            <div style="font-size:0.8rem;color:var(--text-tertiary);margin-top:2px;">Switch between light and dark theme</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;max-width:800px;">
+      
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <!-- Theme Toggle -->
+        <div class="detail-card">
+          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">palette</span> Appearance</h3>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+            <div>
+              <div style="font-size:0.9rem;font-weight:600;color:var(--text-primary);">Dark Mode</div>
+              <div style="font-size:0.8rem;color:var(--text-tertiary);margin-top:2px;">Switch between light and dark theme</div>
+            </div>
+            <label class="theme-toggle">
+              <input type="checkbox" id="theme-switch" ${isDark ? 'checked' : ''} />
+              <span class="theme-slider"></span>
+            </label>
           </div>
-          <label class="theme-toggle">
-            <input type="checkbox" id="theme-switch" ${isDark ? 'checked' : ''} />
-            <span class="theme-slider"></span>
-          </label>
+        </div>
+
+        <!-- Account Info -->
+        <div class="detail-card">
+          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">person</span> Account Info</h3>
+          <div class="detail-info-grid" style="margin-top:16px;">
+            <div class="detail-info-item"><span class="detail-label">Name</span><span class="detail-value">${user.name}</span></div>
+            <div class="detail-info-item"><span class="detail-label">Email</span><span class="detail-value">${user.email}</span></div>
+            <div class="detail-info-item"><span class="detail-label">Role</span><span class="detail-value">${user.role}</span></div>
+          </div>
         </div>
       </div>
 
-      <!-- Change Password -->
-      <div class="detail-card">
-        <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">lock</span> Change Password</h3>
-        <form id="password-form" style="margin-top:16px;">
-          <div class="form-group" style="margin-bottom:14px;">
-            <label for="current-pw" style="color:var(--text-secondary);">Current Password</label>
-            <input type="password" id="current-pw" placeholder="Enter current password" required style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
-          </div>
-          <div class="form-group" style="margin-bottom:14px;">
-            <label for="new-pw" style="color:var(--text-secondary);">New Password</label>
-            <input type="password" id="new-pw" placeholder="Min 6 characters" required style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
-          </div>
-          <div class="form-group" style="margin-bottom:14px;">
-            <label for="confirm-pw" style="color:var(--text-secondary);">Confirm New Password</label>
-            <input type="password" id="confirm-pw" placeholder="Re-enter new password" required style="width:100%;padding:10px 14px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
-          </div>
-          <button type="submit" class="btn-primary" id="btn-change-pw" style="margin-top:4px;">Update Password</button>
-        </form>
-      </div>
-
-      <!-- Account Info -->
-      <div class="detail-card" style="margin-top:20px;">
-        <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">person</span> Account Info</h3>
-        <div class="detail-info-grid" style="margin-top:16px;">
-          <div class="detail-info-item"><span class="detail-label">Name</span><span class="detail-value">${user.name}</span></div>
-          <div class="detail-info-item"><span class="detail-label">Email</span><span class="detail-value">${user.email}</span></div>
-          <div class="detail-info-item"><span class="detail-label">Role</span><span class="detail-value">${user.role}</span></div>
+      <div>
+        <!-- Change Password -->
+        <div class="detail-card">
+          <h3><span class="material-symbols-outlined" style="vertical-align:middle;margin-right:8px;">lock</span> Change Password</h3>
+          <form id="password-form" style="margin-top:16px;">
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="current-pw" style="color:var(--text-secondary);">Current Password</label>
+              <div style="position:relative;">
+                <input type="password" id="current-pw" placeholder="Enter current password" required style="width:100%;padding:10px 14px;padding-right:40px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
+                <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="new-pw" style="color:var(--text-secondary);">New Password</label>
+              <div style="position:relative;">
+                <input type="password" id="new-pw" placeholder="Min 6 characters" required style="width:100%;padding:10px 14px;padding-right:40px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
+                <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label for="confirm-pw" style="color:var(--text-secondary);">Confirm New Password</label>
+              <div style="position:relative;">
+                <input type="password" id="confirm-pw" placeholder="Re-enter new password" required style="width:100%;padding:10px 14px;padding-right:40px;background:var(--surface-1);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-size:0.85rem;" />
+                <span class="material-symbols-outlined pw-toggle" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text-tertiary);font-size:18px;user-select:none;">visibility_off</span>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary" id="btn-change-pw" style="margin-top:4px;">Update Password</button>
+          </form>
         </div>
       </div>
+      
     </div>
   `;
 
@@ -4302,3 +4330,17 @@ window.__deleteAdmin = async (id, name) => {
 
 // ===== START =====
 init();
+
+// Global password visibility toggle
+document.addEventListener('click', (e) => {
+  const toggle = e.target.closest('.pw-toggle');
+  if (toggle) {
+    const container = toggle.closest('div');
+    const input = container.querySelector('input');
+    if (input) {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      toggle.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+    }
+  }
+});
