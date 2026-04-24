@@ -2408,83 +2408,102 @@ async function renderPublicForm(hash) {
     // Build fields HTML based on formConfig.fields JSON
     // Default fallback fields if formConfig.fields is empty or basic
     // In our dynamic builder, fields would be: [{name: 'email', label:'Email', type:'email', required:true}, ...]
-    let fieldsHtml = '';
-    
+    // Google Forms-style inline CSS
+    const gfInput = 'width:100%;padding:12px 14px;font-size:0.95rem;border:1px solid #dadce0;border-radius:8px;background:#fff;color:#202124;outline:none;transition:border-color 0.2s;box-sizing:border-box;';
+    const gfLabel = 'display:block;font-size:0.85rem;font-weight:500;color:#202124;margin-bottom:6px;';
+    const gfCard = 'background:#fff;border:1px solid #dadce0;border-radius:12px;padding:24px;margin-bottom:16px;';
+    const gfReq = 'color:#d93025;margin-left:2px;';
+
     if (formConfig.type === 'REGISTRATION') {
       fieldsHtml = `
-        <div class="form-group"><label>Email Address *</label>
-          <div style="display:flex; gap:8px;">
-            <input type="email" id="pf-email" required style="flex:1;" />
-            <button type="button" id="btn-send-otp" class="btn-primary" style="padding:10px 18px; white-space:nowrap; font-size:0.85rem;">Send OTP</button>
+        <div style="${gfCard}">
+          <label style="${gfLabel}">Email Address <span style="${gfReq}">*</span></label>
+          <div style="display:flex;gap:8px;">
+            <input type="email" id="pf-email" required style="${gfInput}flex:1;" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" />
+            <button type="button" id="btn-send-otp" style="padding:10px 20px;background:#673ab7;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;">Send OTP</button>
           </div>
         </div>
         <div id="otp-section" style="display:none;">
-          <div class="form-group"><label>Enter OTP *</label>
-            <div style="display:flex; gap:8px;">
-              <input type="text" id="pf-otp" maxlength="6" placeholder="6-digit code" style="flex:1; letter-spacing:4px; font-size:1.1rem; text-align:center;" />
-              <button type="button" id="btn-verify-otp" class="btn-primary" style="padding:10px 18px; white-space:nowrap; font-size:0.85rem;">Verify</button>
+          <div style="${gfCard}">
+            <label style="${gfLabel}">Enter OTP <span style="${gfReq}">*</span></label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="pf-otp" maxlength="6" placeholder="6-digit code" style="${gfInput}flex:1;letter-spacing:6px;font-size:1.2rem;text-align:center;" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" />
+              <button type="button" id="btn-verify-otp" style="padding:10px 20px;background:#673ab7;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;">Verify</button>
             </div>
-            <p id="otp-status" style="font-size:0.8rem; margin-top:6px; color:var(--text-tertiary);"></p>
+            <p id="otp-status" style="font-size:0.8rem;margin-top:8px;color:#5f6368;"></p>
           </div>
         </div>
         <div id="remaining-fields" style="display:none;">
-          <div style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--success-surface); border:1px solid var(--success); border-radius:var(--radius-md); margin-bottom:16px;">
-            <span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">verified</span>
-            <span style="font-size:0.85rem; font-weight:600; color:var(--success);">Email verified successfully!</span>
+          <div style="${gfCard}border-left:4px solid #34a853;background:#f6fef6;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="material-symbols-outlined" style="color:#34a853;font-size:20px;">verified</span>
+              <span style="font-size:0.9rem;font-weight:600;color:#34a853;">Email verified successfully!</span>
+            </div>
           </div>
-          <div class="form-group"><label>Full Name *</label><input type="text" id="pf-name" required /></div>
-          <div class="form-group"><label>Phone Number</label><input type="tel" id="pf-phone" /></div>
-          <div style="display:flex; gap:12px;">
-            <div class="form-group" style="flex:1;"><label>Department</label><input type="text" id="pf-dept" /></div>
-            <div class="form-group" style="flex:1;"><label>Year</label><input type="text" id="pf-year" /></div>
+          <div style="${gfCard}"><label style="${gfLabel}">Full Name <span style="${gfReq}">*</span></label><input type="text" id="pf-name" required style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" /></div>
+          <div style="${gfCard}"><label style="${gfLabel}">Phone Number</label><input type="tel" id="pf-phone" style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" /></div>
+          <div style="display:flex;gap:16px;">
+            <div style="${gfCard}flex:1;"><label style="${gfLabel}">Department</label><input type="text" id="pf-dept" style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" /></div>
+            <div style="${gfCard}flex:1;"><label style="${gfLabel}">Year</label><input type="text" id="pf-year" style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" /></div>
           </div>
         </div>
       `;
     } else {
       fieldsHtml = `
-        <div class="form-group"><label>Email Address *</label><input type="email" id="pf-email" required placeholder="Email you registered with" /></div>
-        <div class="form-group"><label>Rate this event (1-5) *</label>
-           <select id="pf-rating" required>
-             <option value="5">5 - Excellent</option>
-             <option value="4">4 - Good</option>
-             <option value="3">3 - Average</option>
-             <option value="2">2 - Poor</option>
-             <option value="1">1 - Terrible</option>
-           </select>
+        <div style="${gfCard}"><label style="${gfLabel}">Email Address <span style="${gfReq}">*</span></label><input type="email" id="pf-email" required placeholder="Email you registered with" style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" /></div>
+        <div style="${gfCard}">
+          <label style="${gfLabel}">Rate this event <span style="${gfReq}">*</span></label>
+          <select id="pf-rating" required style="${gfInput}cursor:pointer;">
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Good</option>
+            <option value="3">⭐⭐⭐ Average</option>
+            <option value="2">⭐⭐ Poor</option>
+            <option value="1">⭐ Terrible</option>
+          </select>
         </div>
-        <div class="form-group"><label>What did you like?</label><textarea id="pf-quality" rows="3"></textarea></div>
-        <div class="form-group"><label>Suggestions for improvement</label><textarea id="pf-suggest" rows="3"></textarea></div>
+        <div style="${gfCard}"><label style="${gfLabel}">What did you like?</label><textarea id="pf-quality" rows="3" style="${gfInput}resize:vertical;" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'"></textarea></div>
+        <div style="${gfCard}"><label style="${gfLabel}">Suggestions for improvement</label><textarea id="pf-suggest" rows="3" style="${gfInput}resize:vertical;" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'"></textarea></div>
       `;
     }
 
-    // Append any dynamic custom fields mapped in the JSON
+    // Append any dynamic custom fields
     if (Array.isArray(formConfig.fields)) {
       formConfig.fields.forEach((f, idx) => {
         fieldsHtml += `
-          <div class="form-group" ${formConfig.type === 'REGISTRATION' ? 'data-custom-field="true" style="display:none;"' : ''}>
-            <label>${f.label} ${f.required ? '*' : ''}</label>
-            ${f.type === 'textarea' ? `<textarea id="pf-custom-${idx}" rows="2" ${f.required ? 'required' : ''}></textarea>` : `<input type="${f.type || 'text'}" id="pf-custom-${idx}" ${f.required ? 'required' : ''} />`}
+          <div style="${gfCard}${formConfig.type === 'REGISTRATION' ? 'display:none;' : ''}" ${formConfig.type === 'REGISTRATION' ? 'data-custom-field="true"' : ''}>
+            <label style="${gfLabel}">${f.label} ${f.required ? `<span style="${gfReq}">*</span>` : ''}</label>
+            ${f.type === 'textarea' ? `<textarea id="pf-custom-${idx}" rows="2" ${f.required ? 'required' : ''} style="${gfInput}resize:vertical;" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'"></textarea>` : `<input type="${f.type || 'text'}" id="pf-custom-${idx}" ${f.required ? 'required' : ''} style="${gfInput}" onfocus="this.style.borderColor='#673ab7'" onblur="this.style.borderColor='#dadce0'" />`}
           </div>
         `;
       });
     }
 
     const submitBtnLabel = formConfig.type === 'REGISTRATION' ? 'Submit Registration' : 'Submit Feedback';
+    const isReg = formConfig.type === 'REGISTRATION';
 
     app.innerHTML = `
-      <div class="login-page">
-        <div class="login-container" style="max-width:600px; padding:32px;">
-          <div class="login-header">
-            <h1 style="font-size:1.8rem; margin-bottom:8px;">${formConfig.event.title}</h1>
-            <p>${formConfig.type === 'REGISTRATION' ? 'Event Registration' : 'Event Feedback'}</p>
-            <div style="margin-top:12px; font-size:0.85rem; color:var(--text-tertiary);">
-              <span class="material-symbols-outlined" style="font-size:14px; vertical-align:text-bottom;">calendar_today</span> ${formatDate(formConfig.event.date)} &nbsp;
-              <span class="material-symbols-outlined" style="font-size:14px; vertical-align:text-bottom;">location_on</span> ${formConfig.event.venue || 'TBA'}
+      <div style="min-height:100vh;background:#f0ebf8;font-family:'Google Sans','Inter',system-ui,sans-serif;">
+        <div style="max-width:640px;margin:0 auto;padding:24px 16px 48px;">
+          <!-- Header Card -->
+          <div style="background:#fff;border:1px solid #dadce0;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+            <div style="height:10px;background:linear-gradient(90deg,#673ab7,#9c27b0,#e91e63);"></div>
+            <div style="padding:28px 24px;">
+              <h1 style="font-size:1.6rem;font-weight:400;color:#202124;margin:0 0 4px;">${formConfig.event.title}</h1>
+              <p style="font-size:0.9rem;color:#673ab7;font-weight:500;margin:0 0 16px;">${isReg ? 'Event Registration' : 'Event Feedback'}</p>
+              <div style="display:flex;gap:20px;font-size:0.8rem;color:#5f6368;">
+                <span><span class="material-symbols-outlined" style="font-size:14px;vertical-align:text-bottom;margin-right:4px;">calendar_today</span>${formatDate(formConfig.event.date)}</span>
+                <span><span class="material-symbols-outlined" style="font-size:14px;vertical-align:text-bottom;margin-right:4px;">location_on</span>${formConfig.event.venue || 'TBA'}</span>
+              </div>
+              <p style="font-size:0.75rem;color:#d93025;margin-top:16px;margin-bottom:0;">* Indicates required question</p>
             </div>
           </div>
-          <form id="public-form" style="margin-top:24px;">
+          <!-- Form -->
+          <form id="public-form">
             ${fieldsHtml}
-            <button type="submit" id="btn-submit-form" class="btn-primary" style="width:100%; margin-top:24px; padding:12px; ${formConfig.type === 'REGISTRATION' ? 'display:none;' : ''}">${submitBtnLabel}</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+              <button type="submit" id="btn-submit-form" style="padding:12px 32px;background:#673ab7;color:#fff;border:none;border-radius:8px;font-weight:600;font-size:0.95rem;cursor:pointer;${isReg ? 'display:none;' : ''}">${submitBtnLabel}</button>
+              <span style="font-size:0.75rem;color:#5f6368;">Never submit passwords</span>
+            </div>
           </form>
         </div>
       </div>
@@ -2579,14 +2598,14 @@ async function renderPublicForm(hash) {
         const res = await api.public.submitForm(hash, payload);
         
         app.innerHTML = `
-          <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--surface-1); padding:24px;">
-            <div style="background:var(--surface-0); border:1px solid var(--border); border-radius:var(--radius-lg); padding:48px 40px; text-align:center; max-width:420px; width:100%; box-shadow:var(--shadow-lg);">
-              <div style="width:64px; height:64px; border-radius:50%; background:var(--success-surface); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
-                <span class="material-symbols-outlined" style="font-size:32px; color:var(--success);">check_circle</span>
+          <div style="min-height:100vh;background:#f0ebf8;display:flex;align-items:center;justify-content:center;padding:24px;font-family:'Google Sans','Inter',sans-serif;">
+            <div style="background:#fff;border:1px solid #dadce0;border-radius:12px;padding:48px 40px;text-align:center;max-width:460px;width:100%;">
+              <div style="width:64px;height:64px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                <span class="material-symbols-outlined" style="font-size:32px;color:#34a853;">check_circle</span>
               </div>
-              <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Registration Successful!</h2>
-              <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6;">${res.message}</p>
-              <p style="color:var(--text-tertiary); font-size:0.8rem; margin-top:20px;">You may close this tab now.</p>
+              <h2 style="font-size:1.4rem;font-weight:400;color:#202124;margin-bottom:8px;">${isReg ? 'Registration' : 'Feedback'} Submitted!</h2>
+              <p style="color:#5f6368;font-size:0.9rem;line-height:1.6;">${res.message}</p>
+              <p style="color:#80868b;font-size:0.8rem;margin-top:20px;">You may close this tab now.</p>
             </div>
           </div>
         `;
@@ -2599,14 +2618,14 @@ async function renderPublicForm(hash) {
 
   } catch (err) {
     app.innerHTML = `
-      <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--surface-1); padding:24px;">
-        <div style="background:var(--surface-0); border:1px solid var(--border); border-radius:var(--radius-lg); padding:48px 40px; text-align:center; max-width:420px; width:100%; box-shadow:var(--shadow-lg);">
-          <div style="width:64px; height:64px; border-radius:50%; background:var(--error-surface, rgba(239,68,68,0.1)); display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
-            <span class="material-symbols-outlined" style="font-size:32px; color:var(--error);">error</span>
+      <div style="min-height:100vh;background:#f0ebf8;display:flex;align-items:center;justify-content:center;padding:24px;font-family:'Google Sans','Inter',sans-serif;">
+        <div style="background:#fff;border:1px solid #dadce0;border-radius:12px;padding:48px 40px;text-align:center;max-width:460px;width:100%;">
+          <div style="width:64px;height:64px;border-radius:50%;background:#fce8e6;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <span class="material-symbols-outlined" style="font-size:32px;color:#d93025;">error</span>
           </div>
-          <h2 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Link Invalid</h2>
-          <p style="color:var(--text-secondary); font-size:0.9rem; line-height:1.6;">${err.message}</p>
-          <p style="color:var(--text-tertiary); font-size:0.8rem; margin-top:20px;">Please check the link or contact the event organizer.</p>
+          <h2 style="font-size:1.4rem;font-weight:400;color:#202124;margin-bottom:8px;">Form Unavailable</h2>
+          <p style="color:#5f6368;font-size:0.9rem;line-height:1.6;">${err.message}</p>
+          <p style="color:#80868b;font-size:0.8rem;margin-top:20px;">Please check the link or contact the event organizer.</p>
         </div>
       </div>
     `;

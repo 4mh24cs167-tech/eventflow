@@ -180,12 +180,18 @@ router.post('/events/:id/mark-completed', async (req: AuthRequest, res: any) => 
     const { id } = req.params;
     const adminId = req.user.id;
     try {
-        // Technically this sends it to HOD Verification queue if we used a VERIFICATION state, 
-        // but based on design, Admin marking Complete keeps it COMPLETED, or HOD verifies it. We'll set to COMPLETED.
         const { data, error } = await supabase
             .from('events').update({ status: 'COMPLETED', updated_at: new Date().toISOString() })
             .eq('id', id).eq('admin_id', adminId).select();
         if (error) throw error;
+
+        // Auto-close registration forms when event is completed
+        await supabase
+            .from('form_configs')
+            .update({ is_active: false, updated_at: new Date().toISOString() })
+            .eq('event_id', id)
+            .eq('type', 'REGISTRATION');
+
         res.json({ message: 'Event marked as Completed and sent for HOD Verification', data });
     } catch (err) { handleError(res, err); }
 });

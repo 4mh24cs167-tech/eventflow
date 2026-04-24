@@ -212,6 +212,23 @@ router.post('/forms/:hash/submit', async (req, res: any) => {
             const rating = parseInt(body.rating) || 0;
             if (rating < 1 || rating > 5) return res.status(400).json({ error: 'Valid rating (1-5) is required.' });
 
+            // Check if this email is a registered participant who attended
+            const { data: participant } = await supabase
+                .from('participants')
+                .select('id, custom_data')
+                .eq('event_id', eventId)
+                .eq('email', email)
+                .maybeSingle();
+
+            if (!participant) {
+                return res.status(403).json({ error: 'Only registered participants can submit feedback. This email was not found in the registration list.' });
+            }
+
+            const attended = participant.custom_data?.attendance === true;
+            if (!attended) {
+                return res.status(403).json({ error: 'Only participants who attended the event can submit feedback. Your attendance has not been marked.' });
+            }
+
             // Check if already submitted feedback
             const { data: existing } = await supabase
                 .from('feedbacks')
