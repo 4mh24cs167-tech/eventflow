@@ -165,7 +165,7 @@ function renderLogin() {
               <span class="ml-auto inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             </div>
             <div id="events-scroller" style="height:160px;overflow:hidden;position:relative;">
-              <div id="events-scroller-inner" style="display:flex;flex-direction:column;gap:0;transition:transform 0.6s ease;">
+              <div id="events-scroller-inner" style="display:flex;flex-direction:column;gap:0;">
                 <div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">Loading events...</div>
               </div>
             </div>
@@ -392,12 +392,15 @@ async function loadUpcomingEvents() {
     if (!scroller) return;
     let scrollPos = 0;
     const totalHeight = inner.scrollHeight / 2;
-    const scrollInterval = setInterval(() => {
-      if (!document.getElementById('events-scroller')) { clearInterval(scrollInterval); return; }
-      scrollPos += 1;
+    let animationFrame;
+    const scrollStep = () => {
+      if (!document.getElementById('events-scroller')) return;
+      scrollPos += 0.5; // Smooth speed
       if (scrollPos >= totalHeight) scrollPos = 0;
       inner.style.transform = `translateY(-${scrollPos}px)`;
-    }, 40);
+      animationFrame = requestAnimationFrame(scrollStep);
+    };
+    animationFrame = requestAnimationFrame(scrollStep);
   } catch (err) {
     inner.innerHTML = '<div style="padding:16px;text-align:center;color:var(--text-tertiary);font-size:0.85rem;">Could not load events</div>';
   }
