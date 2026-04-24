@@ -3,20 +3,11 @@ import { supabase } from '../utils/supabase';
 import { authenticateToken, requireRole, AuthRequest } from '../middlewares/authMiddleware';
 import { computeEnrichedSchedules } from '../utils/statusComputer';
 import multer from 'multer';
-import path from 'path';
 
 const router = Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../../uploads'));
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+// Use memory storage — works on Vercel serverless (no writable disk needed)
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
 
 router.use(authenticateToken);
 router.use(requireRole(['ADMIN']));
@@ -240,32 +231,50 @@ router.post('/events/:id/media-url', async (req: AuthRequest, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
-// ========== MEDIA UPLOAD (File + URL, localhost only) ==========
+// ========== MEDIA UPLOAD (File upload via Supabase Storage) ==========
 router.post('/events/:id/media', upload.array('files', 15), async (req: AuthRequest, res: any) => {
     const { id } = req.params;
-    const { type } = req.body; 
+    const { type } = req.body;
     let urlString = req.body.url;
-    
+
     try {
         let inserts: any[] = [];
         const files = req.files as Express.Multer.File[];
-        
+
         if (files && files.length > 0) {
             for (const file of files) {
-                const url = `http://localhost:${process.env.PORT || 3000}/uploads/${file.filename}`;
-                inserts.push({ event_id: id, type, url });
+                const ext = file.originalname.split('.').pop() || 'bin';
+                const fileName = `${id}/${Date.now()}-${Math.round(Math.random() * 1E9)}.${ext}`;
+
+                const { data: uploadData, error: uploadErr } = await supabase.storage
+                    .from('event-media')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: false,
+                    });
+
+                if (uploadErr) {
+                    console.error('Supabase Storage upload error:', uploadErr);
+                    throw new Error(`Failed to upload ${file.originalname}: ${uploadErr.message}`);
+                }
+
+                const { data: urlData } = supabase.storage
+                    .from('event-media')
+                    .getPublicUrl(fileName);
+
+                inserts.push({ event_id: id, type, url: urlData.publicUrl });
             }
         }
-        
+
         if (urlString && typeof urlString === 'string') {
             const urls = urlString.split(',').map((u: string) => u.trim()).filter((u: string) => u !== '');
             for (const attachUrl of urls) {
                 inserts.push({ event_id: id, type, url: attachUrl });
             }
         }
-        
+
         if (inserts.length === 0) {
-            return res.status(400).json({ error: 'Please provide at least one file or direct URL.' });
+            return res.status(400).json({ error: 'Please provide at least one file or URL.' });
         }
 
         const { data, error } = await supabase.from('media').insert(inserts).select();

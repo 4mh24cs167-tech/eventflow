@@ -2348,7 +2348,7 @@ async function renderAdminEventDetail(container, headerActions, user) {
     contentHtml = `
       <div class="detail-card" style="margin-bottom:24px;">
         <h3>Upload Post-Event Media</h3>
-        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Paste web URLs (Google Drive, Imgur, etc.) to attach media to this event.</p>
+        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Upload files directly or paste web URLs (Google Drive, Imgur, etc.).</p>
         <div style="display:flex; flex-direction:column; gap:12px;">
            <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
                <div style="margin:0; width:150px;">
@@ -2359,8 +2359,12 @@ async function renderAdminEventDetail(container, headerActions, user) {
                    <option value="REPORT_PDF">Report (PDF)</option>
                  </select>
                </div>
-               <div style="margin:0; flex:1; min-width:300px;">
-                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Web URL(s) (Comma separated)</label>
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Select File(s)</label>
+                 <input type="file" id="media-file" multiple accept="image/*,video/*,application/pdf" style="width:100%; padding:8px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
+               </div>
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Or Web URL(s) (Comma separated)</label>
                  <input type="text" id="media-url" placeholder="https://drive.google.com/..." style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
                </div>
            </div>
@@ -3917,12 +3921,24 @@ window.__triggerAIEval = async (eventId) => {
 
 window.__uploadMedia = async (eventId) => {
   const type = document.getElementById('media-type').value;
+  const fileInput = document.getElementById('media-file');
+  const files = fileInput ? fileInput.files : [];
   const url = document.getElementById('media-url').value.trim();
 
-  if(!url) return showToast('Please provide a URL', 'error');
+  if(files.length === 0 && !url) return showToast('Please select file(s) or provide a URL', 'error');
 
   try {
-    await api.admin.uploadMediaUrl(eventId, type, url);
+    if (files.length > 0) {
+      const formData = new FormData();
+      formData.append('type', type);
+      for (let i = 0; i < files.length; i++) {
+        formData.append('files', files[i]);
+      }
+      if (url) formData.append('url', url);
+      await api.admin.uploadMedia(eventId, formData);
+    } else {
+      await api.admin.uploadMediaUrl(eventId, type, url);
+    }
     showToast('Media added successfully!', 'success');
     loadPage();
   } catch(err) { showToast(err.message, 'error'); }
