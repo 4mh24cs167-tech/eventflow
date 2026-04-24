@@ -750,10 +750,14 @@ async function renderDepartments(container, headerActions, user) {
 
   container.innerHTML = `
     <div class="table-section">
-      <div class="table-header">
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;">
         <div>
           <h2>Departments</h2>
           <p>${departments.length} department${departments.length !== 1 ? 's' : ''} in the institution</p>
+        </div>
+        <div style="position:relative;">
+          <span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span>
+          <input type="text" placeholder="Search departments..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" />
         </div>
       </div>
       <div style="overflow-x:auto;">
@@ -1007,8 +1011,9 @@ async function renderAllEvents(container, headerActions, user) {
 
   container.innerHTML = events.length > 0 ? `
     <div class="table-section">
-      <div class="table-header">
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
         <div><h2>All Events</h2><p>${events.length} event${events.length !== 1 ? 's' : ''} found</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search events..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
       </div>
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -1531,7 +1536,10 @@ async function renderHodCategories(container, headerActions, user) {
       ${metricCard('label', totalSubs, 'Subcategories', 'Total', '', '')}
     </div>
     <div class="table-section">
-      <div class="table-header"><div><h2>Categories & Subcategories</h2><p>${categories.length} categories, ${totalSubs} subcategories in your department</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>Categories & Subcategories</h2><p>${categories.length} categories, ${totalSubs} subcategories in your department</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search categories..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${categories.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -1795,7 +1803,10 @@ async function renderHodReviews(container, headerActions, user) {
 
   container.innerHTML = `
     <div class="table-section">
-      <div class="table-header"><div><h2>Review Queue</h2><p>${events.length} events pending your approval</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>Review Queue</h2><p>${events.length} events pending your approval</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search events..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${events.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -1853,7 +1864,10 @@ async function renderHodGlobalEvents(container, headerActions, user) {
 
   container.innerHTML = `
     <div class="table-section">
-      <div class="table-header"><div><h2>Global Events</h2><p>${events.length} events across all departments</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>Global Events</h2><p>${events.length} events across all departments</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search events..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${events.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -1916,7 +1930,10 @@ async function renderGenericEvents(container, headerActions, user) {
 
   container.innerHTML = `
     <div class="table-section">
-      <div class="table-header"><div><h2>${user.role === 'ADMIN' ? 'My Assigned Events' : 'My Department Events'}</h2><p>${events.length} events</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>${user.role === 'ADMIN' ? 'My Assigned Events' : 'My Department Events'}</h2><p>${events.length} events</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search events..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${events.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -2235,7 +2252,10 @@ async function renderHodAdminMgmt(container, headerActions, user) {
 
   container.innerHTML = `
     <div class="table-section">
-      <div class="table-header"><div><h2>Admin Users</h2><p>${admins.length} admin${admins.length !== 1 ? 's' : ''} in your department</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>Admin Users</h2><p>${admins.length} admin${admins.length !== 1 ? 's' : ''} in your department</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search admins..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${admins.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -2923,7 +2943,10 @@ async function renderHodScheduling(container, headerActions, user) {
 
     <!-- Schedule Table -->
     <div class="table-section">
-      <div class="table-header"><div><h2>Scheduled Categories</h2><p>${schedules.length} schedules for ${academicYearLabel(ay)}</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>Scheduled Categories</h2><p>${schedules.length} schedules for ${academicYearLabel(ay)}</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search schedules..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${schedules.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -3032,7 +3055,10 @@ async function renderAdminSchedules(container, headerActions, user) {
 
     <!-- Schedule Table -->
     <div class="table-section">
-      <div class="table-header"><div><h2>HOD Scheduled Categories</h2><p>${schedules.length} schedules from your HOD for ${academicYearLabel(ay)}</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>HOD Scheduled Categories</h2><p>${schedules.length} schedules from your HOD for ${academicYearLabel(ay)}</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search schedules..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${schedules.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -3228,7 +3254,10 @@ async function renderPrincipalScheduleOverview(container, headerActions, user) {
 
     <!-- Full Schedule List -->
     <div class="table-section">
-      <div class="table-header"><div><h2>All Schedules</h2><p>${schedules.length} total across departments</p></div></div>
+      <div class="table-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div><h2>All Schedules</h2><p>${schedules.length} total across departments</p></div>
+        <div style="position:relative;"><span class="material-symbols-outlined" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-tertiary);font-size:18px;pointer-events:none;">search</span><input type="text" placeholder="Search schedules..." onkeyup="window.__filterTable(this)" style="padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface-0);color:var(--text-primary);font-size:0.85rem;width:220px;" /></div>
+      </div>
       ${schedules.length > 0 ? `
       <div style="overflow-x:auto;">
         <table class="data-table">
