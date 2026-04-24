@@ -2270,11 +2270,14 @@ async function renderAdminEventDetail(container, headerActions, user) {
     const regForm = details.forms.find(f => f.type === 'REGISTRATION');
     const fbForm = details.forms.find(f => f.type === 'FEEDBACK');
 
+    const isCompleted = details.status === 'COMPLETED';
+
     contentHtml = `
       <div class="metrics-grid">
-        <div class="detail-card">
+        <div class="detail-card" ${isCompleted ? 'style="opacity:0.6;pointer-events:none;position:relative;"' : ''}>
+          ${isCompleted ? '<div style="position:absolute;top:12px;right:12px;background:var(--error);color:#fff;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;letter-spacing:0.05em;z-index:2;">CLOSED</div>' : ''}
           <h3 style="margin-bottom:12px; display:flex; justify-content:space-between;">Registration Form
-            ${regForm ? `<span class="status-badge ${regForm.is_active ? 'status-approved' : 'status-rejected'}">${regForm.is_active ? 'Open' : 'Closed'}</span>` : ''}
+            ${regForm ? `<span class="status-badge ${regForm.is_active && !isCompleted ? 'status-approved' : 'status-rejected'}">${regForm.is_active && !isCompleted ? 'Open' : 'Closed'}</span>` : ''}
           </h3>
           ${regForm ? `
             <div style="background:var(--bg-secondary); padding:8px; border-radius:4px; font-family:monospace; font-size:0.8rem; margin-bottom:12px; word-break:break-all;">
@@ -2284,9 +2287,9 @@ async function renderAdminEventDetail(container, headerActions, user) {
               <button class="btn-outline" style="flex:1;" onclick="navigator.clipboard.writeText('${window.location.origin}/?form=${regForm.link_hash}'); showToast('Link copied!')">Copy Link</button>
               <button class="btn-outline" style="flex:1;" onclick="window.__downloadParticipantsCSV('${details.id}')"><span class="material-symbols-outlined" style="font-size:16px;">download</span> CSV</button>
             </div>
-            <button class="btn-${regForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'REGISTRATION', ${!regForm.is_active})">${regForm.is_active ? 'Close Registration' : 'Open Registration'}</button>
+            ${!isCompleted ? `<button class="btn-${regForm.is_active ? 'reject' : 'primary'}" style="width:100%; margin-bottom:12px;" onclick="window.__toggleFormStatus('${details.id}', 'REGISTRATION', ${!regForm.is_active})">${regForm.is_active ? 'Close Registration' : 'Open Registration'}</button>` : '<div style="padding:10px;background:var(--error-surface);border:1px solid var(--error);border-radius:var(--radius-md);text-align:center;margin-bottom:12px;font-size:0.85rem;font-weight:600;color:var(--error);">Registration closed — Event completed</div>'}
           ` : '<p style="color:var(--text-tertiary); margin-bottom:12px;">Not created yet.</p>'}
-          <button class="btn-outline" style="width:100%;" onclick="window.__openFormBuilder('${details.id}', 'REGISTRATION')"><span class="material-symbols-outlined">edit</span> Configure Form</button>
+          ${!isCompleted ? `<button class="btn-outline" style="width:100%;" onclick="window.__openFormBuilder('${details.id}', 'REGISTRATION')"><span class="material-symbols-outlined">edit</span> Configure Form</button>` : ''}
         </div>
         
         <div class="detail-card">
@@ -2342,7 +2345,7 @@ async function renderAdminEventDetail(container, headerActions, user) {
     contentHtml = `
       <div class="detail-card" style="margin-bottom:24px;">
         <h3>Upload Post-Event Media</h3>
-        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Provide web URLs (Google Drive, Imgur, etc.) to attach media to this event.</p>
+        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Upload files or provide web URLs (Google Drive, Imgur, etc.).</p>
         <div style="display:flex; flex-direction:column; gap:12px;">
            <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
                <div style="margin:0; width:150px;">
@@ -2353,8 +2356,12 @@ async function renderAdminEventDetail(container, headerActions, user) {
                    <option value="REPORT_PDF">Report (PDF)</option>
                  </select>
                </div>
-               <div style="margin:0; flex:1; min-width:300px;">
-                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Web URL(s) (Comma separated)</label>
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Select File(s)</label>
+                 <input type="file" id="media-file" multiple accept="image/*,video/*,application/pdf" style="width:100%; padding:8px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
+               </div>
+               <div style="margin:0; flex:1; min-width:200px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Or Web URL(s) (Comma separated)</label>
                  <input type="text" id="media-url" placeholder="https://drive.google.com/..." style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
                </div>
            </div>
@@ -3811,13 +3818,20 @@ window.__editAdminEventModal = async (eventId) => {
 
 window.__uploadMedia = async (eventId) => {
   const type = document.getElementById('media-type').value;
+  const fileInput = document.getElementById('media-file');
+  const files = fileInput ? fileInput.files : [];
   const url = document.getElementById('media-url').value.trim();
 
-  if(!url) return showToast('Please provide a URL', 'error');
+  if(files.length === 0 && !url) return showToast('Please select file(s) or provide a URL', 'error');
 
   const formData = new FormData();
   formData.append('type', type);
-  formData.append('url', url);
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+  }
+  if (url) formData.append('url', url);
 
   try {
      await api.admin.uploadMedia(eventId, formData);
