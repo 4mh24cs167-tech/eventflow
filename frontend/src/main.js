@@ -2218,13 +2218,18 @@ async function renderAdminEventDetail(container, headerActions, user) {
     });
   };
 
+  const isApprovedOrCompleted = details.status === 'APPROVED' || details.status === 'COMPLETED';
+  const lockedStyle = !isApprovedOrCompleted ? 'opacity:0.4;pointer-events:none;cursor:not-allowed;' : '';
+  const lockedTitle = !isApprovedOrCompleted ? 'title="Available after HOD approval"' : '';
+
   const tabsHtml = `
     <div class="tabs-header flex flex-wrap items-center gap-3 mb-6">
       <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'overview' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="overview">Overview</button>
-      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'forms' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="forms">Form Builder</button>
-      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'execution' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="execution">Execution (${details.participantCount})</button>
-      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'media' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="media">Media & Reports</button>
+      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'forms' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="forms" style="${lockedStyle}" ${lockedTitle}>Form Builder</button>
+      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'execution' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="execution" style="${lockedStyle}" ${lockedTitle}>Execution (${details.participantCount})</button>
+      <button type="button" class="tab-btn px-5 py-2.5 text-sm font-bold tracking-wide rounded border transition-all duration-200 ${activeTab === 'media' ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-surface-container border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-indigo-600'}" data-tab="media" style="${lockedStyle}" ${lockedTitle}>Media & Reports</button>
     </div>
+    ${!isApprovedOrCompleted && (activeTab === 'forms' || activeTab === 'execution' || activeTab === 'media') ? '<div style="background:var(--accent-surface);border:1px solid var(--accent);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:var(--accent);font-size:18px;">lock</span><span style="font-size:0.85rem;color:var(--accent);font-weight:600;">This section is locked until the HOD approves the event.</span></div>' : ''}
   `;
 
   let contentHtml = '';
@@ -2312,7 +2317,7 @@ async function renderAdminEventDetail(container, headerActions, user) {
         ${participants.length > 0 ? `
           <div style="overflow-x:auto;">
             <table class="data-table">
-              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Attendance</th></tr></thead>
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr></thead>
               <tbody>
                 ${participants.map(p => `
                   <tr>
@@ -2321,11 +2326,7 @@ async function renderAdminEventDetail(container, headerActions, user) {
                     </td>
                     <td>${p.email}</td>
                     <td>${p.phone || '—'}</td>
-                    <td>
-                      <button class="btn-${p.custom_data?.attendance ? 'primary' : 'outline'}" style="padding:4px 8px; font-size:0.75rem; ${p.custom_data?.attendance ? 'background:var(--success); border-color:var(--success);' : ''}" onclick="window.__toggleAttendance('${p.id}', ${!p.custom_data?.attendance})">
-                        ${p.custom_data?.attendance ? 'Present' : 'Mark Present'}
-                      </button>
-                    </td>
+                    <td><span class="status-badge status-completed" style="font-size:0.75rem;"><span class="status-dot"></span> Registered</span></td>
                   </tr>
                 `).join('')}
               </tbody>
@@ -2341,7 +2342,7 @@ async function renderAdminEventDetail(container, headerActions, user) {
     contentHtml = `
       <div class="detail-card" style="margin-bottom:24px;">
         <h3>Upload Post-Event Media</h3>
-        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Upload a physical file or provide a direct web URL.</p>
+        <p style="color:var(--text-secondary); margin-bottom:16px; font-size:0.9rem;">Provide web URLs (Google Drive, Imgur, etc.) to attach media to this event.</p>
         <div style="display:flex; flex-direction:column; gap:12px;">
            <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
                <div style="margin:0; width:150px;">
@@ -2352,13 +2353,9 @@ async function renderAdminEventDetail(container, headerActions, user) {
                    <option value="REPORT_PDF">Report (PDF)</option>
                  </select>
                </div>
-               <div style="margin:0; flex:1; min-width:200px;">
-                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Select File(s) (Max 50MB each)</label>
-                 <input type="file" id="media-file" multiple accept="image/*,video/*,application/pdf" style="width:100%; padding:8px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
-               </div>
-               <div style="margin:0; flex:1; min-width:200px;">
-                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Or Web URL(s) (Comma separated)</label>
-                 <input type="text" id="media-url" placeholder="https://..." style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
+               <div style="margin:0; flex:1; min-width:300px;">
+                 <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Web URL(s) (Comma separated)</label>
+                 <input type="text" id="media-url" placeholder="https://drive.google.com/..." style="width:100%; padding:10px 14px; background:var(--surface-1); border:1px solid var(--border); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.85rem;" />
                </div>
            </div>
            <button class="btn-primary" style="align-self:flex-end;" onclick="window.__uploadMedia('${details.id}')">Add Media</button>
@@ -3814,20 +3811,13 @@ window.__editAdminEventModal = async (eventId) => {
 
 window.__uploadMedia = async (eventId) => {
   const type = document.getElementById('media-type').value;
-  const fileInput = document.getElementById('media-file');
-  const files = fileInput.files;
   const url = document.getElementById('media-url').value.trim();
 
-  if(files.length === 0 && !url) return showToast('Please select file(s) or provide a URL', 'error');
+  if(!url) return showToast('Please provide a URL', 'error');
 
   const formData = new FormData();
   formData.append('type', type);
-  if (files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      formData.append('files', files[i]);
-    }
-  }
-  if (url) formData.append('url', url);
+  formData.append('url', url);
 
   try {
      await api.admin.uploadMedia(eventId, formData);
@@ -3935,22 +3925,19 @@ window.__downloadParticipantsCSV = async (eventId) => {
     if (!participants || participants.length === 0) return showToast('No participant data yet.', 'info');
     
     // Baseline headers
-    const header = ['Name', 'Email', 'Phone', 'Department', 'Year', 'Attendance', 'Registration Date', 'Custom Fields'];
+    const header = ['Name', 'Email', 'Phone', 'Department', 'Year', 'Registration Date'];
     const rows = participants.map(p => {
-      const data = p.custom_data || {};
-      const customStr = Object.entries(data)
-        .filter(([k]) => !['name', 'email', 'phone', 'department', 'year', 'attendance'].includes(k))
-        .map(([k, v]) => `${k}:${v}`).join(' | ');
-        
       return [
-        data.name || 'N/A', data.email || 'N/A', data.phone || 'N/A', data.department || 'N/A', data.year || 'N/A', 
-        data.attendance ? 'Present' : 'Absent', 
-        new Date(p.created_at).toLocaleString(), 
-        customStr
+        p.name || 'N/A',
+        p.email || 'N/A',
+        p.phone || 'N/A',
+        p.department || 'N/A',
+        p.year || 'N/A',
+        new Date(p.created_at).toLocaleString()
       ].map(field => `"${String(field).replace(/"/g, '""')}"`);
     });
 
-    const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\\n');
+    const csvContent = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
