@@ -658,12 +658,12 @@ router.get('/schedules', async (req: AuthRequest, res: any) => {
 
         if (!schedules || schedules.length === 0) return res.json([]);
 
-        // Fetch all completed events for this department logic to map chronologically
+        // Fetch all completed/approved events for this department to map chronologically
         const { data: completedEvents } = await supabase
             .from('events')
             .select('id, date, category_id, subcategory_id')
             .eq('department_id', deptId)
-            .eq('status', 'COMPLETED');
+            .in('status', ['COMPLETED', 'APPROVED']);
 
         const enriched = computeEnrichedSchedules(schedules, completedEvents || []);
         res.json(enriched);

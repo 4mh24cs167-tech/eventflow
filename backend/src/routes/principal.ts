@@ -433,11 +433,11 @@ router.get('/schedules', async (req: any, res: any) => {
         
         if (!schedules || schedules.length === 0) return res.json([]);
 
-        // Fetch completed events
+        // Fetch completed/approved events
         let eventsQuery = supabase
             .from('events')
             .select('id, date, category_id, subcategory_id, department_id')
-            .eq('status', 'COMPLETED');
+            .in('status', ['COMPLETED', 'APPROVED']);
             
         if (department_id) eventsQuery = eventsQuery.eq('department_id', department_id);
 
