@@ -59,7 +59,7 @@ function getDateRangeLabel() {
 
 function injectDateRangeFilter(headerActions) {
   // Don't inject on detail/settings pages
-  const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown', 'calendar'];
+  const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown', 'calendar', 'schedule-overview', 'scheduling', 'hod-schedules'];
   if (noFilterPages.includes(currentPage)) return;
 
   const fromDate = pageState.fromDate || '';
@@ -4227,7 +4227,7 @@ window.__showDayEvents = function(year, month, day, role) {
       </div>
     </div>
   `;
-  showModal(content);
+  openModal(content);
 }
 
 window.__triggerAIEval = async (eventId) => {
