@@ -4396,18 +4396,22 @@ window.__openFormBuilder = async (eventId, type) => {
 
     templates.forEach(tpl => {
       const added = isFieldAdded(tpl);
+      const existingField = added ? window.__currentFormFields.find(f => f.name === tpl.name) : null;
+      const isReq = existingField ? existingField.required : tpl.required;
       const typeLbl = tpl.type === 'rating' ? 'Rating (1-5 Stars)' : tpl.type === 'textarea' ? 'Long Text' : 'Short Text';
       templateHtml += `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:6px;border-radius:8px;background:${added ? 'rgba(79,70,229,0.06)' : 'var(--surface-1)'};border:1px solid ${added ? 'rgba(79,70,229,0.2)' : 'var(--border)'};transition:all .2s;">
-          <div style="flex:1;">
-            <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);">${tpl.label}</div>
-            <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${typeLbl}${tpl.required ? ' \u00b7 Required' : ''}</div>
+        <div style="padding:10px 14px;margin-bottom:6px;border-radius:8px;background:${added ? 'rgba(79,70,229,0.06)' : 'var(--surface-1)'};border:1px solid ${added ? 'rgba(79,70,229,0.2)' : 'var(--border)'};transition:all .2s;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" ${added ? 'checked' : ''} onchange="window.__toggleTemplateField('${tpl.name}', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:var(--primary,#4f46e5);flex-shrink:0;" />
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);">${tpl.label}</div>
+              <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${typeLbl}</div>
+            </div>
           </div>
-          <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
-            <input type="checkbox" ${added ? 'checked' : ''} onchange="window.__toggleTemplateField('${tpl.name}', this.checked)" style="opacity:0;width:0;height:0;" />
-            <span style="position:absolute;inset:0;background:${added ? 'var(--primary,#4f46e5)' : '#ccc'};border-radius:24px;transition:.3s;"></span>
-            <span style="position:absolute;height:18px;width:18px;left:${added ? '22px' : '3px'};bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></span>
-          </label>
+          ${added ? `<div style="display:flex;align-items:center;gap:6px;margin-top:8px;margin-left:28px;">
+            <input type="checkbox" ${isReq ? 'checked' : ''} onchange="window.__toggleFieldRequired('${tpl.name}', this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:var(--primary,#4f46e5);" />
+            <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);">Required Field</span>
+          </div>` : ''}
         </div>`;
     });
     templateHtml += '</div>';
@@ -4481,6 +4485,11 @@ window.__openFormBuilder = async (eventId, type) => {
       window.__currentFormFields = window.__currentFormFields.filter(f => f.name !== fieldName);
     }
     renderFieldList();
+  };
+
+  window.__toggleFieldRequired = (fieldName, isRequired) => {
+    const field = window.__currentFormFields.find(f => f.name === fieldName);
+    if (field) field.required = isRequired;
   };
 
   window.__removeFormField = (idx) => {
