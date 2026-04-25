@@ -60,7 +60,7 @@ function getDateRangeLabel() {
 
 function injectDateRangeFilter(headerActions) {
   // Don't inject on detail/settings pages
-  const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown'];
+  const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown', 'calendar'];
   if (noFilterPages.includes(currentPage)) return;
 
   const fromDate = pageState.fromDate || '';
