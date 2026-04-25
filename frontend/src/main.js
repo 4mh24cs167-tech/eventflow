@@ -4370,7 +4370,7 @@ window.__openFormBuilder = async (eventId, type) => {
   const details = await api.admin.getEventDetails(eventId);
   const form = details.forms.find(f => f.type === type);
   window.__currentFormFields = form && form.fields ? [...form.fields] : [];
-  window.__currentFormActive = form ? form.is_active : false;
+  window.__currentFormActive = form ? form.is_active : true;
 
   // Pre-built template fields per form type
   const REG_TEMPLATES = [
