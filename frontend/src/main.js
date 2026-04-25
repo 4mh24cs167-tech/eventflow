@@ -29,8 +29,7 @@ function getAcademicYearOptions() {
 }
 function academicYearLabel(ay) {
   if (!ay) return 'All Time';
-  const [s, e] = ay.split('-');
-  return `FY ${s}–${e}`;
+  return ay;
 }
 function academicYearDateRange(ay) {
   if (!ay) return { start: '', end: '' };
@@ -950,7 +949,7 @@ async function renderCalendar(container, headerActions, user) {
   const apiLayer = user.role === 'HOD' ? api.hod : api.principal;
   const departments = await apiLayer.getAllDepartments ? await apiLayer.getAllDepartments() : await apiLayer.getDepartments();
 
-  const targetYear = pageState.academicYear;
+  const targetYear = pageState.academicYear || getCurrentAcademicYear();
 
   headerActions.innerHTML = `
     <select id="global-year-filter" class="filter-select">
@@ -992,6 +991,7 @@ async function renderCalendar(container, headerActions, user) {
     if (!eventsByDay[day]) eventsByDay[day] = [];
     eventsByDay[day].push(ev);
   });
+  window.__currentCalendarEventsByDay = eventsByDay;
 
   container.innerHTML = `
     <div class="calendar-wrapper">
@@ -1054,13 +1054,15 @@ async function renderCalendar(container, headerActions, user) {
     calMonth--;
     if (calMonth < 1) { calMonth = 12; calYear--; }
     pageState = { ...pageState, calYear, calMonth, calDept };
-    loadPage();
+    container.style.opacity = '0.5';
+    renderCalendar(container, headerActions, user).finally(() => { container.style.opacity = '1'; });
   });
   document.getElementById('cal-next').addEventListener('click', () => {
     calMonth++;
     if (calMonth > 12) { calMonth = 1; calYear++; }
     pageState = { ...pageState, calYear, calMonth, calDept };
-    loadPage();
+    container.style.opacity = '0.5';
+    renderCalendar(container, headerActions, user).finally(() => { container.style.opacity = '1'; });
   });
   document.getElementById('global-year-filter')?.addEventListener('change', (e) => {
     const ay = e.target.value;
@@ -1096,10 +1098,10 @@ function buildCalendarDays(firstDay, daysInMonth, eventsByDay, now, calYear, cal
         <span class="cal-day-num">${d}</span>
         ${dayEvents.slice(0, 2).map((ev) => `
           <div class="cal-event-chip ${getStatusClass(ev.status)}" onclick="window.${user.role === 'HOD' ? '__hodViewEvent' : '__viewEvent'}('${ev.id}')" title="${ev.title}">
-            ${ev.title.length > 18 ? ev.title.slice(0, 18) + '…' : ev.title}
+            ${ev.title.length > 18 ? ev.title.slice(0, 18) + '...' : ev.title}
           </div>
         `).join('')}
-        ${dayEvents.length > 2 ? `<div class="cal-more">+${dayEvents.length - 2} more</div>` : ''}
+        ${dayEvents.length > 2 ? `<div class="cal-more" onclick="window.__showDayEvents(${calYear}, ${calMonth}, ${d}, '${user.role}')">+${dayEvents.length - 2} more</div>` : ''}
       </div>
     `;
   }
@@ -4194,6 +4196,34 @@ window.__editAdminEventModal = async (eventId) => {
     } catch(err) { showToast(err.message, 'error'); }
   });
 };
+
+window.__showDayEvents = function(year, month, day, role) {
+  const eventsByDay = window.__currentCalendarEventsByDay || {};
+  const dayEvents = eventsByDay[day] || [];
+  if (!dayEvents.length) return;
+  const dateStr = new Date(year, month - 1, day).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  
+  const content = `
+    <div style="padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+        <h3 style="margin: 0; font-size: 1.25rem;">Events on ${dateStr}</h3>
+        <button class="btn-icon" onclick="window.__closeModal()"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        ${dayEvents.map(ev => `
+          <div class="clickable-row" style="padding: 16px; background: var(--surface-1); border-radius: 8px; border: 1px solid var(--border); transition: all 0.2s; cursor: pointer;" onclick="window.__closeModal(); window.${role === 'HOD' ? '__hodViewEvent' : '__viewEvent'}('${ev.id}')">
+            <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 1.05rem;">${ev.title}</div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 16px;">
+               <span style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">location_on</span> ${ev.venue || 'TBA'}</span>
+               <span class="status-badge ${getStatusClass(ev.status)}" style="padding: 4px 8px; font-size: 0.75rem;"><span class="status-dot"></span>${getStatusLabel(ev.status)}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  showModal(content);
+}
 
 window.__triggerAIEval = async (eventId) => {
   const btn = document.getElementById('btn-ai-evaluate');
