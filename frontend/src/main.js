@@ -179,10 +179,17 @@ function getDateRangeFilter() {
   const pad = (n) => String(n).padStart(2, '0');
   const lastDay = (y, m) => new Date(y, m, 0).getDate();
   const result = {};
-  if (fromM) result.date_from = `${monthYear(fromM)}-${pad(fromM)}-01`;
+  if (fromM) {
+    result.date_from = `${monthYear(fromM)}-${pad(fromM)}-01`;
+  } else {
+    result.date_from = `${startYear}-09-01`;
+  }
+  
   if (toM) {
     const ty = monthYear(toM);
     result.date_to = `${ty}-${pad(toM)}-${lastDay(ty, toM)}`;
+  } else {
+    result.date_to = `${endYear}-08-31`;
   }
   return result;
 }
