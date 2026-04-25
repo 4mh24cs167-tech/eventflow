@@ -474,6 +474,39 @@ router.get('/schedules', async (req: any, res: any) => {
     } catch (err) { handleError(res, err); }
 });
 
+// ========== DEBUG ENDPOINT ==========
+router.get('/schedules-debug', async (req: any, res: any) => {
+    const { academic_year } = req.query;
+    try {
+        let query = supabase
+            .from('category_schedules')
+            .select('*, categories(name), subcategories(name), departments(name)')
+            .order('scheduled_year', { ascending: true })
+            .order('scheduled_month', { ascending: true });
+        if (academic_year) query = query.eq('academic_year', academic_year);
+        const { data: schedules } = await query;
+
+        let eventsQuery = supabase
+            .from('events')
+            .select('id, title, date, category_id, subcategory_id, department_id, status, categories(name), subcategories(name)')
+            .in('status', ['COMPLETED', 'APPROVED']);
+        const { data: events } = await eventsQuery;
+
+        res.json({
+            schedules: (schedules || []).map((s: any) => ({
+                id: s.id, category_id: s.category_id, subcategory_id: s.subcategory_id,
+                cat: s.categories?.name, subcat: s.subcategories?.name, dept: s.departments?.name,
+                dept_id: s.department_id, month: s.scheduled_month, year: s.scheduled_year
+            })),
+            events: (events || []).map((e: any) => ({
+                id: e.id, title: e.title, date: e.date, category_id: e.category_id,
+                subcategory_id: e.subcategory_id, cat: e.categories?.name, subcat: e.subcategories?.name,
+                dept_id: e.department_id, status: e.status
+            })),
+        });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+});
+
 // ========== DEPARTMENT EVENT CHART ==========
 router.get('/departments/:id/event-chart', async (req, res: any) => {
     const { id } = req.params;
