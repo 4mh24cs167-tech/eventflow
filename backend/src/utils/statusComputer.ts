@@ -4,6 +4,9 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
     const eventsPool = [...completedEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     const enrichedSchedules: any[] = [];
 
+    console.log('[StatusComputer] Input schedules:', schedules.length, 'Input events:', eventsPool.length);
+    console.log('[StatusComputer] Events:', JSON.stringify(eventsPool.map(e => ({ id: e.id, cat: e.category_id, sub: e.subcategory_id, date: e.date }))));
+
     // Group schedules by category and subcategory
     const groups = new Map<string, any[]>();
     for (const schedule of schedules) {
@@ -25,6 +28,8 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
         const [categoryId, subIdStr] = key.split('-');
         const subcategoryId = subIdStr === 'NONE' ? null : subIdStr;
 
+        console.log(`[StatusComputer] Processing group: key=${key}, categoryId=${categoryId}, subcategoryId=${subcategoryId}`);
+
         // Match events by category, with flexible subcategory matching
         const matchesCategory = (e: any) => {
             if (e.category_id !== categoryId) return false;
@@ -35,11 +40,17 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             return true;
         };
 
+        // Log which events match this category
+        const matchingEvents = eventsPool.filter(e => !usedEventIds.has(e.id) && matchesCategory(e));
+        console.log(`[StatusComputer] Matching events for ${key}:`, JSON.stringify(matchingEvents.map(e => ({ id: e.id, date: e.date, cat: e.category_id, sub: e.subcategory_id }))));
+
         for (const schedule of groupSchedules) {
             const schedMonth = schedule.scheduled_month;
             const schedYear = schedule.scheduled_year;
             const monthStart = new Date(schedYear, schedMonth - 1, 1);
             const monthEnd = new Date(schedYear, schedMonth, 0, 23, 59, 59);
+
+            console.log(`[StatusComputer] Schedule: month=${schedMonth}, year=${schedYear}, monthStart=${monthStart.toISOString()}, monthEnd=${monthEnd.toISOString()}`);
 
             // Try to find an On-Time event (within the scheduled month)
             const onTimeIdx = eventsPool.findIndex(e => {
@@ -52,6 +63,7 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             if (onTimeIdx !== -1) {
                 const consumedEvent = eventsPool[onTimeIdx];
                 usedEventIds.add(consumedEvent.id);
+                console.log(`[StatusComputer] -> COMPLETED (on-time), event: ${consumedEvent.id}, date: ${consumedEvent.date}`);
                 enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED', completed_date: consumedEvent.date });
                 continue;
             }
@@ -67,14 +79,17 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             if (lateIdx !== -1) {
                 const consumedEvent = eventsPool[lateIdx];
                 usedEventIds.add(consumedEvent.id);
+                console.log(`[StatusComputer] -> COMPLETED_LATE, event: ${consumedEvent.id}, date: ${consumedEvent.date}`);
                 enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED_LATE', completed_date: consumedEvent.date });
                 continue;
             }
 
             // No matching event found
             if (now <= monthEnd) {
+                console.log(`[StatusComputer] -> UPCOMING (deadline not passed yet)`);
                 enrichedSchedules.push({ ...schedule, computed_status: 'UPCOMING' });
             } else {
+                console.log(`[StatusComputer] -> MISSED (no events found, deadline passed)`);
                 enrichedSchedules.push({ ...schedule, computed_status: 'MISSED' });
             }
         }
