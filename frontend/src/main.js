@@ -164,13 +164,20 @@ function getScheduleStatusClass(status) {
     default: return '';
   }
 }
-function getScheduleStatusLabel(status) {
+function getScheduleStatusLabel(s) {
+  const status = typeof s === 'string' ? s : s.computed_status;
   switch (status) {
     case 'COMPLETED': return 'Completed';
-    case 'COMPLETED_LATE': return 'Completed Late';
+    case 'COMPLETED_LATE': 
+      if (typeof s === 'object' && s.completed_date) {
+        const d = new Date(s.completed_date);
+        const dateStr = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+        return `Missed (Completed ${dateStr})`;
+      }
+      return 'Missed (Completed Late)';
     case 'MISSED': return 'Missed';
     case 'UPCOMING': return 'Upcoming';
-    default: return status;
+    default: return 'Unknown';
   }
 }
 function getScheduleStatusIcon(status) {
@@ -3102,7 +3109,7 @@ async function renderHodScheduling(container, headerActions, user) {
                 <td>
                   <span class="schedule-badge ${getScheduleStatusClass(s.computed_status)}">
                     <span class="material-symbols-outlined" style="font-size:14px;">${getScheduleStatusIcon(s.computed_status)}</span>
-                    ${getScheduleStatusLabel(s.computed_status)}
+                    ${getScheduleStatusLabel(s)}
                   </span>
                 </td>
                 <td style="text-align:right;">
@@ -3226,7 +3233,7 @@ async function renderAdminSchedules(container, headerActions, user) {
                 <td>
                   <span class="schedule-badge ${getScheduleStatusClass(s.computed_status)}">
                     <span class="material-symbols-outlined" style="font-size:14px;">${getScheduleStatusIcon(s.computed_status)}</span>
-                    ${getScheduleStatusLabel(s.computed_status)}
+                    ${getScheduleStatusLabel(s)}
                   </span>
                 </td>
                 <td style="text-align:right;">
@@ -3444,7 +3451,7 @@ async function renderPrincipalScheduleOverview(container, headerActions, user) {
                 <td>
                   <span class="schedule-badge ${getScheduleStatusClass(s.computed_status)}">
                     <span class="material-symbols-outlined" style="font-size:14px;">${getScheduleStatusIcon(s.computed_status)}</span>
-                    ${getScheduleStatusLabel(s.computed_status)}
+                    ${getScheduleStatusLabel(s)}
                   </span>
                 </td>
               </tr>

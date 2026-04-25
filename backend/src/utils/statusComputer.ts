@@ -43,8 +43,8 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             });
 
             if (onTimeIdx !== -1) {
-                availableEvents.splice(onTimeIdx, 1); // Consume the event
-                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED' });
+                const consumedEvent = availableEvents.splice(onTimeIdx, 1)[0]; // Consume the event
+                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED', completed_date: consumedEvent.date });
                 continue;
             }
 
@@ -55,8 +55,8 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             });
 
             if (lateIdx !== -1) {
-                availableEvents.splice(lateIdx, 1); // Consume the event
-                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED_LATE' });
+                const consumedEvent = availableEvents.splice(lateIdx, 1)[0]; // Consume the event
+                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED_LATE', completed_date: consumedEvent.date });
                 continue;
             }
 
