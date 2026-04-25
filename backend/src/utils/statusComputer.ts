@@ -55,7 +55,8 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             if (onTimeIdx !== -1) {
                 const consumedEvent = eventsPool[onTimeIdx];
                 usedEventIds.add(consumedEvent.id);
-                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED', completed_date: consumedEvent.date });
+                const finalStatus = consumedEvent.status === 'APPROVED' ? 'APPROVED' : 'COMPLETED';
+                enrichedSchedules.push({ ...schedule, computed_status: finalStatus, completed_date: consumedEvent.date });
                 continue;
             }
 
@@ -70,7 +71,8 @@ export function computeEnrichedSchedules(schedules: any[], completedEvents: any[
             if (lateIdx !== -1) {
                 const consumedEvent = eventsPool[lateIdx];
                 usedEventIds.add(consumedEvent.id);
-                enrichedSchedules.push({ ...schedule, computed_status: 'COMPLETED_LATE', completed_date: consumedEvent.date });
+                const finalStatus = consumedEvent.status === 'APPROVED' ? 'APPROVED_LATE' : 'COMPLETED_LATE';
+                enrichedSchedules.push({ ...schedule, computed_status: finalStatus, completed_date: consumedEvent.date });
                 continue;
             }
 

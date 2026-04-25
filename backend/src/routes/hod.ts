@@ -661,7 +661,7 @@ router.get('/schedules', async (req: AuthRequest, res: any) => {
         // Fetch all completed/approved events for this department to map chronologically
         const { data: completedEvents } = await supabase
             .from('events')
-            .select('id, date, category_id, subcategory_id')
+            .select('id, date, category_id, subcategory_id, status')
             .eq('department_id', deptId)
             .in('status', ['COMPLETED', 'APPROVED']);
 

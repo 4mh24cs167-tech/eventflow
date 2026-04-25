@@ -158,6 +158,8 @@ function getScheduleStatusClass(status) {
   switch (status) {
     case 'COMPLETED': return 'sched-completed';
     case 'COMPLETED_LATE': return 'sched-late';
+    case 'APPROVED': return 'sched-approved';
+    case 'APPROVED_LATE': return 'sched-approved-late';
     case 'MISSED': return 'sched-missed';
     case 'UPCOMING': return 'sched-upcoming';
     default: return '';
@@ -174,6 +176,14 @@ function getScheduleStatusLabel(s) {
         return `Missed (Completed ${dateStr})`;
       }
       return 'Missed (Completed Late)';
+    case 'APPROVED': return 'Approved';
+    case 'APPROVED_LATE':
+      if (typeof s === 'object' && s.completed_date) {
+        const d = new Date(s.completed_date);
+        const dateStr = `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+        return `Missed (Approved ${dateStr})`;
+      }
+      return 'Missed (Approved Late)';
     case 'MISSED': return 'Missed';
     case 'UPCOMING': return 'Upcoming';
     default: return 'Unknown';
@@ -183,6 +193,8 @@ function getScheduleStatusIcon(status) {
   switch (status) {
     case 'COMPLETED': return 'check_circle';
     case 'COMPLETED_LATE': return 'schedule';
+    case 'APPROVED': return 'thumb_up';
+    case 'APPROVED_LATE': return 'thumb_up';
     case 'MISSED': return 'cancel';
     case 'UPCOMING': return 'upcoming';
     default: return 'help';

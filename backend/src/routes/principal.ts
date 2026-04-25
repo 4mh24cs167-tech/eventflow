@@ -436,7 +436,7 @@ router.get('/schedules', async (req: any, res: any) => {
         // Fetch completed/approved events
         let eventsQuery = supabase
             .from('events')
-            .select('id, date, category_id, subcategory_id, department_id')
+            .select('id, date, category_id, subcategory_id, department_id, status')
             .in('status', ['COMPLETED', 'APPROVED']);
             
         if (department_id) eventsQuery = eventsQuery.eq('department_id', department_id);
