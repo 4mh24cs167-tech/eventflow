@@ -4405,8 +4405,6 @@ window.__openFormBuilder = async (eventId, type) => {
 
     templates.forEach(tpl => {
       const added = isFieldAdded(tpl);
-      const existingField = added ? window.__currentFormFields.find(f => f.name === tpl.name) : null;
-      const isReq = existingField ? existingField.required : tpl.required;
       const typeLbl = tpl.type === 'rating' ? 'Rating (1-5 Stars)' : tpl.type === 'textarea' ? 'Long Text' : 'Short Text';
       templateHtml += `
         <div style="padding:10px 14px;margin-bottom:6px;border-radius:8px;background:${added ? 'rgba(79,70,229,0.06)' : 'var(--surface-1)'};border:1px solid ${added ? 'rgba(79,70,229,0.2)' : 'var(--border)'};transition:all .2s;">
@@ -4414,13 +4412,9 @@ window.__openFormBuilder = async (eventId, type) => {
             <input type="checkbox" ${added ? 'checked' : ''} onchange="window.__toggleTemplateField('${tpl.name}', this.checked)" style="width:18px;height:18px;cursor:pointer;accent-color:var(--primary,#4f46e5);flex-shrink:0;" />
             <div style="flex:1;">
               <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);">${tpl.label}</div>
-              <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${typeLbl}</div>
+              <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${typeLbl}${tpl.required ? ' \u00b7 Required' : ''}</div>
             </div>
           </div>
-          ${added ? `<div style="display:flex;align-items:center;gap:6px;margin-top:8px;margin-left:28px;">
-            <input type="checkbox" ${isReq ? 'checked' : ''} onchange="window.__toggleFieldRequired('${tpl.name}', this.checked)" style="width:14px;height:14px;cursor:pointer;accent-color:var(--primary,#4f46e5);" />
-            <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);">Required Field</span>
-          </div>` : ''}
         </div>`;
     });
     templateHtml += '</div>';
@@ -4473,8 +4467,9 @@ window.__openFormBuilder = async (eventId, type) => {
              ${type === 'FEEDBACK' ? '<option value="rating">Rating (1-5 Stars)</option>' : ''}
            </select>
         </div>
-        <div class="form-group" style="flex-direction:row;justify-content:flex-start;gap:8px;">
-           <input type="checkbox" id="fb-req" style="width:auto;" /> <label for="fb-req" style="margin:0;">Required field</label>
+        <div class="form-group" style="flex-direction:row;justify-content:flex-start;gap:6px;align-items:center;">
+           <input type="checkbox" id="fb-req" style="width:14px;height:14px;cursor:pointer;accent-color:var(--primary,#4f46e5);" /> 
+           <label for="fb-req" style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin:0;cursor:pointer;">Required Field</label>
         </div>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="window.__addFormField()"><span class="material-symbols-outlined">add</span> Add Field</button>
       </div>
@@ -4494,11 +4489,6 @@ window.__openFormBuilder = async (eventId, type) => {
       window.__currentFormFields = window.__currentFormFields.filter(f => f.name !== fieldName);
     }
     renderFieldList();
-  };
-
-  window.__toggleFieldRequired = (fieldName, isRequired) => {
-    const field = window.__currentFormFields.find(f => f.name === fieldName);
-    if (field) field.required = isRequired;
   };
 
   window.__removeFormField = (idx) => {
