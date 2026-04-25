@@ -42,22 +42,19 @@ const MONTH_NAMES_FULL = ['January','February','March','April','May','June','Jul
 
 // ===== DATE RANGE FILTER HELPERS =====
 function getDateRangeLabel() {
-  const ay = pageState.academicYear;
-  const from = pageState.fromMonth;
-  const to = pageState.toMonth;
-  if (!ay) {
-    if (pageState.fromMonth || pageState.toMonth) return `Select an Academic Year to apply month filters`;
-    return null;
-  }
-  if (!from && !to) return `Showing data for Academic Year ${ay}`;
-  const [startYear, endYear] = ay.split('-');
-  // Month-to-year mapping: Sep(9)-Dec(12) belongs to startYear, Jan(1)-Aug(8) to endYear
-  const monthYear = (m) => (m >= 9 ? startYear : endYear);
-  const fromLabel = from ? `${MONTH_NAMES_FULL[from - 1]} ${monthYear(from)}` : null;
-  const toLabel = to ? `${MONTH_NAMES_FULL[to - 1]} ${monthYear(to)}` : null;
-  if (fromLabel && toLabel) return `Showing data from ${fromLabel} to ${toLabel}`;
-  if (fromLabel) return `Showing data from ${fromLabel}`;
-  if (toLabel) return `Showing data up to ${toLabel}`;
+  const from = pageState.fromDate;
+  const to = pageState.toDate;
+  if (!from && !to) return null;
+  
+  const formatDate = (dStr) => {
+    if (!dStr) return '';
+    const d = new Date(dStr);
+    return `${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+  };
+
+  if (from && to) return `Showing data from ${formatDate(from)} to ${formatDate(to)}`;
+  if (from) return `Showing data from ${formatDate(from)} onwards`;
+  if (to) return `Showing data up to ${formatDate(to)}`;
   return null;
 }
 
@@ -66,35 +63,22 @@ function injectDateRangeFilter(headerActions) {
   const noFilterPages = ['settings', 'event-detail', 'hod-event-detail', 'admin-event-detail', 'dept-drilldown'];
   if (noFilterPages.includes(currentPage)) return;
 
-  const ay = pageState.academicYear || '';
-  const fromM = pageState.fromMonth || '';
-  const toM = pageState.toMonth || '';
-
-  const yearOpts = `<option value="">All Time</option>` + getAcademicYearOptions().map(y =>
-    `<option value="${y}" ${ay === y ? 'selected' : ''}>${y.replace('-', '–')}</option>`
-  ).join('');
-
-  const fromOpts = `<option value="">From</option>` + MONTH_NAMES_FULL.map((m, i) =>
-    `<option value="${i + 1}" ${fromM == i + 1 ? 'selected' : ''}>${m.slice(0,3)}</option>`
-  ).join('');
-
-  const toOpts = `<option value="">To</option>` + MONTH_NAMES_FULL.map((m, i) =>
-    `<option value="${i + 1}" ${toM == i + 1 ? 'selected' : ''}>${m.slice(0,3)}</option>`
-  ).join('');
+  const fromDate = pageState.fromDate || '';
+  const toDate = pageState.toDate || '';
 
   const filterDiv = document.createElement('div');
   filterDiv.id = 'date-range-filter';
   filterDiv.style.cssText = 'display:flex;align-items:center;gap:5px;flex-shrink:0;';
   filterDiv.innerHTML = `
     <style>
-      #date-range-filter select {
+      #date-range-filter input {
         padding:5px 8px;font-size:0.78rem;font-weight:500;
         border:1px solid var(--border,#e2e8f0);border-radius:8px;
         background:var(--surface-0,#fff);color:var(--text-primary,#1e293b);
         box-shadow:0 1px 3px rgba(0,0,0,0.07);cursor:pointer;
-        appearance:auto;outline:none;transition:border-color .2s;
+        outline:none;transition:border-color .2s;
       }
-      #date-range-filter select:focus { border-color:var(--primary,#4f46e5); }
+      #date-range-filter input:focus { border-color:var(--primary,#4f46e5); }
       #drf-apply {
         padding:5px 12px;font-size:0.78rem;font-weight:700;
         border:none;border-radius:8px;cursor:pointer;
@@ -112,17 +96,16 @@ function injectDateRangeFilter(headerActions) {
       #drf-reset:hover { color:var(--error,#ef4444); }
       @media(max-width:640px){
         #date-range-filter { gap:3px; }
-        #date-range-filter select { padding:4px 5px;font-size:0.72rem; }
+        #date-range-filter input { padding:4px 5px;font-size:0.72rem; }
         #drf-apply,#drf-reset { padding:4px 8px;font-size:0.72rem; }
       }
     </style>
     <span class="material-symbols-outlined" style="font-size:16px;color:var(--text-tertiary);flex-shrink:0;">date_range</span>
-    <select id="drf-year" title="Academic Year">${yearOpts}</select>
-    <select id="drf-from" title="From Month">${fromOpts}</select>
+    <input type="date" id="drf-from-date" title="From Date" value="${fromDate}">
     <span style="color:var(--text-tertiary);font-size:0.75rem;flex-shrink:0;">→</span>
-    <select id="drf-to" title="To Month">${toOpts}</select>
+    <input type="date" id="drf-to-date" title="To Date" value="${toDate}">
     <button id="drf-apply">Apply</button>
-    ${(ay || fromM || toM) ? `<button id="drf-reset" title="Clear filter">✕</button>` : ''}
+    ${(fromDate || toDate) ? `<button id="drf-reset" title="Clear filter">✕</button>` : ''}
   `;
 
   // Insert BEFORE existing header-action buttons
@@ -130,18 +113,14 @@ function injectDateRangeFilter(headerActions) {
 
   // Handlers
   document.getElementById('drf-apply')?.addEventListener('click', () => {
-    pageState.academicYear = document.getElementById('drf-year')?.value || '';
-    const newFrom = document.getElementById('drf-from')?.value;
-    const newTo = document.getElementById('drf-to')?.value;
-    pageState.fromMonth = newFrom ? parseInt(newFrom) : '';
-    pageState.toMonth = newTo ? parseInt(newTo) : '';
+    pageState.fromDate = document.getElementById('drf-from-date')?.value || '';
+    pageState.toDate = document.getElementById('drf-to-date')?.value || '';
     loadPage();
   });
 
   document.getElementById('drf-reset')?.addEventListener('click', () => {
-    pageState.academicYear = '';
-    pageState.fromMonth = '';
-    pageState.toMonth = '';
+    pageState.fromDate = '';
+    pageState.toDate = '';
     loadPage();
   });
 }
@@ -169,28 +148,9 @@ function injectDateRangeBanner() {
 
 // Returns { date_from, date_to } ISO strings based on current pageState
 function getDateRangeFilter() {
-  const ay = pageState.academicYear;
-  const fromM = pageState.fromMonth;
-  const toM = pageState.toMonth;
-  if (!ay || (!fromM && !toM)) return {};
-  const [startYear, endYear] = ay.split('-').map(Number);
-  // Months 9-12 belong to startYear, months 1-8 to endYear
-  const monthYear = (m) => (m >= 9 ? startYear : endYear);
-  const pad = (n) => String(n).padStart(2, '0');
-  const lastDay = (y, m) => new Date(y, m, 0).getDate();
   const result = {};
-  if (fromM) {
-    result.date_from = `${monthYear(fromM)}-${pad(fromM)}-01`;
-  } else {
-    result.date_from = `${startYear}-09-01`;
-  }
-  
-  if (toM) {
-    const ty = monthYear(toM);
-    result.date_to = `${ty}-${pad(toM)}-${lastDay(ty, toM)}`;
-  } else {
-    result.date_to = `${endYear}-08-31`;
-  }
+  if (pageState.fromDate) result.date_from = pageState.fromDate;
+  if (pageState.toDate) result.date_to = pageState.toDate;
   return result;
 }
 
@@ -816,8 +776,8 @@ let pageState = {};
 function navigateTo(page, state = {}) {
   currentPage = page;
   // Preserve global filter state across navigation
-  const { academicYear, fromMonth, toMonth } = pageState;
-  pageState = { ...state, academicYear, fromMonth, toMonth };
+  const { academicYear, fromDate, toDate } = pageState;
+  pageState = { ...state, academicYear, fromDate, toDate };
   document.querySelectorAll('.nav-item').forEach((n) => n.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
   if (navItem) navItem.classList.add('active');
@@ -3013,20 +2973,22 @@ function progressBar(label, value, total, color) {
 // =============================================
 
 async function renderHodScheduling(container, headerActions, user) {
-  const ay = pageState.academicYear;
+  const ay = pageState.academicYear || getCurrentAcademicYear();
 
-  headerActions.innerHTML = `<button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>`;
+  const yearOpts = getAcademicYearOptions().map(y =>
+    `<option value="${y}" ${ay === y ? 'selected' : ''}>${y.replace('-', '–')}</option>`
+  ).join('');
+
+  headerActions.innerHTML = `
+    <select id="local-ay-filter" class="filter-select">${yearOpts}</select>
+    <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
+  `;
+  
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
-
-  if (!ay) {
-    container.innerHTML = `
-      <div class="empty-state" style="margin-top: 40px;">
-        <span class="material-symbols-outlined">event_note</span>
-        <p>Please select a specific Academic Year from the top-right filter to manage schedules.</p>
-      </div>
-    `;
-    return;
-  }
+  document.getElementById('local-ay-filter')?.addEventListener('change', (e) => {
+    pageState.academicYear = e.target.value;
+    loadPage();
+  });
 
   const [categories, schedules] = await Promise.all([
     api.hod.getCategories(),
@@ -3209,10 +3171,22 @@ window.__deleteSchedule = async (id) => {
 // =============================================
 
 async function renderAdminSchedules(container, headerActions, user) {
-  const ay = pageState.academicYear;
+  const ay = pageState.academicYear || getCurrentAcademicYear();
 
-  headerActions.innerHTML = `<button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>`;
+  const yearOpts = getAcademicYearOptions().map(y =>
+    `<option value="${y}" ${ay === y ? 'selected' : ''}>${y.replace('-', '–')}</option>`
+  ).join('');
+
+  headerActions.innerHTML = `
+    <select id="local-ay-filter" class="filter-select">${yearOpts}</select>
+    <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
+  `;
+  
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
+  document.getElementById('local-ay-filter')?.addEventListener('change', (e) => {
+    pageState.academicYear = e.target.value;
+    loadPage();
+  });
 
   const schedules = await api.admin.getSchedules(ay);
 
@@ -3345,18 +3319,28 @@ window.__createEventFromSchedule = async (categoryId, subcategoryId) => {
 // =============================================
 
 async function renderPrincipalScheduleOverview(container, headerActions, user) {
-  const ay = pageState.academicYear;
+  const ay = pageState.academicYear || getCurrentAcademicYear();
   const filterDept = pageState.filterDept || '';
 
   const departments = await api.principal.getDepartments();
 
+  const yearOpts = getAcademicYearOptions().map(y =>
+    `<option value="${y}" ${ay === y ? 'selected' : ''}>${y.replace('-', '–')}</option>`
+  ).join('');
+
   headerActions.innerHTML = `
+    <select id="local-ay-filter" class="filter-select">${yearOpts}</select>
     <select id="so-dept-filter" class="filter-select">
       <option value="">All Departments</option>
       ${departments.map(d => `<option value="${d.id}" ${filterDept === d.id ? 'selected' : ''}>${d.name}</option>`).join('')}
     </select>
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
+  
+  document.getElementById('local-ay-filter')?.addEventListener('change', (e) => {
+    pageState.academicYear = e.target.value;
+    loadPage();
+  });
 
   const schedules = await api.principal.getSchedules({ academic_year: ay, department_id: filterDept || undefined });
 
