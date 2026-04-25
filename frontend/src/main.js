@@ -2588,6 +2588,14 @@ async function renderAdminEventDetail(container, headerActions, user) {
         </div>
         
         <div class="detail-card" style="position:relative;">
+          ${regForm && regForm.is_active ? `
+            <div style="position:absolute;inset:0;background:var(--surface-0);opacity:0.8;z-index:10;border-radius:var(--radius-lg);"></div>
+            <div style="position:absolute;inset:0;z-index:11;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+              <div style="background:var(--surface-2);padding:8px 16px;border-radius:20px;box-shadow:var(--shadow-sm);font-size:0.85rem;font-weight:600;color:var(--text-secondary);display:flex;align-items:center;gap:6px;pointer-events:auto;">
+                <span class="material-symbols-outlined" style="font-size:16px;">lock</span> Close Registration First
+              </div>
+            </div>
+          ` : ''}
           ${fbClosed ? '<div style="position:absolute;top:12px;right:12px;background:var(--error);color:#fff;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;letter-spacing:0.05em;z-index:2;">CLOSED</div>' : ''}
           <h3 style="margin-bottom:12px; display:flex; justify-content:space-between;">Feedback Form
             ${fbForm ? `<span class="status-badge ${fbForm.is_active ? 'status-approved' : 'status-rejected'}">${fbForm.is_active ? 'Open' : 'Closed'}</span>` : ''}
@@ -4059,8 +4067,9 @@ window.__markCompleted = async (id) => {
 window.__toggleFormStatus = async (id, type, isActive) => {
   try {
     const details = await api.admin.getEventDetails(id);
-    if (type === 'FEEDBACK' && isActive && details.status !== 'COMPLETED') {
-      return showToast('Feedback forms can only be activated after the event is Completed.', 'error');
+    const regForm = details.forms.find(f => f.type === 'REGISTRATION');
+    if (type === 'FEEDBACK' && isActive && regForm && regForm.is_active) {
+      return showToast('Registration must be closed before opening feedback form.', 'error');
     }
     const form = details.forms.find(f => f.type === type);
     const fields = form ? form.fields : [];
