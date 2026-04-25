@@ -949,11 +949,13 @@ async function renderCalendar(container, headerActions, user) {
   const apiLayer = user.role === 'HOD' ? api.hod : api.principal;
   const departments = await apiLayer.getAllDepartments ? await apiLayer.getAllDepartments() : await apiLayer.getDepartments();
 
-  const targetYear = pageState.academicYear || getCurrentAcademicYear();
+  const currentPlainYear = pageState.calFilterYear || new Date().getFullYear();
+  const plainYearOptions = [];
+  for (let y = currentPlainYear - 2; y <= currentPlainYear + 2; y++) plainYearOptions.push(y);
 
   headerActions.innerHTML = `
     <select id="global-year-filter" class="filter-select">
-      ${getAcademicYearOptions().map(ay => `<option value="${ay}" ${targetYear === ay ? 'selected' : ''}>${academicYearLabel(ay)}</option>`).join('')}
+      ${plainYearOptions.map(y => `<option value="${y}" ${currentPlainYear === y ? 'selected' : ''}>${y}</option>`).join('')}
     </select>
     <select id="cal-dept-filter" class="filter-select">
       <option value="">All Departments</option>
@@ -961,13 +963,15 @@ async function renderCalendar(container, headerActions, user) {
     </select>
     <button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
   `;
-  const eventsPromise = apiLayer.getCalendar({ year: calYear, month: calMonth, department_id: calDept || undefined, academic_year: targetYear });
+  const eventsPromise = apiLayer.getCalendar({ year: calYear, month: calMonth, department_id: calDept || undefined });
   let schedulesPromise;
+  // Derive academic year from the calendar year for schedule goals display
+  const derivedAY = calMonth >= 9 ? `${calYear}-${calYear + 1}` : `${calYear - 1}-${calYear}`;
   
   if (user.role === 'PRINCIPAL') {
-    schedulesPromise = apiLayer.getSchedules({ academic_year: targetYear, department_id: calDept || undefined });
+    schedulesPromise = apiLayer.getSchedules({ academic_year: derivedAY, department_id: calDept || undefined });
   } else if (apiLayer.getSchedules) {
-    schedulesPromise = apiLayer.getSchedules(targetYear);
+    schedulesPromise = apiLayer.getSchedules(derivedAY);
   } else {
     schedulesPromise = Promise.resolve([]); // fallback
   }
@@ -1065,20 +1069,21 @@ async function renderCalendar(container, headerActions, user) {
     renderCalendar(container, headerActions, user).finally(() => { container.style.opacity = '1'; });
   });
   document.getElementById('global-year-filter')?.addEventListener('change', (e) => {
-    const ay = e.target.value;
-    const startYear = ay.includes('-') ? parseInt(ay.split('-')[0], 10) : parseInt(ay, 10);
+    const selectedYear = parseInt(e.target.value, 10);
     pageState = { 
       ...pageState, 
-      academicYear: ay,
-      calYear: startYear,
-      calMonth: 9
+      calFilterYear: selectedYear,
+      calYear: selectedYear,
+      calMonth: 1
     };
-    loadPage();
+    container.style.opacity = '0.5';
+    renderCalendar(container, headerActions, user).finally(() => { container.style.opacity = '1'; });
   });
   document.getElementById('cal-dept-filter').addEventListener('change', (e) => {
     calDept = e.target.value;
     pageState = { ...pageState, calYear, calMonth, calDept };
-    loadPage();
+    container.style.opacity = '0.5';
+    renderCalendar(container, headerActions, user).finally(() => { container.style.opacity = '1'; });
   });
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 }
