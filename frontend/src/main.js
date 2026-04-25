@@ -4479,9 +4479,9 @@ window.__openFormBuilder = async (eventId, type) => {
              ${type === 'FEEDBACK' ? '<option value="rating">Rating (1-5 Stars)</option>' : ''}
            </select>
         </div>
-        <div class="form-group" style="flex-direction:row;justify-content:flex-start;gap:6px;align-items:center;">
-           <input type="checkbox" id="fb-req" style="width:14px;height:14px;cursor:pointer;accent-color:var(--primary,#4f46e5);" /> 
-           <label for="fb-req" style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin:0;cursor:pointer;">Required Field</label>
+        <div style="display:flex;flex-direction:row;justify-content:flex-start;gap:6px;align-items:center;margin-bottom:20px;">
+           <input type="checkbox" id="fb-req" style="width:16px;height:16px;cursor:pointer;accent-color:var(--primary,#4f46e5);margin:0;padding:0;" /> 
+           <label for="fb-req" style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-tertiary);margin:0;cursor:pointer;">Required Field</label>
         </div>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="window.__addFormField()"><span class="material-symbols-outlined">add</span> Add Field</button>
       </div>
