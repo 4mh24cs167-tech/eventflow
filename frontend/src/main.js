@@ -28,10 +28,12 @@ function getAcademicYearOptions() {
   ];
 }
 function academicYearLabel(ay) {
+  if (!ay) return 'All Time';
   const [s, e] = ay.split('-');
   return `FY ${s}–${e}`;
 }
 function academicYearDateRange(ay) {
+  if (!ay) return { start: '', end: '' };
   const [s, e] = ay.split('-').map(Number);
   return { start: `${s}-09-01`, end: `${e}-08-31` };
 }
