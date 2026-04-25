@@ -70,6 +70,8 @@
 
 /* ===== DARK MODE ===== */
 [data-theme="dark"] {
+  color-scheme: dark;
+
   --primary: #818cf8;
   --primary-light: #a5b4fc;
   --primary-dark: #c7d2fe;
