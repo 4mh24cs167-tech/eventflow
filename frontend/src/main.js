@@ -3011,6 +3011,16 @@ async function renderHodScheduling(container, headerActions, user) {
   headerActions.innerHTML = `<button class="btn-icon" id="btn-refresh" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>`;
   document.getElementById('btn-refresh')?.addEventListener('click', loadPage);
 
+  if (!ay) {
+    container.innerHTML = `
+      <div class="empty-state" style="margin-top: 40px;">
+        <span class="material-symbols-outlined">event_note</span>
+        <p>Please select a specific Academic Year from the top-right filter to manage schedules.</p>
+      </div>
+    `;
+    return;
+  }
+
   const [categories, schedules] = await Promise.all([
     api.hod.getCategories(),
     api.hod.getSchedules(ay),
@@ -3353,6 +3363,14 @@ async function renderPrincipalScheduleOverview(container, headerActions, user) {
 
   // Group by department for summary
   const deptMap = {};
+  
+  // Pre-populate with all departments (or just the selected one if filtered)
+  departments.forEach(d => {
+    if (!filterDept || filterDept === d.id) {
+      deptMap[d.name] = { total: 0, completed: 0, late: 0, missed: 0, upcoming: 0 };
+    }
+  });
+
   schedules.forEach(s => {
     const dName = s.departments?.name || 'Unknown';
     if (!deptMap[dName]) deptMap[dName] = { total: 0, completed: 0, late: 0, missed: 0, upcoming: 0 };
