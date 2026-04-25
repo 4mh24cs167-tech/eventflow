@@ -4346,44 +4346,112 @@ window.__deleteMedia = async (mediaId) => {
 };
 
 window.__openFormBuilder = async (eventId, type) => {
-  // Simple JSON array builder
-  // We'll fetch current fields
   const details = await api.admin.getEventDetails(eventId);
   const form = details.forms.find(f => f.type === type);
-  // Default to empty array if none exists
   window.__currentFormFields = form && form.fields ? [...form.fields] : [];
   window.__currentFormActive = form ? form.is_active : false;
 
+  // Pre-built template fields per form type
+  const REG_TEMPLATES = [
+    { label: 'USN / Roll Number', name: 'usn', type: 'text', required: true },
+    { label: 'Semester', name: 'semester', type: 'text', required: false },
+    { label: 'College Name', name: 'college_name', type: 'text', required: false },
+    { label: 'Gender', name: 'gender', type: 'text', required: false },
+    { label: 'Blood Group', name: 'blood_group', type: 'text', required: false },
+    { label: 'Dietary Preference', name: 'dietary_pref', type: 'text', required: false },
+    { label: 'T-Shirt Size', name: 'tshirt_size', type: 'text', required: false },
+    { label: 'Any Prior Experience?', name: 'prior_experience', type: 'textarea', required: false },
+  ];
+
+  const FB_TEMPLATES = [
+    { label: 'Overall Event Rating', name: 'overall_rating', type: 'rating', required: true },
+    { label: 'Content Quality Rating', name: 'content_rating', type: 'rating', required: false },
+    { label: 'Speaker / Presenter Rating', name: 'speaker_rating', type: 'rating', required: false },
+    { label: 'Venue & Arrangement Rating', name: 'venue_rating', type: 'rating', required: false },
+    { label: 'What did you like the most?', name: 'liked_most', type: 'textarea', required: false },
+    { label: 'What could be improved?', name: 'improvements', type: 'textarea', required: false },
+    { label: 'Would you attend again?', name: 'attend_again', type: 'text', required: false },
+    { label: 'Additional Comments', name: 'additional_comments', type: 'textarea', required: false },
+  ];
+
+  const templates = type === 'REGISTRATION' ? REG_TEMPLATES : FB_TEMPLATES;
+  const isFieldAdded = (tpl) => window.__currentFormFields.some(f => f.name === tpl.name);
+
   const renderFieldList = () => {
-    let baselineHtml = '';
+    let standardHtml = '';
     if (type === 'REGISTRATION') {
-      baselineHtml = `
-        <div style="margin-bottom:12px; padding:12px; background:var(--bg-tertiary); border-radius:4px; border:1px dashed var(--border);">
-          <strong style="display:block; margin-bottom:4px;">Standard Fields (Included Automatically)</strong>
-          <span style="font-size:0.85rem; color:var(--text-secondary);">Name, Email, Phone, Department, Year</span>
-        </div>
-      `;
+      standardHtml = `
+        <div style="padding:12px 16px;background:linear-gradient(135deg,#eef2ff,var(--surface-1));border-radius:8px;border:1px solid rgba(79,70,229,0.15);margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span class="material-symbols-outlined" style="font-size:18px;color:var(--primary);">lock</span>
+            <strong style="font-size:0.85rem;color:var(--primary);">Standard Fields (Always Included)</strong>
+          </div>
+          <span style="font-size:0.8rem;color:var(--text-secondary);">Name, Email (with OTP), Phone, Department, Year</span>
+        </div>`;
     }
 
-    const listHtml = window.__currentFormFields.map((f, i) => `
-      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-secondary); padding:8px 12px; margin-bottom:8px; border-radius:4px; border:1px solid var(--border);">
-        <div><strong>${f.label}</strong> <span style="font-size:0.75rem; color:var(--text-tertiary);">(${f.type}) ${f.required ? ' *Required' : ''}</span></div>
-        <button class="btn-reject" style="padding:4px;" onclick="window.__removeFormField(${i})"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
-      </div>
-    `).join('');
-    
-    document.getElementById('fb-fieldsList').innerHTML = baselineHtml + (listHtml || '<p style="color:var(--text-tertiary); font-size:0.9rem;">No custom fields added yet.</p>');
+    let templateHtml = '<div style="margin-bottom:16px;">' +
+      '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:10px;">' +
+      (type === 'REGISTRATION' ? 'Suggested Registration Fields' : 'Suggested Feedback Fields') + '</div>';
+
+    templates.forEach(tpl => {
+      const added = isFieldAdded(tpl);
+      const typeLbl = tpl.type === 'rating' ? 'Rating (1-5 Stars)' : tpl.type === 'textarea' ? 'Long Text' : 'Short Text';
+      templateHtml += `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:6px;border-radius:8px;background:${added ? 'rgba(79,70,229,0.06)' : 'var(--surface-1)'};border:1px solid ${added ? 'rgba(79,70,229,0.2)' : 'var(--border)'};transition:all .2s;">
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:0.88rem;color:var(--text-primary);">${tpl.label}</div>
+            <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${typeLbl}${tpl.required ? ' \u00b7 Required' : ''}</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
+            <input type="checkbox" ${added ? 'checked' : ''} onchange="window.__toggleTemplateField('${tpl.name}', this.checked)" style="opacity:0;width:0;height:0;" />
+            <span style="position:absolute;inset:0;background:${added ? 'var(--primary,#4f46e5)' : '#ccc'};border-radius:24px;transition:.3s;"></span>
+            <span style="position:absolute;height:18px;width:18px;left:${added ? '22px' : '3px'};bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></span>
+          </label>
+        </div>`;
+    });
+    templateHtml += '</div>';
+
+    const customFields = window.__currentFormFields.filter(f => !templates.some(t => t.name === f.name));
+    let customHtml = '';
+    if (customFields.length > 0) {
+      customHtml = '<div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:10px;">Custom Fields</div>';
+      customFields.forEach(f => {
+        const realIdx = window.__currentFormFields.indexOf(f);
+        customHtml += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;margin-bottom:6px;border-radius:8px;background:var(--surface-1);border:1px solid var(--border);">
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;">${f.label}</div>
+              <div style="font-size:0.72rem;color:var(--text-tertiary);margin-top:2px;">${f.type === 'rating' ? 'Rating' : f.type === 'textarea' ? 'Long Text' : f.type === 'number' ? 'Number' : 'Short Text'}${f.required ? ' \u00b7 Required' : ''}</div>
+            </div>
+            <button class="btn-icon" style="color:var(--error);" onclick="window.__removeFormField(${realIdx})"><span class="material-symbols-outlined" style="font-size:18px;">delete</span></button>
+          </div>`;
+      });
+    }
+
+    document.getElementById('fb-fieldsList').innerHTML = standardHtml + templateHtml + customHtml;
   };
 
+  const typeLabel = type === 'REGISTRATION' ? 'Registration' : 'Feedback';
+  const typeIcon = type === 'REGISTRATION' ? 'how_to_reg' : 'rate_review';
+  const typeColor = type === 'REGISTRATION' ? '#4f46e5' : '#0d9488';
+
   openModal(`
-    <div class="modal-header">
-      <div><h2>Form Builder: ${type}</h2><p>Add custom questions to your form.</p></div>
+    <div class="modal-header" style="border-bottom:3px solid ${typeColor};">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="material-symbols-outlined" style="font-size:28px;color:${typeColor};">${typeIcon}</span>
+        <div>
+          <h2 style="margin:0;">Configure ${typeLabel} Form</h2>
+          <p style="margin:4px 0 0;font-size:0.82rem;color:var(--text-secondary);">Toggle suggested fields or add custom questions below.</p>
+        </div>
+      </div>
       <button class="modal-close" onclick="window.__closeModal()"><span class="material-symbols-outlined">close</span></button>
     </div>
-    <div class="modal-body" style="display:flex; gap:24px; min-height:400px;">
-      <div style="flex:1;">
-        <h3 style="margin-bottom:12px;">Add Custom Field</h3>
-        <div class="form-group"><label>Field Label (Question)</label><input type="text" id="fb-label" placeholder="e.g. Dietary Restrictions" /></div>
+    <div class="modal-body" style="display:flex;gap:24px;min-height:450px;">
+      <div style="flex:1.2;max-height:450px;overflow-y:auto;padding-right:8px;" id="fb-fieldsList"></div>
+      <div style="flex:0.8;border-left:1px solid var(--border);padding-left:24px;">
+        <h3 style="margin-bottom:16px;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="font-size:20px;">add_circle</span> Add Custom Field</h3>
+        <div class="form-group"><label>Question / Label</label><input type="text" id="fb-label" placeholder="${type === 'REGISTRATION' ? 'e.g. Accommodation Required?' : 'e.g. Rate the food quality'}" /></div>
         <div class="form-group"><label>Input Type</label>
            <select id="fb-type">
              <option value="text">Short Text</option>
@@ -4392,21 +4460,28 @@ window.__openFormBuilder = async (eventId, type) => {
              ${type === 'FEEDBACK' ? '<option value="rating">Rating (1-5 Stars)</option>' : ''}
            </select>
         </div>
-        <div class="form-group" style="flex-direction:row; justify-content:flex-start; gap:8px;">
+        <div class="form-group" style="flex-direction:row;justify-content:flex-start;gap:8px;">
            <input type="checkbox" id="fb-req" style="width:auto;" /> <label for="fb-req" style="margin:0;">Required field</label>
         </div>
-        <button class="btn-outline" style="width:100%; margin-top:12px;" onclick="window.__addFormField()"><span class="material-symbols-outlined">add</span> Add Field</button>
-      </div>
-      <div style="flex:1; border-left:1px solid var(--border); padding-left:24px; max-height:400px; overflow-y:auto;">
-        <h3 style="margin-bottom:12px;">Current Custom Fields</h3>
-        <div id="fb-fieldsList"></div>
+        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="window.__addFormField()"><span class="material-symbols-outlined">add</span> Add Field</button>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="window.__closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="window.__saveFormBuilder('${eventId}', '${type}')">Save Form Configuration</button>
+      <button class="btn-primary" style="background:${typeColor};" onclick="window.__saveFormBuilder('${eventId}', '${type}')"><span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px;">save</span> Save Configuration</button>
     </div>
   `);
+
+  window.__toggleTemplateField = (fieldName, isOn) => {
+    const tpl = templates.find(t => t.name === fieldName);
+    if (!tpl) return;
+    if (isOn) {
+      if (!isFieldAdded(tpl)) window.__currentFormFields.push({ ...tpl });
+    } else {
+      window.__currentFormFields = window.__currentFormFields.filter(f => f.name !== fieldName);
+    }
+    renderFieldList();
+  };
 
   window.__removeFormField = (idx) => {
     window.__currentFormFields.splice(idx, 1);
